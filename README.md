@@ -1,2 +1,7 @@
-# bachelors-thesis
-Bakalauruusetöö "Versiooniuuenduse raamistik kasutades skriptimiskeelt Bash"
+### Tartu Ülikool
+### Matemaatika ja statistika instituut
+#### Bakalaureusetöö
+# Versiooniuuenduse raamistik kasutades skriptimiskeelt Bash
+Autor: Irina Ivanova
+Juhendaja: Polina Morozova
+Kaasjuhendaja: Helle Hein

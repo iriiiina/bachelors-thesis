@@ -1,0 +1,6 @@
+treatment
+reception
+diet
+person
+schedule
+diagnostics

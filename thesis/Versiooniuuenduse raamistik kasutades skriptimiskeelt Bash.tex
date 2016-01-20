@@ -1,9 +1,16 @@
 \documentclass[12pt]{report}
 \usepackage[utf8]{inputenc}
 \usepackage{nameref}
+\usepackage{fancyhdr}
 \renewcommand{\rmdefault}{ptm}
 \renewcommand{\contentsname}{Sisukord}
 \renewcommand{\thesection}{\arabic{section}}
+% Page numbers to the right
+\pagestyle{fancy}
+\fancyhead{}
+\fancyfoot{}
+\fancyfoot[R]{\thepage}
+\renewcommand{\headrulewidth}{0pt}
 
 \title{Versiooniuuenduse raamistik kasutades skriptimiskeelt Bash}
 \author{Irina Ivanova}
@@ -65,6 +72,11 @@
   \newpage
  
   \tableofcontents
+  \fancypagestyle{plain}{%
+    \renewcommand{\headrulewidth}{0pt}%
+    \fancyhf{}%
+    \fancyfoot[R]{\thepage}%
+}
  
   \newpage
   
@@ -87,6 +99,20 @@ materjalide sisu.
   \subsection{Probleem}
   
   \subsection{Serverite arhitektuur}
+  
+  \begin{tabular}{|l|c|c|c|c|c|c|c|}
+    \hline
+    Environment & Count & Web Server & Auth & Silent & Restart & Batch & Multi-Servers\\
+    \hline
+    Test-TC & 10 & Tomcat 8 & Y & N & N & Y & N\\
+    Test2-TC & 2 & Tomcat 8 & Y & Y & Y & N & Y\\
+    Live-TC & 7 & Tomcat 8 & Y & Y & N & Y & N\\
+    Live2-TC & 1 & Tomcat 8 & Y & Y & Y & N & Y\\
+    Local & N* & Tomcat 8 & N & N & N & Y & N\\
+    Test-WL & 4 & WebLogic 12 & Y & N & N & Y & N\\
+    \hline
+  \end{tabular}
+
   
   \subsection{Nõuded lahendusele}
   

@@ -1,42 +1,85 @@
 #!/bin/bash
-# Author: Irina.Ivanova@nortal.com, 30.10.2015
-# v5.0
+# Author: Irina.Ivanova@nortal.com, 20.01.2016
+# v6.0
+
+function restart() {
+  printInfo "Restarting the Tomcat";
+  shutdown;
+  startup;
+  printOk "Tomcat is restarted";
+}
+
+function shutdown() {
+  printInfo "Shutting server down";
+  ./$tomcatBin/shutdown.sh | wc -l
+  sleep 5
+
+  down=$(curl "$tomcatManager/list" | grep "503 Service Temporarily Unavailable")
+
+  if [[ "$down" == "" ]]; then
+    printError "can't shutdown Tomcat server";
+    log "ERROR: can't shitdown Tomcat server";
+    removeLock;
+    exit
+  else
+    printOk "Tomcat server is down";
+    log "OK: Tomcat server is down";
+  fi
+}
+
+function startup() {
+  printInfo "Starting server up";
+  ./$tomcatBin/startup.sh | wc -l
+  sleep 5
+
+  up=$(curl "$tomcatManager/list" | grep "^/:running:")
+
+  if [[ "$up" == "" ]]; then
+    printError "can't startup Tomcat server";
+    log "ERROR: can't startup Tomcat server";
+    removeLock;
+    exit
+  else
+    printOk "Tomcat server is up";
+    log "OK: Tomcat server is up";
+  fi
+}
 
 function getCurrentVersion() {
-  printInfo "\n\tGetting current version of $moduleName$tomcatManagerName...";
+  printInfo "Getting current version of $moduleName$tomcatManagerName";
   currentVersion=$(curl "$tomcatManager/list" | grep "^/$moduleName:" | grep -o --regexp='[0-9]*\.[0-9]*\.[0-9]*\.[0-9]*')
 
-  if [[ "$currentVersion" = "" ]]; then
-    printWarning "\tWARNING: can't find current version of $moduleName$tomcatManagerName";
+  if [[ "$currentVersion" == "" ]]; then
+    printWarning "can't find current version of $moduleName$tomcatManagerName";
   else
-    printOk "\tOK: current version of $moduleName$tomcatManagerName is $currentVersion";
+    printOk "current version of $moduleName$tomcatManagerName is $currentVersion";
   fi
 }
 
 function checkNumberOfDeploys() {
-  printInfo "\n\tChecking number of deploys of $moduleName$tomcatManagerName...";
+  printInfo "Checking number of deploys of $moduleName$tomcatManagerName";
   numberOfDeploys=$(curl "$tomcatManager/list" | grep "^/$moduleName:" | wc -l)
 
   if [[ $numberOfDeploys == 1 ]]; then
-    printOk "\tOK: at the moment only 1 version of $moduleName$tomcatManagerName is deployed";
+    printOk "at the moment only 1 version of $moduleName$tomcatManagerName is deployed";
   elif [[ $numberOfDeploys == 0 ]]; then
-    printWarning "\tWARNING: can't find any deployed version of $moduleName$tomcatManagerName";
+    printWarning "can't find any deployed version of $moduleName$tomcatManagerName";
   else
-    printWarning "\tWARNING: there is more than 1 versions of $moduleName$tomcatManagerName is deployed";
+    printWarning "there is more than 1 versions of $moduleName$tomcatManagerName is deployed";
   fi
 }
 
-function downloadBatchFile() {
+function deployBatchModules() {
   getCurrentVersion;
 
   compareVersions;
 
-  printInfo "\n\tDownloading $war file...";
+  printInfo "Downloading $war file";
 
   wget $link
 
   if test -e "$war"; then
-    printOk "\tOK: file $war is downloaded";
+    printOk "file $war is downloaded";
     log "OK: $war is downloaded";
 
     checkNumberOfDeploys;
@@ -49,31 +92,31 @@ function downloadBatchFile() {
 
     checkIsRunning;
 
-    if [[ $canUpdateJira -eq 0 ]]; then
-      updateIssueSummary;
+    if [[ $isJiraIssueUpdateRequired == "Y" ]] && [[ $canUpdateJira -eq 0 ]]; then
+        updateIssueSummary;
     fi
 
-    printInfo "********************Update of $war is completed********************";
+    printCyan "********************Update of $war is completed********************";
 
   else
-    printError "\tERROR: can't download the $war file from $link";
+    printError "can't download the $war file from $link";
     log "ERROR: $war is not downloaded from $link";
     downloadErrors+=($module-$version)
-    printInfo "********************Update of $war is completed********************";
+    printCyan "********************Update of $war is completed********************";
   fi
 }
 
-function downloadBatchFileLive() {
+function deployBatchModulesLive() {
 
-  printInfo "\n\tDownloading file $war...";
+  printInfo "Downloading file $war";
 
   wget $link
 
   if test -e "$war"; then
-    printOk "\tOK: file $war is downloaded";
+    printOk "file $war is downloaded";
     log "OK: $war is downloaded";
 
-    if [[ $type = "ehealth" ]]; then
+    if [[ $type == "ehealth" ]]; then
       for index in ${!ehealthTomcatManagers[@]}
       do
         tomcatManager=${ehealthTomcatManagers[$index]}
@@ -87,7 +130,7 @@ function downloadBatchFileLive() {
 
         checkNumberOfDeploys;
         
-        if [ $silent == 'N' ]; then
+        if [[ $silent == "N" ]]; then
           undeploy;
         fi
 
@@ -97,15 +140,15 @@ function downloadBatchFileLive() {
 
       done
 
-      if [[ $canUpdateJira -eq 0 ]]; then
-          updateIssueSummary;
+      if [[ $isJiraIssueUpdateRequired == "Y" ]] && [[ $canUpdateJira -eq 0 ]]; then
+        updateIssueSummary;
       fi
 
       removeExistingFile;
 
-      printInfo "********************Update of $module-$version is completed********************";
+      printCyan "********************Update of $module-$version is completed********************";
 
-    elif [[ $type = "his" ]]; then
+    elif [[ $type == "his" ]]; then
 
       for index in ${!hisTomcatManagers[@]}
       do
@@ -120,7 +163,7 @@ function downloadBatchFileLive() {
 
         checkNumberOfDeploys;
 
-        if [ $silent == 'N' ]; then
+        if [[ $silent == "N" ]]; then
           undeploy;
         fi
 
@@ -129,36 +172,40 @@ function downloadBatchFileLive() {
         checkIsRunning;
       done
 
+      if [[ $isJiraIssueUpdateRequired == "Y" ]] && [[ $canUpdateJira -eq 0 ]]; then
+        updateIssueSummary;
+      fi
+
       removeExistingFile;
 
-      printInfo "********************Update of $module-$version is completed********************";
+      printCyan "********************Update of $module-$version is completed********************";
 
     else
-      printError "\tERROR: can't find Tomcat Managers for module type $type";
+      printError "can't find Tomcat Managers for module type $type";
       log "ERROR: can't find Tomcat Managers for module type $type";
     fi
 
   else
-    printError "\tERROR: can't download the $war file from $link";
+    printError "can't download the $war file from $link";
     log "ERROR: $war is not downloaded from $link";
     downloadErrors+=("$module-$version")
-    printInfo "********************Update of $mdodule-$version is completed********************";
+    printCyan "********************Update of $mdodule-$version is completed********************";
   fi
 }
 
 function undeploy() {
   if [[ $numberOfDeploys == 1 ]]; then
-    printInfo "\n\tUndeploying old version $moduleName-$currentVersion$tomcatManagerName...";
+    printInfo "Undeploying old version $moduleName-$currentVersion$tomcatManagerName";
 
     undeploy=$(curl "$tomcatManager/undeploy?path=/$moduleName&version=$currentVersion")
 
     if echo "$undeploy" | grep -q "OK - Undeployed application at context path"; then
-      printOk "\tOK: old version $moduleName-$currentVersion$tomcatManagerName is undeployed";
+      printOk "old version $moduleName-$currentVersion$tomcatManagerName is undeployed";
       log "OK: $moduleName-$currentVersion$tomcatManagerName is undeployed";
       isUndeployed=1
     else
       echo $undeploy
-      printError "\tERROR: can't undeploy old version $moduleName-$currentVersion$tomcatManagerName";
+      printError "can't undeploy old version $moduleName-$currentVersion$tomcatManagerName";
       log "ERROR: old version $moduleName-$currentVersion$tomcatManagerName is not undeployed";
       isUndeployed=0
       undeployWarnings+=("$module-$currentVersion$tomcatManagerName")
@@ -169,32 +216,32 @@ function undeploy() {
 }
 
 function deploy() {
-  printInfo "\n\tDeploying new version $moduleName-$version$tomcatManagerName...";
+  printInfo "Deploying new version $moduleName-$version$tomcatManagerName";
   deploy=$(curl --upload-file "$war" "$tomcatManager/deploy?path=/$moduleName&version=$version&update=true")
 
   if echo "$deploy" | grep -q "OK - Deployed application at context path"; then
-    printOk "\tOK: $moduleName-$version$tomcatManagerName is deployed";
+    printOk "$moduleName-$version$tomcatManagerName is deployed";
     log "OK: $moduleName-$version$tomcatManagerName is deployed";
     successDeploys+=("$module-$version$tomcatManagerName")
 
   else
     echo $deploy
-    printError "\tERROR: can't deploy $moduleName-$version$tomcatManagerName. See logs for details";
+    printError "can't deploy $moduleName-$version$tomcatManagerName. See logs for details";
     log "ERROR: $moduleName-$version$tomcatManagerName is not deployed";
     deployErrors+=("$module-$version$tomcatManagerName")
   fi
 }
 
 function checkIsRunning() {
-  printInfo "\n\tChecking whether $moduleName-$version$tomcatManagerName is running...";
+  printInfo "Checking whether $moduleName-$version$tomcatManagerName is running";
 
   isRunning=$(curl "$tomcatManager/list")
 
   if echo "$isRunning" | grep -q "$moduleName:running" && echo "$isRunning" | grep -q "$moduleName##$version"; then
-    printOk "\tOK: $moduleName-$version$tomcatManagerName is running";
+    printOk "$moduleName-$version$tomcatManagerName is running";
     log "OK: $moduleName-$version$tomcatManagerName is running";
   else
-    printError "\tERROR: $moduleName-$version$tomcatManagerName is not running";
+    printError "$moduleName-$version$tomcatManagerName is not running";
     log "ERROR: $moduleName-$version$tomcatManagerName is not running";
     runErrors+=("$module-$version$tomcatManagerName")
     canUpdateJira=1
@@ -208,16 +255,20 @@ function deployOtherVersion() {
   else
     removeLock;
 
-    printInfo "\n\nIf you want to deploy other version, please insert it's number.";
-    printInfo "Number of last working version is $currentVersion";
-    printInfo "Print n to exit from the script.";
- notificate;
+    printCyan "\n\nIf you want to deploy other version, please insert it's number.";
+    printCyan "Number of last working version is $currentVersion";
+    printCyan "Print n to exit from the script.";
+    notificate;
     read answer
 
     if [[ $answer == "n" ]]; then
       exit
     else
-      ./update-version-tomcat.sh $module $answer $user
+      if [[ $isAuthenticationRequired == "Y" ]]; then
+        ./update-version-tomcat.sh $module $answer $user
+      elif [[ $isAuthenticationRequired == "N" ]]; then
+        ./update-version-tomcat.sh $module $answer
+      fi
     fi
   fi
 }

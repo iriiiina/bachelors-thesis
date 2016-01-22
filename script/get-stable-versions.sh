@@ -36,26 +36,30 @@ env="kjl-test"
 
 
 function printError() {
+  echo -e "${RED}ERROR: $1${NONE}"
+}
+
+function printRed() {
   echo -e "${RED}$1${NONE}"
 }
 
 function printOk() {
-  echo -e "${GREEN}$1${NONE}"
+  echo -e "${GREEN}OK: $1${NONE}"
 }
 
 function printInfo() {
-  echo -e "${CYAN}$1${NONE}"
+  echo -e "${CYAN}$1...${NONE}"
 }
 
 function emptyFile() {
-  printInfo "Removing old content from $file...";
+  printInfo "Removing old content from $file";
   echo "" > $file
-  printOk "OK: old content from $file is removed";
+  printOk "old content from $file is removed";
 }
 
 function findVersion() {
   for module in ${modules[@]}; do
-    printInfo "Finding version of $module...";
+    printInfo "Finding version of $module";
     if [[ $module == "clinician-portal" ]]; then
       url="$host/$env/sysInfo"
       version=$(curl -k $url | grep -A 3 '<td class="info">module.version</td>' | grep -o --regexp='[0-9]*\.[0-9]*\.[0-9]*\.[0-9]*')
@@ -73,10 +77,10 @@ function findVersion() {
 
 function addLine() {
   if [[ $version == "" ]]; then
-      printError "ERROR: can't find version for $module: $url";
+      printError "can't find version for $module: $url";
       errors+=($module)
     else
-      printOk "OK: version for $module is found: $version";
+      printOk "version for $module is found: $version";
       echo "$module $version" >> $file
     fi
 }
@@ -88,14 +92,14 @@ function removeBlankLine() {
 function printErrors() {
   if [[ ${#errors[*]} -gt 0 ]]; then
     echo -e "\n\n"
-    printError "CAN'T FIND VERSIONS FOR ${#errors[*]} MODULES";
+    printRed "CAN'T FIND VERSIONS FOR ${#errors[*]} MODULES";
     for item in ${errors[*]}
     do
       echo -e "\t\t\t${RED}$item${NONE}"
     done
   else
     echo -e "\n\n"
-    printOk "OK: versions for all modules are found and saved in $file\n\n";
+    printOk "versions for all modules are found and saved in $file\n\n";
   fi
 }
 

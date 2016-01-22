@@ -13,7 +13,8 @@ function printTitle() {
 
 for index in ${!ehealthTomcatManagers[@]}
 do
-  printTitle "\n\n\t\t\t*********EHEALTH $index*********";
+  echo -e "\n\n"
+  printTitle "*********EHEALTH $index*********";
 
   curl -silent ${ehealthTomcatManagers[$index]}/list | sort | grep ^/ | awk '{ gsub("running", "\033[32m&\033[0m"); gsub("stopped", "\033[31m&\033[0m"); gsub("\\:[0-9]+", "\033[34m&\033[0m"); gsub("^/.+:", "\033[36m&\033[0m"); gsub("[0-9]+.[0-9]+.[0-9]+.[0-9]+$", "\033[33m&\033[0m"); print }'
 
@@ -21,7 +22,8 @@ done
 
 for index in ${!hisTomcatManagers[@]}
 do
-  printTitle "\n\n\t\t\t*********HIS $index*********";
+  echo -e "\n\n"
+  printTitle "*********HIS $index*********";
 
   curl -silent ${hisTomcatManagers[$index]}/list | sort | grep ^/ | awk '{ gsub("running", "\033[32m&\033[0m"); gsub("stopped", "\033[31m&\033[0m"); gsub("\\:[0-9]+", "\033[34m&\033[0m"); gsub("^/.+:", "\033[36m&\033[0m"); gsub("[0-9]+.[0-9]+.[0-9]+.[0-9]+$", "\033[33m&\033[0m"); print }'
 done

@@ -1,14 +1,36 @@
+#!/bin/bash
+
 # Local variables, that should be different in every environment
  
 app=""
 extension=""
-# tomcatManager variable in Tomcat 6 should not contain /text at the end - for example, "http://user:password@localhost:7070/manager"
 tomcatManager=""
 proxy=""
+
+# Configure JIRA authentication and issue update functionality
+isAuthenticationRequired="" # if isJiraIssueUpdateRequired is Y, then this should be always Y
+isJiraIssueUpdateRequired=""
 summaryTitle=""
- 
-# Local variables that are specific for live environments, where 2 or more servers in use
- 
+rest=""
+issues=""
+jira=""
+jiraAuth=""
+
+# Configure Tomcat restart functionality
+isRestartRequired=""
+tomcatBin=""
+
+# Configure logs deletion functionality
+isLogDeletionRequired=""
+appLogs=""
+tomcatLogs=""
+
+# Configure temporary files deletion functionality
+isTempFilesDeletionRequired=""
+tempFiles=""
+
+# Configure multi-server functionality
+isMultiServer=""
 declare -A ehealthTomcatManagers
 ehealthTomcatManagers[""]=""
 ehealthTomcatManagers[""]=""
@@ -43,13 +65,7 @@ modules["treatment"]="his"
 # General variables, that may stay the same in different environment, but if needed may be changed
  
 extendedModules=""
-lock=""
-batchLock=""
 log=""
-rest=""
-issues=""
-jira=""
-jiraAuth=""
 warLocation=""
 warLocationCom=""
 batch=""

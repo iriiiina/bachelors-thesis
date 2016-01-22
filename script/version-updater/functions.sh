@@ -1,6 +1,6 @@
 #!/bin/bash
-# Author: Irina.Ivanova@nortal.com, 30.10.2015
-# v5.0
+# Author: Irina.Ivanova@nortal.com, 20.01.2016
+# v6.0
 
 NONE='\e[0m'
 RED='\e[31m'
@@ -10,18 +10,26 @@ CYAN='\e[36m'
 GRAY='\e[100m'
 
 function printError() {
+  echo -e "\n\t${RED}ERROR: $1${NONE}"
+}
+
+function printRed() {
   echo -e "${RED}$1${NONE}"
 }
 
 function printWarning() {
-  echo -e "${YELLOW}$1${NONE}"
+  echo -e "\t${YELLOW}WARNING: $1${NONE}"
 }
 
 function printOk() {
-  echo -e "${GREEN}$1${NONE}"
+  echo -e "\t${GREEN}OK: $1${NONE}"
 }
 
 function printInfo() {
+  echo -e "\n\t${CYAN}$1...${NONE}"
+}
+
+function printCyan() {
   echo -e "${CYAN}$1${NONE}"
 }
 
@@ -32,57 +40,136 @@ function printGray() {
 function log() {
   now=$(date +"%d.%m.%Y %H:%M:%S")
 
-  echo -e "$now $user $1" >> $log
+  if [[ $isAuthenticationRequired == "Y" ]]; then
+    echo -e "$now $user $1" >> $log
+  elif [[ $isAuthenticationRequired == "N" ]]; then
+    echo -e "$now $1" >> $log
+  fi
 }
 
 function verifyLock() {
   if test -e "UPDATING_"*; then
-    printError "\n\tERROR: Somebody is updating, see .loc file for details";
-    printError "\n\n";
+    printError "somebody is updating, see .loc file for details";
+    printRed "\n\n";
+    notificate;
+    exit
+  fi
+}
+
+function verifyVariables() {
+
+  checkErrorCount=0;
+
+  if [ $isAuthenticationRequired != "N" ] && [ $isAuthenticationRequired != "Y" ] && [ $isAuthenticationRequired != "" ]; then
+    printError "error in set variables.sh configurations: isAuthenticationRequired value can be only N, Y or NULL";
+    checkErrorCount=1
+  fi
+
+  if [ $isJiraIssueUpdateRequired != "N" ] && [ $isJiraIssueUpdateRequired != "Y" ] && [ $isJiraIssueUpdateRequired != "" ]; then
+    printError "error in set variables.sh configurations: isJiraIssueUpdateRequired value can be only N, Y or NULL";
+    checkErrorCount=1
+  fi
+
+  if [ $isRestartRequired != "N" ] && [ $isRestartRequired != "Y" ] && [ $isRestartRequired != "" ]; then
+    printError "error in set variables.sh configurations: isRestartRequired value can be only N, Y or NULL";
+    checkErrorCount=1
+  fi
+
+  if [ $isLogDeletionRequired != "N" ] && [ $isLogDeletionRequired != "Y" ] && [ $isLogDeletionRequired != "" ]; then
+    printError "error in set variables.sh configurations: isLogDeletionRequired value can be only N, Y or NULL";
+    checkErrorCount=1
+  fi
+
+  if [ $isTempFilesDeletionRequired != "N" ] && [ $isTempFilesDeletionRequired != "Y" ] && [ $isTempFilesDeletionRequired != "" ]; then
+    printError "error in set variables.sh configurations: isTempFilesDeletionRequired value can be only N, Y or NULL";
+    checkErrorCount=1
+  fi
+
+  if [ $isMultiServer != "Y" ] && [ $isMultiServer != "N" ] && [ $isMultiServer != "" ]; then
+    printError "error in set-variables.sh configurations: isMultiServer value can be only N, Y or NULL";
+    checkErrorCount=1
+  fi
+
+  if [[ $isAuthenticationRequired == "N" ]] && [[ $isJiraIssueUpdateRequired == "Y" ]]; then
+    printError "error in set-variables.sh configurations: isJiraIssueUpdateRequired can't be Y if isAuthenticationRequired is N";
+    checkErrorCount=1
+  fi
+
+  if [[ $isJiraIssueUpdateRequired == "Y" ]] && ([[ $rest == "" ]] || [[ $issues == "" ]] || [[ $jira == "" ]] || [[ $jiraAuth == "" ]]); then
+    printError "error in set-variables.sh configurations: rest, issues, jira or jiraAuth variables can't be NULL if isJiraIssueUpdateRequired is Y";
+    checkErrorCount=1
+  fi
+
+  if [[ $isAuthenticationRequired == "Y" ]] && [[ $jiraAuth == "" ]]; then
+    printError "error in set-variables.sh configurations: jiraAuth can't be NULL if isAuthenticationRequired is Y";
+    checkErrorCount=1
+  fi
+
+  if [[ $isRestartRequired == "Y" ]] && [[ $tomcatBin == "" ]]; then
+    printError "error in set-variables.sh configurations: tomcatBin can't be NULL if isRestartRequired is Y";
+    checkErrorCount=1
+  fi
+
+  if [[ $isLogDeletionRequired == "Y" ]] && ([[ $appLogs == "" ]] || [[ $tomcatLogs == "" ]]); then
+    printError "error in set-variables.sh configurations: appLogs or tomcatLogs can't be NULL if isLogDeletionRequired is Y";
+    checkErrorCount=1
+  fi
+
+  if [[ $isTempFilesDeletionRequired == "Y" ]] && [[ $tempFiles == "" ]]; then
+    printError "error in set-variables.sh configurations: tempFiles can't be NULL if isTempFilesDeletionRequired is Y";
+    checkErrorCount=1
+  fi
+
+  if [ $checkErrorCount -gt 0 ]; then
     notificate;
     exit
   fi
 }
 
 function verifyArguments() {
-  if [ $1 -ne 3 ]; then
-    printError "\n\tUsage: $0 MODULE_NAME MODULE_VERSION JIRA_USERNAME";
-    printError "\tExample: $0 admin 1.1.1.1 irina\n";
-    notificate;
-    exit
-  fi
-}
-
-function verifyLiveArguments() {
-  if [ $1 -lt 3 ] || [ $1 -gt 4 ]; then
-    printError "\n\tUsage: $0 MODULE_NAME MODULE_VERSION JIRA_USERNAME [silent]";
-    printError "\tExample: $0 admin 1.1.1.1 irina";
-    printError "\tExample for silent update: $0 admin 1.1.1.1 irina silent\n";
-    notificate;
-    exit
+  if [[ $isAuthenticationRequired == "Y" ]]; then
+    if [ $1 -lt 3 ] || [ $1 -gt 4 ]; then
+      printRed "\nUsage: $0 MODULE_NAME MODULE_VERSION JIRA_USERNAME [silent]";
+      printRed "Example: $0 admin 1.1.1.1 irina";
+      printRed "Example for silent update: $0 admin 1.1.1.1 irina silent\n";
+      notificate;
+      exit
+    fi
+  elif [[ $isAuthenticationRequired == "N" ]]; then
+    if [ $1 -lt 2 ] || [ $1 -gt 3 ]; then
+      printRed "\nUsage: $0 MODULE_NAME MODULE_VERSION [silent]";
+      printRed "Example: $0 admin 1.1.1.1";
+      printRed "Example for silent update: $0 admin 1.1.1.1 silent\n";
+      notificate;
+      exit
+    fi
   fi
 }
 
 function verifyBatchArguments() {
-  if [[ $1 -gt 2 ]] || [[ $1 -lt 1 ]]; then
-    printError "\n\tUsage: $0 JIRA_USERNAME";
-    printError "\tExample: $0 irina\n";
-    notificate;
-    exit
+  if [[ $isAuthenticationRequired == "Y" ]]; then
+    if [[ $1 -gt 2 ]] || [[ $1 -lt 1 ]]; then
+      printRed "\nUsage: $0 JIRA_USERNAME";
+      printRed "Example: $0 irina\n";
+      notificate;
+      exit
+    fi
+  elif [[ $isAuthenticationRequired == "N" ]]; then
+    if [[ $1 -gt 1 ]]; then
+      printRed "\nUsage: $0";
+      printRed "Example: $0\n";
+      notificate;
+      exit
+    fi
   fi
 }
 
 function removeLock() {
-  printInfo "\n\tRemoving lock file...";
+  printInfo "Removing lock file";
 
   if test -e $lock; then
     rm $lock
-    printOk "\tOK: lock file $lock is removed";
-  fi
-
-  if test -e $batchLock; then
-    rm $batchLock
-    printOk "\tOK: lock file $batchLock is removed";
+    printOk "lock file $lock is removed";
   fi
   
   notificate;
@@ -90,6 +177,34 @@ function removeLock() {
 
 function notificate() {
   printf '\a'
+}
+
+function isSilent() {
+  if [[ $1 == "silent" ]]; then
+    silent="Y"
+    printWarning "update ${RED}is ${YELLOW}silent!${NONE}\n";
+    log "INFO: update is silent";
+  else
+    silent="N"
+    printWarning "update is ${RED}not ${YELLOW}silent!${NONE}\n";
+    log "INFO: update is not silent";
+  fi
+}
+
+function deleteLogs() {
+  printInfo "Deleting old logs";
+  find $appLogs -mtime +7 -exec rm {} \;
+  log "OK: application logs $appLogs are deleted";
+  find $tomcatLogs -mtime +7 -exec rm {} \;
+  log "OK: Tomcat logs $tomcatLogs are deleted";
+  printOk "logs older than 7 days are deleted";
+}
+
+function deleteTempFiles() {
+  printInfo "Deleting temporary files from $tempFiles/*$moduleName*";
+  rm -rf $tempFiles/*$moduleName*
+  log "OK: temporary files $tempFiles are deleted";
+  printOk "temporary files $tempFiles/*$moduleName* are deleted";
 }
 
 function compareVersions() {
@@ -105,46 +220,46 @@ function compareVersions() {
   currentVersionNumber=$(echo $currentVersion | grep -o --regexp='[0-9]*$')
   versionNumber=$(echo $version | grep -o --regexp='[0-9]*$')
 
-  printInfo "\n\tComparing version with deployed one...";
+  printInfo "Comparing version with deployed one";
 
   if [[ $stage -gt $currentStage ]] || [[ $milestone -gt $currentMilestone ]] || [[ $submilestone -gt $currentSubmilestone ]]; then
-    printWarning "\tWARNING: cycle of inserted version $version is grater than in deployed version $currentVersion$tomcatManagerName";
+    printWarning "cycle of inserted version $version is grater than in deployed version $currentVersion$tomcatManagerName";
     versionWarnings+=("$module: old cycle $currentVersion is older than new cycle $version$tomcatManagerName")
   elif [[ $stage -lt $currentStage ]] || [[ $milestone -lt $currentMilestone ]] || [[ $submilestone -lt $currentSubmilestone ]]; then
-    printWarning "\tWARNING: cycle of inserted version $version is lower than in deployed version $currentVersion$tomcatManagerName";
+    printWarning "cycle of inserted version $version is lower than in deployed version $currentVersion$tomcatManagerName";
     versionWarnings+=("$module: old cycle $currentVersion is newer than new cycle $version$tomcatManagerName")
   elif [[ $versionNumber -lt $currentVersionNumber ]]; then
-    printWarning "\tWARNING: inserted version $version is lower than deployed version $currentVersion$tomcatManagerName";
+    printWarning "inserted version $version is lower than deployed version $currentVersion$tomcatManagerName";
     versionWarnings+=("$module: old version $currentVersion is newer than new version $version$tomcatManagerName")
   else
-    printOk "\tOK: inserted version $version is grater or equal to deployed version $currentVersion$tomcatManagerName";
+    printOk "inserted version $version is grater or equal to deployed version $currentVersion$tomcatManagerName";
   fi
 }
 
 function removeExistingFile() {
   if test -e "$war"; then
-    printInfo "\tRemoving existing $war file...";
+    printInfo "Removing existing $war file";
 
     rm $war
 
     if ! test -e "$war"; then
-      printOk "\tOK: existing file is removed";
+      printOk "existing file is removed";
     else
-      printError "\tERROR: can't remove existing file";
+      printError "can't remove existing file";
       exit
     fi
   fi
 }
 
 function downloadFile() {
-  printInfo "\n\tDownloading $war file...";
+  printInfo "Downloading $war file";
   wget $link
 
   if test -e $war; then
-    printOk "\tOK: file $war is downloaded";
+    printOk "file $war is downloaded";
     log "OK: $war is downloaded";
   else
-    printError "\tERROR: can't download the $war file from $link";
+    printError "can't download the $war file from $link";
     log "ERROR: $war is not downloaded from $link";
     removeLock;
     exit
@@ -152,40 +267,40 @@ function downloadFile() {
 }
 
 function removeDownloadedFile() {
-  printInfo "\n\tRemoving downloaded file...";
+  printInfo "Removing downloaded file";
   rm $war
 
   if ! test -e "$war"; then
-    printOk "\tOK: downloaded file is removed";
+    printOk "downloaded file is removed";
   else
-    printError "\tERROR: can't remove file $war";
+    printError "can't remove file $war";
   fi
 }
 
 function testJiraAuthentication() {
-  printInfo "\n\tTesting JIRA authentication...";
+  printInfo "Testing JIRA authentication";
 
   authenticate=$(curl -D- -u $user:$password -H "Content-Type: application/json" $jiraAuth $proxy)
 
   if echo "$authenticate" | grep -q "AUTHENTICATED_FAILED"; then
-    printError "\tJIRA ERROR: authentication failed: 401 unauthorized. Probably username or password is incorrect";
+    printError "authentication failed: 401 unauthorized. Probably username or password is incorrect";
     removeLock;
     exit;
   elif echo "$authenticate" | grep -q "AUTHENTICATION_DENIED"; then
-    printError "\tJIRA ERROR: authentication denied: 403 forbidden. Probably password was inserted incorrectly 3 times and now you should relogin yourself in browser with captcha control";
+    printError "authentication denied: 403 forbidden. Probably password was inserted incorrectly 3 times and now you should relogin yourself in browser with captcha control";
     removeLock;
     exit;
   elif echo "$authenticate" | grep -q "302 Found"; then
-    printOk "\tOK: login into JIRA succeeded";
+    printOk "login into JIRA succeeded";
   else
-    printError "$authenticate";
+    printRed "$authenticate";
     removeLock;
     exit;
   fi
 }
 
 function findIssue() {
-  printInfo "\n\tFinding JIRA issue key in jira-issues.txt...";
+  printInfo "Finding JIRA issue key in jira-issues.txt";
 
   while read -r key; do
 
@@ -202,22 +317,22 @@ function findIssue() {
   done < $issues
 
   if [[ $issue == "" ]]; then
-    printError "\tERROR: can't find JIRA issue key for $module in jira-issues.txt";
+    printError "can't find JIRA issue key for $module in jira-issues.txt";
   else
-    printOk "\tOK: JIRA issue key for $moduleName is found: $issue";
+    printOk "JIRA issue key for $moduleName is found: $issue";
   fi
 }
 
 function clearJiraRest() {
-  printInfo "\n\tDeleting generated REST content...";
+  printInfo "Deleting generated REST content";
 
   echo -n "" > $rest
 
-  printOk "\tOK: generated REST content is deleted";
+  printOk "generated REST content is deleted";
 }
 
 function generateJiraRest() {
-  printInfo "\n\tGenerating REST content...";
+  printInfo "Generating REST content";
 
   echo -n "" > $rest
 
@@ -227,11 +342,11 @@ function generateJiraRest() {
              }
            }" >> $rest
 
-  printOk "\tOK: REST content is generated";
+  printOk "REST content is generated";
 }
 
 function updateIssueSummary() {
-  printInfo "\n\tUpdating JIRA issue summary...";
+  printInfo "Updating JIRA issue summary";
 
   findIssue;
 
@@ -245,10 +360,10 @@ function updateIssueSummary() {
     update=$(curl -D- -u $user:$password -X PUT --data @$rest -H "Content-Type: application/json" $jira/$issue $proxy)
 
     if echo "$update" | grep -q "No Content"; then
-      printOk "\tOK: JIRA issue $issue summary is updated to $summary";
+      printOk "JIRA issue $issue summary is updated to $summary";
       log "OK: JIRA issue $issue summary is updated to $summary";
     else
-      printError "$update";
+      printRed "$update";
       jiraErrors+=($module-$version)
       log "JIRA ERROR: issue $issue summary is not updated";
     fi
@@ -260,13 +375,13 @@ function updateIssueSummary() {
 
 function findType() {
 
-  printInfo "\n\tFinding type of module $module...";
+  printInfo "Finding type of module $module";
 
   for index in ${!modules[@]}
   do
     if [[ $module = $index ]]; then
       type=${modules[$index]}
-      printOk "\tOK: type of module $module is $type";
+      printOk "type of module $module is $type";
       break
     else
       type=""
@@ -275,7 +390,7 @@ function findType() {
 
   if [[ $type = "" ]]; then
     typeErrors+=("$module-$version$tomcatManagerName")
-    printError "\tERROR: can't figure out is $module is eHealth or HIS";
+    printError "can't figure out is $module is eHealth or HIS";
     log "ERROR: can't figure out is $module is eHealth or HIS";
   fi
 }
@@ -389,8 +504,9 @@ function printDeployedModules() {
 }
 
 function printStatistics() {
-  printGray "\n\n\t\t**************************************************";
-  printGray "\t\t********************STATISTICS********************";
+  echo -e "\n\n"
+  printGray "**************************************************";
+  printGray "********************STATISTICS********************";
 
   printTypeErrors;
   printDownloadErrors;
@@ -402,6 +518,6 @@ function printStatistics() {
   printVersionWarnings;
   printDeployedModules;
 
-  printGray "\t\t**************************************************";
+  printGray "**************************************************";
   echo -e "\n\n"
 }

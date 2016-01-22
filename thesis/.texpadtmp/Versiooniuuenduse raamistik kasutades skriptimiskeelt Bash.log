@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2016.1.15)  20 JAN 2016 13:38
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2016.1.15)  22 JAN 2016 14:13
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -363,18 +363,13 @@ utvus-takse l[]uhidalt lisasid,
 [3]
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <14.4> not available
 (Font)              Font shape `OT1/ptm/b/n' tried instead on input line 99.
+ [4] [5] [6]
+Underfull \hbox (badness 10000) in paragraph at lines 131--132
 
-Overfull \hbox (42.69255pt too wide) in paragraph at lines 103--115
-[] 
  []
 
-[4] [5] [6]
+
 Underfull \hbox (badness 10000) in paragraph at lines 133--134
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 135--136
 
  []
 
@@ -384,7 +379,7 @@ duse raamistik kasutades skriptimiskeelt Bash.aux) )
 Here is how much of TeX's memory you used:
  1222 strings out of 493089
  17429 string characters out of 6134842
- 71986 words of memory out of 5000000
+ 68986 words of memory out of 5000000
  4711 multiletter control sequences out of 15000+600000
  17594 words of font info for 37 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
@@ -396,7 +391,7 @@ ype1/urw/times/utmb8a.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/urw/t
 imes/utmr8a.pfb>
 Output written on "/Users/irina/Documents/github/bachelors-thesis/thesis/.texpa
 dtmp/Versiooniuuenduse raamistik kasutades skriptimiskeelt Bash.pdf" (10 pages,
- 41157 bytes).
+ 40923 bytes).
 PDF statistics:
  50 PDF objects out of 1000 (max. 8388607)
  34 compressed objects within 1 object stream

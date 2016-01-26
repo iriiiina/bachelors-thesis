@@ -84,7 +84,9 @@ function deployBatchModules() {
 
     checkNumberOfDeploys;
 
-    undeploy;
+    if [[ $silent == "N" ]]; then
+      undeploy;
+    fi
 
     deploy;
 

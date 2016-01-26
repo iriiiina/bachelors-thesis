@@ -1,11 +1,11 @@
 #!/bin/bash
-# Author: Irina.Ivanova@nortal.com, 02.03.2015
-# v0.1
+# Author: Irina.Ivanova@nortal.com, 26.01.2016
+# v1
 
-NONE='\033[00m'
-RED='\033[01;31m'
-GREEN='\033[01;32m'
-CYAN='\033[01;36m'
+NONE='\e[0m'
+RED='\e[31m'
+GREEN='\e[32m'
+CYAN='\e[36m'
 
 file="batch-modules.txt"
 
@@ -31,8 +31,8 @@ modules=(
 	'clinician-portal'
 	)
 
-host="https://ehllt.nortal.com"
-env="kjl-test"
+host=""
+env=""
 
 
 function printError() {

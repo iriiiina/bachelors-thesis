@@ -11,23 +11,39 @@ verifyVariables;
 verifyLock;
 verifyBatchArguments $#;
 
-silent='N'
-
 if [[ $isAuthenticationRequired == "Y" ]]; then
   user=$1
   lock="UPDATING_LATEST_BATCH_MODULES_$user.loc"
-  
-  if [[ "$2" == "" ]]; then
+
+  if [[ $2 == "silent" ]]; then
+    silent="Y"
+
     notificate;
     printInfo "Please insert password for JIRA account $user:";
     read -s password
-  else
+  elif [[ $2 != "" ]]; then
+    silent="N"
     password=$2
-  fi
+  elif [[ $2 == "" ]]; then
+    silent="N"
 
+    notificate;
+    printInfo "Please insert password for JIRA account $user:";
+    read -s password
+  fi
+  
+  isSilent $silent;
   testJiraAuthentication;
 else
   lock="UPDATING_LATEST_BATCH_MODULES.loc"
+
+  if [[ $1 == "silent" ]]; then
+    silent="Y"
+  else
+    silent="N"
+  fi
+
+  isSilent $silent;
 fi
 
 touch $lock

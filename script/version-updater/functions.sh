@@ -149,15 +149,17 @@ function verifyArguments() {
 function verifyBatchArguments() {
   if [[ $isAuthenticationRequired == "Y" ]]; then
     if [[ $1 -gt 2 ]] || [[ $1 -lt 1 ]]; then
-      printRed "\nUsage: $0 JIRA_USERNAME";
-      printRed "Example: $0 irina\n";
+      printRed "\nUsage: $0 JIRA_USERNAME [silent]";
+      printRed "Example: $0 irina";
+      printRed "Example for silebt update: $0 irina silent\n";
       notificate;
       exit
     fi
   elif [[ $isAuthenticationRequired == "N" ]]; then
-    if [[ $1 -gt 1 ]]; then
-      printRed "\nUsage: $0";
-      printRed "Example: $0\n";
+    if [[ $1 -gt 2 ]]; then
+      printRed "\nUsage: $0 [silent]";
+      printRed "Example: $0";
+      printRed "Example for silent update: $0 silent\n";
       notificate;
       exit
     fi

@@ -1,6 +1,16 @@
 #!/bin/bash
-# author: irina.ivanova@nortal.com, 28.08.2014
-# v3.1
+
+#################################################################################
+### This is file with WebLogic 12c specific global functions                  ###
+### It doesn't require modifications and should be used out-of-the-box        ###
+### File can be downloaded from HG repo:                                      ###
+###    http://ehealth.webmedia.ee/scripts/version-updater/functions-wl.sh     ###
+###                                                                           ###
+### Author: Irina.Ivanova@nortal.com                                          ###
+### Last modified: 4.02.2016, v4.0                                            ###
+### Version-updater manual:                                                   ###
+###    https://confluence.nortal.com/display/support/Version-updater+Script   ###
+#################################################################################
 
 function getCurrentVersion() {
   printInfo "Getting current version of $moduleName";
@@ -30,23 +40,25 @@ function checkNumberOfDeploys() {
 function downloadBatchFile() {
   getCurrentVersion;
 
-  compareVersions;
+  if [[ $isVersionCheckRequired == "Y" ]]; then
+    compareVersions;
+  fi
 
-  printInfo "Downloading $war file";
+  printInfo "Downloading $fileName file";
 
   wget $link
 
-  if test -e "$war"; then
-    printOk "file $war is downloaded";
-	log "OK: $war is downloaded";
+  if test -e "$fileName"; then
+    printOk "file $fileName is downloaded";
+	log "OK: $fileName is downloaded";
     precompileBatch;
-    printCyan "********************Update of $war is completed********************";
+    printCyan "********************Update of $fileName is completed********************";
 
   else
-    printError "can't download the $war file from $link";
-	log "ERROR: $war is not downloaded from $link";
+    printError "can't download the $fileName file from $link";
+	log "ERROR: $fileName is not downloaded from $link";
     downloadErrors+=($module-$version)
-    printCyan "********************Update of $war is completed********************";
+    printCyan "********************Update of $fileName is completed********************";
   fi
 }
 
@@ -56,19 +68,19 @@ function precompile() {
   else
     export WL_HOME=/home/wls/bea/wlserver_12.1
 
-    printInfo "Precompiling $war";
-    java -Xmx512M -cp com.springsource.org.apache.taglibs.standard-1.1.2.v20110517.jar:$WL_HOME/server/lib/weblogic.jar weblogic.appc $war
+    printInfo "Precompiling $fileName";
+    java -Xmx512M -cp com.springsource.org.apache.taglibs.standard-1.1.2.v20110517.jar:$WL_HOME/server/lib/weblogic.jar weblogic.appc $fileName
     exitCode=$?
 
     if [ $exitCode -ne 0 ]; then
-      printError "can't pecompile $war";
-      log "ERROR: $war is not precompiled";
-      rm $war
+      printError "can't pecompile $fileName";
+      log "ERROR: $fileName is not precompiled";
+      rm $fileName
       removeLock;
       exit 1
     else
-      printOk "$war is precompiled";
-      log "OK: $war is precompiled";
+      printOk "$fileName is precompiled";
+      log "OK: $fileName is precompiled";
     fi
   fi
 }
@@ -79,23 +91,23 @@ function precompileBatch() {
   else
     export WL_HOME=/home/wls/bea/wlserver_12.1
 
-    printInfo "Precompiling $war";
-    java -Xmx512M -cp com.springsource.org.apache.taglibs.standard-1.1.2.v20110517.jar:$WL_HOME/server/lib/weblogic.jar weblogic.appc $war
+    printInfo "Precompiling $fileName";
+    java -Xmx512M -cp com.springsource.org.apache.taglibs.standard-1.1.2.v20110517.jar:$WL_HOME/server/lib/weblogic.jar weblogic.appc $fileName
     exitCode=$?
   fi
 
   if [ $exitCode -ne 0 ]; then
-    printError "can't precompile $war";
-    log "ERROR: $war is not precompiled";
+    printError "can't precompile $fileName";
+    log "ERROR: $fileName is not precompiled";
     exitCode=0
     precompileErrors+=($module-$version)
-    rm $war
+    rm $fileName
   else
     if [[ $module = "tyk" ]] || [[ $module = "itk" ]]; then
       echo ""
     else
-      printOk "$war is precompiled";
-      log "OK: $war is precompiled";
+      printOk "$fileName is precompiled";
+      log "OK: $fileName is precompiled";
     fi
 
     renameFile;
@@ -108,8 +120,8 @@ function precompileBatch() {
 function renameFile() {
   printInfo "Renaming downloaded file";
 
-  mv $war "$moduleName.war"
-  printOk "$war file is renamed to $moduleName.war";
+  mv $fileName "$moduleName.war"
+  printOk "$fileName file is renamed to $moduleName.war";
 }
 
 function undeploy() {
@@ -157,7 +169,7 @@ function deployOtherVersion() {
     printCyan "\n\nIf you want to deploy other version, please insert it's number.";
     printCyan "Number of last working version is $currentVersion";
     printCyan "Print n to exit from the script.";
-	notificate;
+	notify;
     read answer
 
     if [[ $answer == "n" ]]; then

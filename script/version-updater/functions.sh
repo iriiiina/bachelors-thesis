@@ -1,7 +1,18 @@
 #!/bin/bash
-# Author: Irina.Ivanova@nortal.com, 20.01.2016
-# v6.0
 
+##########################################################################################
+### This is file with global functions fro version-updater                             ###
+### It doesn't require modifications and should be used out-of-the-box                 ###
+### File can be downloaded from HG repo:                                               ###
+###    http://ehealth.webmedia.ee/scripts/version-updater/functions.sh                 ###
+###                                                                                    ###
+### Author: Irina.Ivanova@nortal.com                                                   ###
+### Last modified: 11.02.2016, v6.1                                                    ###
+### Version-updater manual:                                                            ###
+###     https://confluence.nortal.com/display/support/Version-updater+Script+Manual    ###
+##########################################################################################
+
+# Colors for output
 NONE='\e[0m'
 RED='\e[31m'
 GREEN='\e[32m'
@@ -51,12 +62,12 @@ function verifyLock() {
   if test -e "UPDATING_"*; then
     printError "somebody is updating, see .loc file for details";
     printRed "\n\n";
-    notificate;
+    notify;
     exit
   fi
 }
 
-function verifyVariables() {
+function verifyConfFile() {
 
   checkErrorCount=0;
 
@@ -86,42 +97,47 @@ function verifyVariables() {
   fi
 
   if [ $isMultiServer != "Y" ] && [ $isMultiServer != "N" ] && [ $isMultiServer != "" ]; then
-    printError "error in set-variables.sh configurations: isMultiServer value can be only N, Y or NULL";
+    printError "error in conf.sh configurations: isMultiServer value can be only N, Y or NULL";
     checkErrorCount=1
   fi
 
   if [[ $isAuthenticationRequired == "N" ]] && [[ $isJiraIssueUpdateRequired == "Y" ]]; then
-    printError "error in set-variables.sh configurations: isJiraIssueUpdateRequired can't be Y if isAuthenticationRequired is N";
+    printError "error in conf.sh configurations: isJiraIssueUpdateRequired can't be Y if isAuthenticationRequired is N";
     checkErrorCount=1
   fi
 
   if [[ $isJiraIssueUpdateRequired == "Y" ]] && ([[ $rest == "" ]] || [[ $issues == "" ]] || [[ $jira == "" ]] || [[ $jiraAuth == "" ]]); then
-    printError "error in set-variables.sh configurations: rest, issues, jira or jiraAuth variables can't be NULL if isJiraIssueUpdateRequired is Y";
+    printError "error in conf.sh configurations: rest, issues, jira or jiraAuth variables can't be NULL if isJiraIssueUpdateRequired is Y";
     checkErrorCount=1
   fi
 
   if [[ $isAuthenticationRequired == "Y" ]] && [[ $jiraAuth == "" ]]; then
-    printError "error in set-variables.sh configurations: jiraAuth can't be NULL if isAuthenticationRequired is Y";
+    printError "error in conf.sh configurations: jiraAuth can't be NULL if isAuthenticationRequired is Y";
     checkErrorCount=1
   fi
 
   if [[ $isRestartRequired == "Y" ]] && [[ $tomcatBin == "" ]]; then
-    printError "error in set-variables.sh configurations: tomcatBin can't be NULL if isRestartRequired is Y";
+    printError "error in conf.sh configurations: tomcatBin can't be NULL if isRestartRequired is Y";
     checkErrorCount=1
   fi
 
   if [[ $isLogDeletionRequired == "Y" ]] && ([[ $appLogs == "" ]] || [[ $tomcatLogs == "" ]]); then
-    printError "error in set-variables.sh configurations: appLogs or tomcatLogs can't be NULL if isLogDeletionRequired is Y";
+    printError "error in conf.sh configurations: appLogs or tomcatLogs can't be NULL if isLogDeletionRequired is Y";
     checkErrorCount=1
   fi
 
   if [[ $isTempFilesDeletionRequired == "Y" ]] && [[ $tempFiles == "" ]]; then
-    printError "error in set-variables.sh configurations: tempFiles can't be NULL if isTempFilesDeletionRequired is Y";
+    printError "error in conf.sh configurations: tempFiles can't be NULL if isTempFilesDeletionRequired is Y";
+    checkErrorCount=1
+  fi
+
+  if [ $isVersionCheckRequired != "Y" ] && [ $isVersionCheckRequired != "N" ] && [ $isVersionCheckRequired != "" ]; then
+    printError "error in conf.sh configurations: isVersionCheckRequired value can be only N, Y ot NULL";
     checkErrorCount=1
   fi
 
   if [ $checkErrorCount -gt 0 ]; then
-    notificate;
+    notify;
     exit
   fi
 }
@@ -129,18 +145,18 @@ function verifyVariables() {
 function verifyArguments() {
   if [[ $isAuthenticationRequired == "Y" ]]; then
     if [ $1 -lt 3 ] || [ $1 -gt 4 ]; then
-      printRed "\nUsage: $0 MODULE_NAME MODULE_VERSION JIRA_USERNAME [silent]";
+      printRed "\nUsage: $0 MODULE_NAME MODULE_VERSION JIRA_USERNAME [p]";
       printRed "Example: $0 admin 1.1.1.1 irina";
-      printRed "Example for silent update: $0 admin 1.1.1.1 irina silent\n";
-      notificate;
+      printRed "Example for parallel update: $0 admin 1.1.1.1 irina p\n";
+      notify;
       exit
     fi
   elif [[ $isAuthenticationRequired == "N" ]]; then
     if [ $1 -lt 2 ] || [ $1 -gt 3 ]; then
-      printRed "\nUsage: $0 MODULE_NAME MODULE_VERSION [silent]";
+      printRed "\nUsage: $0 MODULE_NAME MODULE_VERSION [p]";
       printRed "Example: $0 admin 1.1.1.1";
-      printRed "Example for silent update: $0 admin 1.1.1.1 silent\n";
-      notificate;
+      printRed "Example for parallel update: $0 admin 1.1.1.1 p\n";
+      notify;
       exit
     fi
   fi
@@ -149,18 +165,18 @@ function verifyArguments() {
 function verifyBatchArguments() {
   if [[ $isAuthenticationRequired == "Y" ]]; then
     if [[ $1 -gt 2 ]] || [[ $1 -lt 1 ]]; then
-      printRed "\nUsage: $0 JIRA_USERNAME [silent]";
+      printRed "\nUsage: $0 JIRA_USERNAME [p]";
       printRed "Example: $0 irina";
-      printRed "Example for silebt update: $0 irina silent\n";
-      notificate;
+      printRed "Example for silebt update: $0 irina p\n";
+      notify;
       exit
     fi
   elif [[ $isAuthenticationRequired == "N" ]]; then
     if [[ $1 -gt 2 ]]; then
-      printRed "\nUsage: $0 [silent]";
+      printRed "\nUsage: $0 [p]";
       printRed "Example: $0";
-      printRed "Example for silent update: $0 silent\n";
-      notificate;
+      printRed "Example for parallel update: $0 p\n";
+      notify;
       exit
     fi
   fi
@@ -174,22 +190,22 @@ function removeLock() {
     printOk "lock file $lock is removed";
   fi
   
-  notificate;
+  notify;
 }
 
-function notificate() {
-  printf '\a'
+function notify() {
+  printf '\a' # notification or "bell" in terminal
 }
 
-function isSilent() {
-  if [[ $1 == "silent" ]]; then
-    silent="Y"
-    printWarning "update ${RED}is ${YELLOW}silent!${NONE}\n";
-    log "INFO: update is silent";
+function isParallelDeployment() {
+  if [[ $1 == "p" ]]; then
+    parallel="Y"
+    printWarning "update ${RED}is ${YELLOW}parallel!${NONE}\n";
+    log "INFO: update is parallel";
   else
-    silent="N"
-    printWarning "update is ${RED}not ${YELLOW}silent!${NONE}\n";
-    log "INFO: update is not silent";
+    parallel="N"
+    printWarning "update is ${RED}not ${YELLOW}parallel!${NONE}\n";
+    log "INFO: update is not parallel";
   fi
 }
 
@@ -238,13 +254,13 @@ function compareVersions() {
   fi
 }
 
-function removeExistingFile() {
-  if test -e "$war"; then
-    printInfo "Removing existing $war file";
+function removeExistingFileWithSameName() {
+  if test -e "$fileName"; then
+    printInfo "Removing existing $fileName file";
 
-    rm $war
+    rm $fileName
 
-    if ! test -e "$war"; then
+    if ! test -e "$fileName"; then
       printOk "existing file is removed";
     else
       printError "can't remove existing file";
@@ -254,15 +270,15 @@ function removeExistingFile() {
 }
 
 function downloadFile() {
-  printInfo "Downloading $war file";
+  printInfo "Downloading $fileName file";
   wget $link
 
-  if test -e $war; then
-    printOk "file $war is downloaded";
-    log "OK: $war is downloaded";
+  if test -e $fileName; then
+    printOk "file $fileName is downloaded";
+    log "OK: $fileName is downloaded";
   else
-    printError "can't download the $war file from $link";
-    log "ERROR: $war is not downloaded from $link";
+    printError "can't download the $fileName file from $link";
+    log "ERROR: $fileName is not downloaded from $link";
     removeLock;
     exit
   fi
@@ -270,12 +286,12 @@ function downloadFile() {
 
 function removeDownloadedFile() {
   printInfo "Removing downloaded file";
-  rm $war
+  rm $fileName
 
-  if ! test -e "$war"; then
+  if ! test -e "$fileName"; then
     printOk "downloaded file is removed";
   else
-    printError "can't remove file $war";
+    printError "can't remove file $fileName";
   fi
 }
 
@@ -305,6 +321,8 @@ function findIssue() {
   printInfo "Finding JIRA issue key in jira-issues.txt";
 
   while read -r key; do
+
+    case "$line" in \#*) continue ;; esac
 
     issueModule=$( echo "$key" | cut -d ":" -f1 )
     issueKey=$( echo "$key" | cut -d ":" -f2 )
@@ -375,109 +393,55 @@ function updateIssueSummary() {
   fi
 }
 
-function findType() {
+function findClusterName() {
 
-  printInfo "Finding type of module $module";
+  printInfo "Finding cluster name of module $module";
 
   for index in ${!modules[@]}
   do
     if [[ $module = $index ]]; then
-      type=${modules[$index]}
-      printOk "type of module $module is $type";
+      clusterName=${modules[$index]}
+      printOk "cluster name of module $module is $clusterName";
       break
     else
-      type=""
+      clusterName=""
     fi
   done
 
-  if [[ $type = "" ]]; then
-    typeErrors+=("$module-$version$tomcatManagerName")
-    printError "can't figure out is $module is eHealth or HIS";
-    log "ERROR: can't figure out is $module is eHealth or HIS";
+  if [[ $clusterName = "" ]]; then
+    clusterErrors+=("$module-$version$tomcatManagerName")
+    printError "can't figure out if $module is eHealth or HIS";
+    log "ERROR: can't figure out if $module is eHealth or HIS";
   fi
 }
 
-function printTypeErrors() {
-  if [ ${#typeErrors[*]} -gt 0 ]; then
-    echo -e "\t\tTYPE ERRORS: ${RED}${#typeErrors[*]}${NONE}"
-    for item in ${typeErrors[*]}
+function printBatchErrors() {
+  label=$1
+  errors=( $2 )
+
+  if [ ${#errors[*]} -gt 0 ]; then
+    echo -e "\t\t$label ERRORS: ${RED}${#errors[*]}${NONE}"
+    for item in ${errors[*]}
     do
       echo -e "\t\t\t${RED}$item${NONE}"
     done
   else
-    echo -e "\t\tTYPE ERRORS: ${#typeErrors[*]}"
+    echo -e "\t\t$label ERRORS: ${#errors[*]}"
   fi
 }
 
-function printDownloadErrors() {
-  if [ ${#downloadErrors[*]} -gt 0 ]; then
-    echo -e "\t\tDOWNLOAD ERRORS: ${RED}${#downloadErrors[*]}${NONE}"
-    for item in ${downloadErrors[*]}
-    do
-      echo -e "\t\t\t${RED}$item${NONE}"
-    done
-  else
-    echo -e "\t\tDOWNLOAD ERRORS: ${#downloadErrors[*]}"
-  fi
-}
+function printBatchWarnings() {
+  label=$1
+  warnings=( $2 )
 
-function printPrecompileErrors() {
-  if [ ${#precompileErrors[*]} -gt 0 ]; then
-    echo -e "\t\tPRECOMPILE ERRORS: ${RED}${#precompileErrors[*]}${NONE}"
-    for item in ${precompileErrors[*]}
-    do
-      echo -e "\t\t\t${RED}$item${NONE}"
-    done
-  else
-    echo -e "\t\tPRECOMPILE ERRORS: ${#precompileErrors[*]}"
-  fi
-}
-
-function printUndeployWarnings() {
-  if [ ${#undeployWarnings[*]} -gt 0 ]; then
-    echo -e "\t\tUNDEPLOY WARNINGS: ${YELLOW}${#undeployWarnings[*]}${NONE}"
-    for item in ${undeployWarnings[*]}
+  if [ ${#warnings[*]} -gt 0 ]; then
+    echo -e "\t\t$label WARNINGS: ${YELLOW}${#warnings[*]}${NONE}"
+    for item in ${warnings[*]}
     do
       echo -e "\t\t\t${YELLOW}$item${NONE}"
     done
   else
-    echo -e "\t\tUNDEPLOY WARNINGS: ${#undeployWarnings[*]}"
-  fi
-}
-
-function printDeployErrors() {
-  if [ ${#deployErrors[*]} -gt 0 ]; then
-    echo -e "\t\tDEPLOY ERRORS: ${RED}${#deployErrors[*]}${NONE}"
-    for item in ${deployErrors[*]}
-    do
-      echo -e "\t\t\t${RED}$item${NONE}"
-    done
-  else
-    echo -e "\t\tDEPLOY ERRORS: ${#deployErrors[*]}"
-  fi
-}
-
-function printRunErrors() {
-  if [ ${#runErrors[*]} -gt 0 ]; then
-    echo -e "\t\tRUN ERRORS: ${RED}${#runErrors[*]}${NONE}"
-    for item in ${runErrors[*]}
-    do
-      echo -e "\t\t\t${RED}$item${NONE}"
-    done
-  else
-    echo -e "\t\tRUN ERRORS: ${#runErrors[*]}"
-  fi
-}
-
-function printJiraErrors() {
-  if [ ${#jiraErrors[*]} -gt 0 ]; then
-    echo -e "\t\tJIRA ERRORS: ${RED}${#jiraErrors[*]}${NONE}"
-    for item in ${jiraErrors[*]}
-    do
-      echo -e "\t\t\t${RED}$item${NONE}"
-    done
-  else
-    echo -e "\t\tJIRA ERRORS: ${#jiraErrors[*]}"
+    echo -e "\t\t$label WARNINGS: ${#warnings[*]}"
   fi
 }
 
@@ -510,14 +474,24 @@ function printStatistics() {
   printGray "**************************************************";
   printGray "********************STATISTICS********************";
 
-  printTypeErrors;
-  printDownloadErrors;
-  printPrecompileErrors;
-  printUndeployWarnings;
-  printDeployErrors;
-  printRunErrors;
-  printJiraErrors;
-  printVersionWarnings;
+  if [[ $isMultiServer == "Y" ]]; then
+    printBatchErrors "CLUSTER" "$(echo ${clusterErrors[@]})";
+  fi
+
+  printBatchErrors "DOWNLOAD" "$(echo ${downloadErrors[@]})";
+  printBatchErrors "PRECOMPILE" "$(echo ${precompileErrors[@]})";
+  printBatchWarnings "UNDEPLOY" "$(echo ${undeployWarnings[@]})";
+  printBatchErrors "DEPLOY" "$(echo ${deployErrors[@]})";
+  printBatchErrors "RUN" "$(echo ${runErrors[@]})";
+
+  if [[ $isJiraIssueUpdateRequired == "Y" ]]; then
+    printBatchErrors "JIRA" "$(echo ${jiraErrors[@]})";
+  fi
+
+  if [[ $isVersionCheckRequired == "Y" ]]; then
+    printVersionWarnings;
+  fi
+
   printDeployedModules;
 
   printGray "**************************************************";

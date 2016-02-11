@@ -1,25 +1,39 @@
 #!/bin/bash
-# Author: Irina.Ivanova@nortal.com, 20.01.2016
-# v6.0
 
-. version-updater/set-variables.sh
+########################################################################################
+### This is script for updating one module on Tomcat 8 server                        ###
+### It doesn't require modifications and can be used out-of-the-box                  ###
+### File can be downloaded from HG repo:                                             ###
+###    http://ehealth.webmedia.ee/scripts/version-updater/update-version-tomcat.sh   ###
+###                                                                                  ###
+### Author: Irina.Ivanova@nortal.com                                                 ###
+### Last modified: 11.02.2016, v6.1                                                  ###
+### Version-updater manual:                                                          ###
+###    https://confluence.nortal.com/display/support/Version-updater+Script+Manual   ###
+########################################################################################
+
+# Import of global variables and functions
+. version-updater/conf.sh
 . version-updater/functions.sh
 . version-updater/functions-tomcat.sh
 . version-updater/functions-local.sh
 
+# User arguments
 module=$1
 version=$2
 
-verifyVariables;
+verifyConfFile;
 verifyLock;
 verifyArguments $#;
+
+echo -e "\n----------one module update: $module-$version----------" >> $log
 
 if [[ $isAuthenticationRequired == "Y" ]]; then
   user=$3
   lock="UPDATING_$user-$module-$version.loc"
-  isSilent $4;
+  isParallelDeployment $4;
 
-  notificate;
+  notify;
   printCyan "Please insert password for JIRA account $user:";
   read -s password
 
@@ -27,23 +41,23 @@ if [[ $isAuthenticationRequired == "Y" ]]; then
 
 elif [[ $isAuthenticationRequired == "N" ]]; then
   lock="UPDATING-$module-$version.loc"
-  isSilent $3;
+  isParallelDeployment $3;
 fi
 
 touch $lock
 
 setVariables;
 
-if [[ $isLogDeletionRequired == "Y" ]] && [[ $silent == "N" ]]; then
+if [[ $isLogDeletionRequired == "Y" ]] && [[ $parallel == "N" ]]; then
   deleteLogs;
 fi
 
-if [[ $isTempFilesDeletionRequired == "Y" ]] && [[ $silent == "N" ]]; then
+if [[ $isTempFilesDeletionRequired == "Y" ]] && [[ $parallel == "N" ]]; then
   deleteTempFiles;
 fi
 
 if [[ $isRestartRequired == "Y" ]]; then
-  notificate;
+  notify;
   printCyan "Do you want to do the restart first? (Y, y, YES, yes)";
   read restart
 
@@ -53,9 +67,7 @@ if [[ $isRestartRequired == "Y" ]]; then
 fi
 
 if [[ $isMultiServer == "Y" ]]; then
-  echo -e "\n----------one module update: $module-$version----------" >> $log
-
-  removeExistingFile;
+  removeExistingFileWithSameName;
 
   if [ $type != "" ]; then
     printGray "\n\t**********$module-$version**********";
@@ -76,11 +88,13 @@ if [[ $isMultiServer == "Y" ]]; then
 
       getCurrentVersion;
 
-      compareVersions;
+      if [[ $isVersionCheckRequired == "Y" ]]; then
+        compareVersions;
+      fi
 
       checkNumberOfDeploys;
 
-      if [[ $silent == "N" ]]; then
+      if [[ $parallel == "N" ]]; then
         undeploy;
       fi
 
@@ -99,11 +113,13 @@ if [[ $isMultiServer == "Y" ]]; then
 
       getCurrentVersion;
 
-      compareVersions;
+      if [[ $isVersionCheckRequired == "Y" ]];
+        compareVersions;
+      fi
 
       checkNumberOfDeploys;
 
-      if [[ $silent == "N" ]]; then
+      if [[ $parallel == "N" ]]; then
         undeploy;
       fi
 
@@ -126,21 +142,21 @@ if [[ $isMultiServer == "Y" ]]; then
     printStatistics;
   fi
 elif [[ $isMultiServer == "N" ]]; then
-  printCyan "\n\t**********$war**********";
+  printCyan "\n\t**********$fileName**********";
 
   getCurrentVersion;
 
-  compareVersions;
+  if [[ $isVersionCheckRequired == "Y" ]]; then
+    compareVersions;
+  fi
 
-  removeExistingFile;
-
-  echo -e "\n----------one module update: $war----------" >> $log
+  removeExistingFileWithSameName;
 
   downloadFile;
 
   checkNumberOfDeploys;
 
-  if [[ $silent == 'N' ]]; then
+  if [[ $parallel == 'N' ]]; then
     undeploy;
   fi
 

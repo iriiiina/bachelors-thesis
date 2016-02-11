@@ -1,6 +1,16 @@
 #!/bin/bash
-# Author: Irina.Ivanova@nortal.com, 20.01.2016
-# v6.0
+
+#########################################################################################
+### This is file with Tomcat 8 specific global functions                              ###
+### It doesn't require modifications and should be used out-of-the-box                ###
+### File can be downloaded from HG repo:                                              ###
+###    http://ehealth.webmedia.ee/scripts/version-updater/functions-tomcat.sh         ###
+###                                                                                   ###
+### Author: Irina.Ivanova@nortal.com                                                  ###
+### Last modified: 11.02.2016, v6.1                                                   ###
+### Version-updater manual:                                                           ###
+###    https://confluence.nortal.com/display/support/Version-updater+Script+Manual    ###
+#########################################################################################
 
 function restart() {
   printInfo "Restarting the Tomcat";
@@ -69,22 +79,28 @@ function checkNumberOfDeploys() {
   fi
 }
 
-function deployBatchModules() {
+function deployModuleFromBatch() {
+  echo -e "\n----------batch-update: $fileName----------" >> $log
+
+  isParallelDeployment $parallel;
+
   getCurrentVersion;
 
-  compareVersions;
+  if [[ $isVersionCheckRequired == "Y" ]]; then
+    compareVersions;
+  fi
 
-  printInfo "Downloading $war file";
+  printInfo "Downloading $fileName file";
 
   wget $link
 
-  if test -e "$war"; then
-    printOk "file $war is downloaded";
-    log "OK: $war is downloaded";
+  if test -e "$fileName"; then
+    printOk "file $fileName is downloaded";
+    log "OK: $fileName is downloaded";
 
     checkNumberOfDeploys;
 
-    if [[ $silent == "N" ]]; then
+    if [[ $parallel == "N" ]]; then
       undeploy;
     fi
 
@@ -98,27 +114,30 @@ function deployBatchModules() {
         updateIssueSummary;
     fi
 
-    printCyan "********************Update of $war is completed********************";
+    printCyan "********************Update of $fileName is completed********************";
 
   else
-    printError "can't download the $war file from $link";
-    log "ERROR: $war is not downloaded from $link";
+    printError "can't download the $fileName file from $link";
+    log "ERROR: $fileName is not downloaded from $link";
     downloadErrors+=($module-$version)
-    printCyan "********************Update of $war is completed********************";
+    printCyan "********************Update of $fileName is completed********************";
   fi
 }
 
-function deployBatchModulesLive() {
+function deployBatchModulesProd() {
+  echo -e "\n----------batch-update: $module-$version----------" >> $log
 
-  printInfo "Downloading file $war";
+  isParallelDeployment $parallel;
+
+  printInfo "Downloading file $fileName";
 
   wget $link
 
-  if test -e "$war"; then
-    printOk "file $war is downloaded";
-    log "OK: $war is downloaded";
+  if test -e "$fileName"; then
+    printOk "file $fileName is downloaded";
+    log "OK: $fileName is downloaded";
 
-    if [[ $type == "ehealth" ]]; then
+    if [[ $clusterName == "ehealth" ]]; then
       for index in ${!ehealthTomcatManagers[@]}
       do
         tomcatManager=${ehealthTomcatManagers[$index]}
@@ -128,11 +147,13 @@ function deployBatchModulesLive() {
 
         getCurrentVersion;
 
-        compareVersions;
+        if [[ $isVersionCheckRequired == "Y" ]]; then
+          compareVersions;
+        fi
 
         checkNumberOfDeploys;
         
-        if [[ $silent == "N" ]]; then
+        if [[ $parallel == "N" ]]; then
           undeploy;
         fi
 
@@ -146,11 +167,11 @@ function deployBatchModulesLive() {
         updateIssueSummary;
       fi
 
-      removeExistingFile;
+      removeExistingFileWithSameName;
 
       printCyan "********************Update of $module-$version is completed********************";
 
-    elif [[ $type == "his" ]]; then
+    elif [[ $clusterName == "his" ]]; then
 
       for index in ${!hisTomcatManagers[@]}
       do
@@ -161,11 +182,13 @@ function deployBatchModulesLive() {
 
         getCurrentVersion;
 
-        compareVersions;
+        if [[ $isVersionCheckRequired == "Y" ]]; then
+          compareVersions;
+        fi
 
         checkNumberOfDeploys;
 
-        if [[ $silent == "N" ]]; then
+        if [[ $parallel == "N" ]]; then
           undeploy;
         fi
 
@@ -178,18 +201,18 @@ function deployBatchModulesLive() {
         updateIssueSummary;
       fi
 
-      removeExistingFile;
+      removeExistingFileWithSameName;
 
       printCyan "********************Update of $module-$version is completed********************";
 
     else
-      printError "can't find Tomcat Managers for module type $type";
-      log "ERROR: can't find Tomcat Managers for module type $type";
+      printError "can't find Tomcat Managers for cluster name $clusterName";
+      log "ERROR: can't find Tomcat Managers for cluster name $clusterName";
     fi
 
   else
-    printError "can't download the $war file from $link";
-    log "ERROR: $war is not downloaded from $link";
+    printError "can't download the $fileName file from $link";
+    log "ERROR: $fileName is not downloaded from $link";
     downloadErrors+=("$module-$version")
     printCyan "********************Update of $mdodule-$version is completed********************";
   fi
@@ -219,7 +242,7 @@ function undeploy() {
 
 function deploy() {
   printInfo "Deploying new version $moduleName-$version$tomcatManagerName";
-  deploy=$(curl --upload-file "$war" "$tomcatManager/deploy?path=/$moduleName&version=$version&update=true")
+  deploy=$(curl --upload-file "$fileName" "$tomcatManager/deploy?path=/$moduleName&version=$version&update=true")
 
   if echo "$deploy" | grep -q "OK - Deployed application at context path"; then
     printOk "$moduleName-$version$tomcatManagerName is deployed";
@@ -260,7 +283,7 @@ function deployOtherVersion() {
     printCyan "\n\nIf you want to deploy other version, please insert it's number.";
     printCyan "Number of last working version is $currentVersion";
     printCyan "Print n to exit from the script.";
-    notificate;
+    notify;
     read answer
 
     if [[ $answer == "n" ]]; then

@@ -1,12 +1,23 @@
 #!/bin/bash
-# Author: Irina.Ivanova@nortal.com, 26.01.2016
-# v1
 
+#####################################################################################################
+### This is script for getting modules' versions from stable environment for batch update         ###
+### List of modules, $host and $env should be modified according to the environment               ###
+### File can be downloaded from HG repo:                                                          ###
+###    http://ehealth.webmedia.ee/scripts/version-updater/get-stable-versions.sh                  ###
+###                                                                                               ###
+### Author: Irina.Ivanova@nortal.com                                                              ###
+### Last modified: 4.02.2016, v1.0                                                                ###
+### Version-updater manual: https://confluence.nortal.com/display/support/Version-updater+Script  ###
+#####################################################################################################
+
+# Colors for output
 NONE='\e[0m'
 RED='\e[31m'
 GREEN='\e[32m'
 CYAN='\e[36m'
 
+# File used by version-updater for batch update (global variable $batch in conf.sh)
 file="batch-modules.txt"
 
 # NB! order in the modules array is important - it defines in which order modules will be propagated
@@ -31,7 +42,12 @@ modules=(
 	'clinician-portal'
 	)
 
+# Host of the stable environment, where from you want to download versions
+# Example: "http://ehealthtest.webmedia.int:7070"
 host=""
+
+# Environment name, which is usually prefix for the modules
+# Example: "predemo"
 env=""
 
 

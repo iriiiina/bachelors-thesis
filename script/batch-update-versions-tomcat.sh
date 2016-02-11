@@ -1,49 +1,57 @@
 #!/bin/bash
-# Author: Irina.Ivanova@nortal.com, 21.01.2016
-# v6.0
 
-. version-updater/set-variables.sh
+###############################################################################################
+### This is script for updating many modules at a time on Tomcat 8 server                   ###
+### It doesn't require modifications and can be used out-of-the-box                         ###
+### File can be downloaded from HG repo:                                                    ###
+###    http://ehealth.webmedia.ee/scripts/version-updater/batch-update-versions-tomcat.sh   ###
+###                                                                                         ###
+### Author: Irina.Ivanova@nortal.com                                                        ###
+### Last modified: 11.02.2016, v6.1                                                         ###
+### Version-updater manual:                                                                 ###
+###    https://confluence.nortal.com/display/support/Version-updater+Script+Manual          ###
+###############################################################################################
+
+# Import of global variables and functions
+. version-updater/conf.sh
 . version-updater/functions.sh
 . version-updater/functions-tomcat.sh
 . version-updater/functions-local.sh
 
-verifyVariables;
+verifyConfFile;
 verifyLock;
 verifyBatchArguments $#;
 
 if [[ $isAuthenticationRequired == "Y" ]]; then
   user=$1
-  lock="UPDATING_LATEST_BATCH_MODULES_$user.loc"
+  lock="UPDATING_BATCH_MODULES_$user.loc"
 
-  if [[ $2 == "silent" ]]; then
-    silent="Y"
+  if [[ $2 == "p" ]]; then
+    parallel="Y"
 
-    notificate;
+    notify;
     printInfo "Please insert password for JIRA account $user:";
     read -s password
   elif [[ $2 != "" ]]; then
-    silent="N"
+    parallel="N"
     password=$2
   elif [[ $2 == "" ]]; then
-    silent="N"
+    parallel="N"
 
-    notificate;
+    notify;
     printInfo "Please insert password for JIRA account $user:";
     read -s password
   fi
   
-  isSilent $silent;
   testJiraAuthentication;
 else
   lock="UPDATING_LATEST_BATCH_MODULES.loc"
 
-  if [[ $1 == "silent" ]]; then
-    silent="Y"
+  if [[ $1 == "p" ]]; then
+    parallel="Y"
   else
-    silent="N"
+    parallel="N"
   fi
-
-  isSilent $silent;
 fi
 
 touch $lock
@@ -53,7 +61,7 @@ printGray "*********************************************";
 printGray "********************START********************";
 printGray "*********************************************";
 
-setBatchVariables;
+runBatchUpdate;
 
 printStatistics;
 

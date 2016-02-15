@@ -7,7 +7,7 @@
 ###    http://ehealth.webmedia.ee/scripts/version-updater/batch-update-versions-tomcat.sh   ###
 ###                                                                                         ###
 ### Author: Irina.Ivanova@nortal.com                                                        ###
-### Last modified: 11.02.2016, v6.1                                                         ###
+### Last modified: 12.02.2016, v6.2                                                         ###
 ### Version-updater manual:                                                                 ###
 ###    https://confluence.nortal.com/display/support/Version-updater+Script+Manual          ###
 ###############################################################################################

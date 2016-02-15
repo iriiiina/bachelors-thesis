@@ -1,3 +1,6 @@
+v6.2 (12.02.2016)
+* template content and comments are being added to functions-local.sh
+
 v6.1 (11.02.2016)
 * new global variable $isVersionCheckRequired is added
 * manual link is being changed in readme.txt

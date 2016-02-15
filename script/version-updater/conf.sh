@@ -8,7 +8,7 @@
 ### Currently Tomcat 8 and WebLogic 12c are supported                                              ###
 ###                                                                                                ###
 ### Author: Irina.Ivanova@nortal.com                                                               ###
-### Last modified: 11.02.2016, v6.1                                                                ###
+### Last modified: 12.02.2016, v6.2                                                                ###
 ### Version-updater manual:                                                                        ###
 ###     https://confluence.nortal.com/display/support/Version-updater+Script+Manual                ###
 ######################################################################################################

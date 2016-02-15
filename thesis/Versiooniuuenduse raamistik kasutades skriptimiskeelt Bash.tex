@@ -2,7 +2,6 @@
 \usepackage[utf8]{inputenc}
 \usepackage{nameref}
 \usepackage{fancyhdr}
-\renewcommand{\rmdefault}{ptm}
 \renewcommand{\contentsname}{Sisukord}
 \renewcommand{\thesection}{\arabic{section}}
 % Page numbers to the right
@@ -20,7 +19,8 @@
   \begin{titlepage}
     \begin{center}
       TARTU ÜLIKOOL\\
-      Matemaatika ja statistika insituut\\
+      MATEMAATIKA-INFORMAATIKATEADUSKOND\\
+      Arvutiteaduse instituut\\
       Infotehnoloogia eriala
     \end{center}
       
@@ -40,13 +40,13 @@
     \end{center}
       
     \vspace{4cm}
-    \hspace{6cm}
-    Juhendajad: Polina Morozova
+    \hspace{4.5cm}
+    Juhendajad: dotsent Helle Hein
     
-    \hspace{8.15cm}
-    Helle Hein
+    \hspace{7cm}
+    Polina Morozova, MSc (Nortal AS)
       
-    \vspace{1.5cm}
+    \vspace{2.5cm}
     \begin{center}
       TARTU 2016
     \end{center}
@@ -80,6 +80,7 @@
  
   \newpage
   
+  % Sissejuhatus
   \section*{Sissejuhatus}
   \label{sissejuhatus}
   \addcontentsline{toc}{section}{\nameref{sissejuhatus}}
@@ -94,11 +95,12 @@ materjalide sisu.
   
   \newpage
   
-  \section{Probleemi kirjeldus}
+  % Probleem
+  \section{Probleem}
   
-  \subsection{Probleem}
+  \subsection{Probleemi kirjeldus}
   
-  \subsection{Serverite arhitektuur}
+  \subsection{Süsteemi arhitektuur}
   
   \begin{tabular}{|l|c|c|}
     \hline
@@ -116,14 +118,25 @@ materjalide sisu.
   
   \newpage
   
-  \section{Alternatiivid}
+  % Võimalikud lahendused
+  \section{Võimalikud lahendused}
+  Bamboo, Chef, Jenkins, Ansible - mis on nende puudused?\\
+  Bash skriptimiskeel - mis on selle eelised?
   
   \newpage
   
+  % Lahendus
   \section{Lahendus}
   
+  \subsection{Skripti arhitektuur ja tööpõhimõte}
+  
+  \subsection{Skripti paigaldus}
+  
+  \subsection{Skripti kasutus}
+  
   \newpage
   
+  % Kokkuvõte
   \section*{Kokkuvõte}
   \label{kokkuvote}
   \addcontentsline{toc}{section}{\nameref{kokkuvote}}
@@ -136,6 +149,7 @@ Kokkuvõtte tekstis on soovitav kasutada lihtmineviku umbisikulist tegumoodi, n�
 
   \newpage
   
+  % Kasutatud materjalid
   \section*{Kasutatud materjalid}
   \label{kasutatud-materjalid}
   \addcontentsline{toc}{section}{\nameref{kasutatud-materjalid}}
@@ -152,6 +166,7 @@ Kokkuvõtte tekstis on soovitav kasutada lihtmineviku umbisikulist tegumoodi, n�
 
   \newpage
   
+  % Lisad
   \section*{Lisad}
   \label{lisad}
   \addcontentsline{toc}{section}{\nameref{lisad}}

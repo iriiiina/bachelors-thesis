@@ -10,12 +10,6 @@ Kaasjuhendaja: Helle Hein (Tartu Ülikool)
 # Järgmine tähtaeg!
 ​2016 aprilli jooksul tuleb lõpetajatel esitada oma nimi dekanaati. Eelnevalt tuleb üle kontrollida õppetöö tulemused ja ka isikuandmed (nimi, sünniaeg, isikukood) ÕIS-is.
 
-# Küsimused
-* Kas on vaja kirjeldada WebLogicut või piisab ainult Tomcati (mina eelistaks ainult Tomcati)?
-* Kas on vaja lahti kirjutada millal ja mis järjekorras oli lisatud erinev funktsionaalsus?
-* Kas kaitmisel on vaja näidata kuidas see töötab?
-* Mis võiksid olla kasutatud materjalid? Kas piisab kasutatud tehnoloogiate manuaale?
-
 # Viited
 #### Tähtajad 2016 kevadel lõpetajatele bakalaureuses
 [http://www.cs.ut.ee/et/t%C3%A4htajad-ja-kaitsmiskuup%C3%A4evad](http://www.cs.ut.ee/et/t%C3%A4htajad-ja-kaitsmiskuup%C3%A4evad)

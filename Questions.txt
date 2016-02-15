@@ -1,13 +1,15 @@
-KŸsimused juhendajatele:
+KÃ¼simused juhendajatele:
 
-1. Kas on vaja lahti kirjutada millal ja mis jŠrjekorras oli lisatud erinev funktsionaalsus?
+1. Kas on vaja lahti kirjutada millal ja mis jÃ¤rjekorras oli lisatud erinev funktsionaalsus?
 
-2. Kas kaitmisel on vaja nŠidata kuidas see tšštab?
+2. Kas kaitmisel on vaja nÃ¤idata kuidas see tÃ¶Ã¶tab?
 
-3. Mis v›iksid olla kasutatud materjalid? Kas piisab kasutatud tehnoloogiate manuaale?
+3. Mis vÃµiksid olla kasutatud materjalid? Kas piisab kasutatud tehnoloogiate manuaale?
 
-4. Kas on vaja kirjeldada WebLogicut v›i piisab ainult Tomcati (mina eelistaks ainult Tomcati)?
+4. Kas on vaja kirjeldada WebLogicut vÃµi piisab ainult Tomcati (mina eelistaks ainult Tomcati)?
 
-5. Kas on v›imalik lisada diagrammi, mis on suurem kui A4 leht?
+5. Kas on vÃµimalik lisada diagrammi, mis on suurem kui A4 leht?
 
-6. Kas on v›imalik kirjutada tššd inglise keeles, aga kaitsta eesti keeles?
+6. Kas on vÃµimalik kirjutada tÃ¶Ã¶d inglise keeles, aga kaitsta eesti keeles?
+
+7. Kui teha tÃ¶Ã¶ eesti keeles, kas on vaja tÃµlkida Manuaaali eesti keelele?

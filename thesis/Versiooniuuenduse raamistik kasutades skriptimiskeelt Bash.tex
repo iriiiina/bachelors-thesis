@@ -2,7 +2,9 @@
 \usepackage[utf8]{inputenc}
 \usepackage{nameref}
 \usepackage{fancyhdr}
+\usepackage{hyperref} 
 \renewcommand{\contentsname}{Sisukord}
+\renewcommand{\bibname}{Kasutatud materjalid}
 \renewcommand{\thesection}{\arabic{section}}
 % Page numbers to the right
 \pagestyle{fancy}
@@ -96,32 +98,47 @@ materjalide sisu.
   \newpage
   
   % Probleem
-  \section{Probleem}
+  \section{Probleemi p체stitus}
   
-  \subsection{Probleemi p체stitus}
+  S체steemi arhitektuur\\
+  N천uded lahendusele\\
   
-  \subsection{S체steemi arhitektuur}
-  
-  \begin{tabular}{|l|c|c|}
-    \hline
-    Environment & Count & Web Server\\
-    \hline
-    Test-TC & 12 & Tomcat 8\\
-    Live-TC & 8 & Tomcat 8\\
-    Local & N* & Tomcat 8\\
-    Test-WL & 4 & WebLogic 12\\
-    \hline
-  \end{tabular}
-
-  
-  \subsection{N천uded lahendusele}
+  keskkondade arv (8 nendest productions): 26 + VM-s ja local machines\\
+  Tomcat 8 serverite arv: 29 + VM-s ja local machines\\
+  WebLogic 12 serverite arv: 2\\
   
   \newpage
   
   % V천imalikud lahendused
   \section{V천imalikud lahendused}
-  Bamboo, Chef, Jenkins, Ansible - mis on nende puudused?\\
-  \subsection{Bash scripti valimine}
+  
+  \begin{tabular}{| l | c |}
+    \hline
+    Tarkvara & Hind aastas\\
+    \hline
+    Atlassian Bamboo & \$0*\\
+    Chef & \$127/node\\
+    Jenkins & \$0\\
+    Ansible & \$14,000\\
+    Bash & \$0\\
+    \hline
+  \end{tabular}
+
+  
+  \subsection{Atlassian Bamboo}
+  \cite{bamboo}
+  
+  \subsection{Chef}
+  \cite{chef}
+  
+  \subsection{Jenkins}
+  \cite{jenkins}
+  
+  \subsection{Ansible Tower}
+  \cite{ansible}
+
+  \subsection{Bash skriptimine}
+  \cite{bash}
   Bash skriptimiskeel - mis on selle eelised?
   
   \newpage
@@ -162,20 +179,39 @@ Kokkuv천tte tekstis on soovitav kasutada lihtmineviku umbisikulist tegumoodi, n�
 
   \newpage
   
-  % Kasutatud materjalid
-  \section*{Kasutatud materjalid}
-  \label{kasutatud-materjalid}
-  \addcontentsline{toc}{section}{\nameref{kasutatud-materjalid}}
+  % Kasutatud materjalid 
+  \begin{thebibliography}{9}
+    \label{kasutatud-materjalid}
+    \addcontentsline{toc}{section}{\nameref{kasutatud-materjalid}}
   
-  https://www.gnu.org/software/bash/manual/bashref.html
+    \bibitem{bash}
+    \url{https://www.gnu.org/software/bash/manual/bashref.html}
+    
+    \bibitem{tomcat}
+    \url{https://tomcat.apache.org/tomcat-8.0-doc/manager-howto.html}
   
-  https://tomcat.apache.org/tomcat-8.0-doc/manager-howto.html
+    \bibitem{cron}
+    \url{https://help.ubuntu.com/community/CronHowto}
   
-  https://help.ubuntu.com/community/CronHowto
+    \bibitem{hg}
+    \url{https://www.mercurial-scm.org/guide}
   
-  https://www.mercurial-scm.org/guide
+    \bibitem{centos}
+    \url{https://wiki.centos.org/FrontPage}
   
-  https://wiki.centos.org/FrontPage
+    \bibitem{bamboo}
+    \url{https://www.atlassian.com/software/bamboo}
+  
+    \bibitem{chef}
+    \url{https://www.chef.io}
+  
+    \bibitem{jenkins}
+    \url{https://jenkins-ci.org}
+  
+    \bibitem{ansible}
+    \url{https://www.ansible.com}
+ 
+  \end{thebibliography}
 
   \newpage
   
@@ -183,5 +219,16 @@ Kokkuv천tte tekstis on soovitav kasutada lihtmineviku umbisikulist tegumoodi, n�
   \section*{Lisad}
   \label{lisad}
   \addcontentsline{toc}{section}{\nameref{lisad}}
+  
+  \begin{itemize}
+  
+    \item Skripti manuaal: \url{https://github.com/iriiiina/bachelors-thesis/blob/master/manual/Confluence%20Manual.pdf}
+    
+    \item Skripti kood: \url{https://github.com/iriiiina/bachelors-thesis/tree/master/script}
+  
+    \item BPMN diagramm 체he mooduli uuenduse kohta Tomcat-i peal (update-version-tomcat.sh): \url{https://github.com/iriiiina/bachelors-thesis/blob/master/thesis/pictures/BPMN-diagram-one-module-tomcat.png}
+  
+  \end{itemize}
+
 
 \end{document}

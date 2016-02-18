@@ -25,33 +25,16 @@ verifyBatchArguments $#;
 if [[ $isAuthenticationRequired == "Y" ]]; then
   user=$1
   lock="UPDATING_BATCH_MODULES_$user.loc"
+  isParallelDeployment $2
 
-  if [[ $2 == "p" ]]; then
-    parallel="Y"
-
-    notify;
-    printInfo "Please insert password for JIRA account $user:";
-    read -s password
-  elif [[ $2 != "" ]]; then
-    parallel="N"
-    password=$2
-  elif [[ $2 == "" ]]; then
-    parallel="N"
-
-    notify;
-    printInfo "Please insert password for JIRA account $user:";
-    read -s password
-  fi
+  notify;
+  printInfo "Please insert password for JIRA account $user:";
+  read -s password
   
   testJiraAuthentication;
 else
   lock="UPDATING_LATEST_BATCH_MODULES.loc"
-
-  if [[ $1 == "p" ]]; then
-    parallel="Y"
-  else
-    parallel="N"
-  fi
+  isParallelDeployment $1
 fi
 
 touch $lock

@@ -67,6 +67,9 @@ function runBatchUpdate() {
       summary="$summaryTitle$version"
     fi
 
+    # Following function should be called only in multiple-server production environment
+    # findClusterName;
+
     printInfo "\n********************Updating $line********************";
 
     while read -r row; do
@@ -85,6 +88,11 @@ function runBatchUpdate() {
     moduleName="$module"
 
     removeExistingFileWithSameName;
+
+    # One of the following functions can be called at a time:
+    #     deployModuleFromBatch is for one-server test environments
+    #     deployBatchModulesProd is for multiple-server production environments
+    # deployBatchModulesProd;
     deployModuleFromBatch;
 
   done < $batch

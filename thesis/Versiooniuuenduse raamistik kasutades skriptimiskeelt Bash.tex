@@ -56,20 +56,22 @@
 
   \newpage
   
-  Versiooniuuenduse raamistik kasutades skriptimiskeelt Bash\\
+  \noindent{\textbf{Versiooniuuenduse raamistik kasutades skriptimiskeelt Bash}}\\
   
-  Lühikokkuvõte:\\
+  \noindent{\textbf{Lühikokkuvõte:}}\\
+  \vspace{2cm}
+  
+  \noindent{\textbf{Võtmesõnad:}}\\
+  Bash skript, versiooni uuendus
   \vspace{2cm}
 
-  Võtmesõnad:\\
+  \noindent{\textbf{Thesis title}}\\
+
+  \noindent{\textbf{Abstract:}}\\
   \vspace{2cm}
 
-  Thesis title\\
-
-  Abstract:\\
-  \vspace{2cm}
-
-  Keywords:
+  \noindent{\textbf{Keywords:}}\\
+  Bash script, version update
   
   \newpage
  
@@ -159,13 +161,30 @@ materjalide sisu.
   % Mõju projektile
   \section{Mõju projektile}
   
+  \subsection{Statistika}
+  
+  \begin{tabular}{| l | l | l |}
+    \hline
+    Module Name & Script Time (sec) & Manual Time (sec)\\
+    \hline
+    admin & 27.245 & 80.45\\
+    treatment & 61.101 & 112.71\\
+    reception & 38.538 & 100.19\\
+    \hline
+  \end{tabular}
+  
+  \cite{time}
+
+  
   \subsection{Kolleegide tagasiside}
   
   \subsubsection{Martin Rakver, Hosting Services and Application Manager}
+  
   I have not been using the script very much, because I rarely update modules nowadays. But what I can say is that it is definately in the right place – automating activities that testers would need do to on daily basis each time when deploying a new module. Come to think about it, there are actually quite many activites related to new module deployment – would be interesting to compare the time it takes to deploy a module manually vs using script + calculate about how much time we as a team are saving daily,montly,yearly  (and get to do more important things with that time).
 I also like that scalability has been considered when writing the script + many optional features have been implemented which can be used if one desires to do so.
 
   \subsubsection{Kalle Jagula, QA Specialist}
+  
   I personally think that version-update script has significantly improved the speed of version update. Especially with the settings for bulk-update, which improves the speed of modules' version update and manageability of test/demo environments.
 
   
@@ -218,6 +237,9 @@ Kokkuvõtte tekstis on soovitav kasutada lihtmineviku umbisikulist tegumoodi, n�
   
     \bibitem{ansible}
     \url{https://www.ansible.com}
+    
+    \bibitem{time}
+    \url{http://pubs.opengroup.org/onlinepubs/9699919799/utilities/time.html}
  
   \end{thebibliography}
 

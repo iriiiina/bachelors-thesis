@@ -62,7 +62,7 @@
   \vspace{2cm}
   
   \noindent{\textbf{Võtmesõnad:}}\\
-  Bash skript, versiooni uuendus
+  Bash skript, versiooni uuendus, Apache Tomcat, Java
   \vspace{2cm}
 
   \noindent{\textbf{Thesis title}}\\
@@ -71,7 +71,7 @@
   \vspace{2cm}
 
   \noindent{\textbf{Keywords:}}\\
-  Bash script, version update
+  Bash script, version update, Apache Tomcat, Java
   
   \newpage
  
@@ -89,13 +89,19 @@
   \label{sissejuhatus}
   \addcontentsline{toc}{section}{\nameref{sissejuhatus}}
   
-  \begin{itemize}
-    \item teema valiku põhjendus (teema aktuaalsus ja uudsus)
-    \item töö eesmärk
-    \item  uuritav probleem (vajadusel püstitatud hüpotees(id), uurimisküsimus(ed), uuringu objekt)
-    \item töö struktuuri kirjeldus peatükkide kaupa. Samuti tutvustakse lühidalt lisasid, sh kaasapandud
-materjalide sisu.
-  \end{itemize}
+  Käesolevas lõputöös lahendatakse rakenduslikku probleemi toimivas tarkvaraprojektis. Probleem seisneb selles, et projekti olemuse tõttu toote versiooni uuendamise protsess võtab kaua aega ja eeldab palju manuaalset sekkumist. See raiskab resursse ja suurendab inimliku vea tekkimise tõenäosust. Töö eesmärk on automatiseerida versiooniuuenduse protsessi konkreetses projektis, selleks, et lihtsustada antud protsessi, et säästa aega ja vähendada inimlike vigade arvu.
+  
+  Töö koosneb viiest osast. Esimeses osas püstitatakse probleem: kirjeldatakse projekti arhitektuuri, manuaalse uuendamise protsessi, probleeme, mis vana protsess toob ja nõudeid uuele lahendusele. Peamine väljakutse seisneb selles, et toode koosneb paarkümnest moodulitest (täpne arv sõltub kliendi nõuetest), mida on vaja paigaldada 31 keskkonna. See tähendab, et selleks, et paigaldada toote uut versiooni kõikidele keskkondadele on vaja teha umbes 620 uuendust (mitte arvestades testkeskkondade vaheuuendustega). Lisaks on projektis kasutusel kaks erinevat veebiserverit: Oracle WebLogic 12 ja Apache Tomcat 8. Uuenduse protsessi automatiseerimine peab võtma arvesse kõik need väljakutsed.
+  
+  Teises osas uuritakse võimalikke lahendusi: kas kasutada turul olemasolevat toodet (töös uuritakse neli toodet: Atlassian Bamboo, Chef, Jenkins ja Ansible Tower) või kirjutada ise tarkvara. Tuuakse välja iga lahenduse eeliseid ja puuduseid ning seletatakse miks langetati otsus Bash skripti kirjutamise kasuks. Valmistoodete peamised puudused on maksmus, võimetus hallata protsesse ja vajadusel parandada vigu, vajadus kulutada palju aega toode tundmiseks ja rakendamiseks.
+  
+  Kolmandas osas kirjeldatakse valitud lahendust: mis on skripti tööpõhimõtte ja arhitektuur ja kuidas seda saab paigaldada ja kasutada. Skripti põhifunktsionaalsus on mooduli faili alla laadimine, vana versiooni maha võtmine, uue versiooni paigaldamine, kolleegide teavitamine toimunud versiooniuuendusest. Lisaks oluliseks funktsionaalsuseks on erinevad kontrollid, mis vähendavad tõenäosust paigaldada vale versioon ja logimise funktsionaalsus, mis võimaldab kätte saada põhjalikku infot iga uuenduse kohta.
+  
+  Neljandas osas uuritakse kuidas antud lahendus mõjus projektile: võrreldakse versiooni uuendusele kulunud aega manuaalse ja automatiseeritud protsessi puhul ja lisatakse kolleegide tagasisidet uue raamistiku kasutamisele.
+  
+  Viimases osas tuuakse välja lahenduse perspektiive: kuidas loodud skripti saab edasi arendada ja kuidas saab seda teistes projektides rakendada.
+  
+  Töö tulemuseks on töötav, avatud lähtekoodiga, skript Bash keeles ja selle dokumentatsioon.
   
   \newpage
   
@@ -114,33 +120,97 @@ materjalide sisu.
   % Võimalikud lahendused
   \section{Võimalikud lahendused}
   
-  \begin{tabular}{| l | c |}
-    \hline
-    Tarkvara & Hind aastas\\
-    \hline
-    Atlassian Bamboo & \$0*\\
-    Chef & \$127/node\\
-    Jenkins & \$0\\
-    Ansible & \$14,000\\
-    Bash & \$0\\
-    \hline
-  \end{tabular}
-
+  Uuenduse protsesside automatiseerimiseks ja haldamiseks on olemas palju valmistoodet. Kõige populaarsemad nendest on Atlassian Bamboo, Chef, Jenkins, Ansible Tower ja Puppet.
+  
+  Kõikide valmistoodete rakendamisel alati on olemas oma eelised ja puudused.
+  
+  Eelised:
+  \begin{itemize}
+    \item Ei ole vaja kulutada aega süsteemi kirjutamisele, mis tegelikult on juba leiutatud.
+    \item Kuna rakendus on juba turul ja on populaarne, siis on suur tõenäosus, et see on kvaliteetne ja vastab kasutajate ootustele.
+    \item On olemas kogukond tarkvara kasutajatest, kes vajadusel saavad aidata ja jagada enda kogemust.
+  \end{itemize}
+  
+  Puudused:
+  \begin{itemize}
+    \item Suurem osa valmistoodetest on tasulised (Jenkins on erandiks) ja hind alati sõltub serverite, keskkondade ja moodulite arvust, mis vaadetud projekti korral on väga suur.
+    \item Valmistoode õppimine, paigaldamine ja seadistamine võtab palju aega, eriti kui see pakkub lai valik funktsionaalsust.
+    \item Projekt väga sõltub tootjast \-- vigade olemas olul ei saa olla kindel, et neid parandatakse lähimal ajal või parandatakse üldse; probleemide tekitamisel ei saa olla kindel, et tootja kasutajate tugi saab aidata.
+    \item Projekt peab usaldama tootjat \-- usaldama, et valmistoode on turvaline ja stabiilne.
+  \end{itemize}
+  
+  Need on ühtlased eelised ja puudused kõikide valmistoodete kohta. Järgmistes alampeatükides uuritakse iga toode eriomadusi.
   
   \subsection{Atlassian Bamboo}
   \cite{bamboo}
   
+  Eelised:
+  \begin{itemize}
+    \item Kuna projektis kasutatakse Atlassian toodeid (JIRA, Confluence, Fisheye), siis Bamboo väga hästi integreerub nendega. On võimalik mudagvalt teha seoseid rakenduse koodi, muudatuste kirjelduse ja uuenduse vahel.
+    \item Antud toodet kasutavad teised projektid firmas, mis annab võimalust kaasata inimesi, kellel on olemas teadmised ja kogemus Bamboo seadistamise kohta.
+    \item Mugav kasutamine veebilehitseja kaudu.
+  \end{itemize}
+  
+  Puudused:
+  \begin{itemize}
+    \item Seadistamine toimub moodulite kaupa (igal moodulil on oma Bamboo projekt) ja ühe mooduli seadistamine võtab palju aega. Firma teises projektis see aeg oli 1.5 kuud, mis antud projekti jaoks tähendaks ~20 * 1.5 = ~30 kuud.
+    \item Üks uuendus võib võtta palju aega, sest Bamboo tööpõhimõte eeldab kolmanda serveri kasutamist uuenduse tööplaani teostamiseks ja selliste serverite arv on piiratud. See tähendab, et kui korraga soovitakse uuendada mitu keskkonda, siis võib tekkida ootusjärjekord.
+  \end{itemize}
+  
   \subsection{Chef}
   \cite{chef}
+  
+  Eelised:
+  \begin{itemize}
+    \item 
+  \end{itemize}
+  
+  Puudused:
+  \begin{itemize}
+    \item 
+  \end{itemize}
+
   
   \subsection{Jenkins}
   \cite{jenkins}
   
+  Eelised:
+  \begin{itemize}
+    \item Tasuta.
+    \item Avalik kood, mis tähendab, et projekt ei sõltu tootjast.
+    \item Firmas on olemas spetsialistid, kes on kasutanud Jenkins-t ja saavad jagada teadmisi ja kogemust.
+  \end{itemize}
+  
+  Puudused:
+  \begin{itemize}
+    \item 
+  \end{itemize}
+  
   \subsection{Ansible Tower}
   \cite{ansible}
   
+  Eelised:
+  \begin{itemize}
+    \item 
+  \end{itemize}
+  
+  Puudused:
+  \begin{itemize}
+    \item
+  \end{itemize}
+  
   \subsection{Puppet}
   \cite{puppet}
+  
+  Eelised:
+  \begin{itemize}
+    \item
+  \end{itemize}
+  
+  Puudused:
+  \begin{itemize}
+    \item 
+  \end{itemize}
 
   \subsection{Bash skriptimine}
   \cite{bash}

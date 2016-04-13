@@ -138,6 +138,9 @@ materjalide sisu.
   
   \subsection{Ansible Tower}
   \cite{ansible}
+  
+  \subsection{Puppet}
+  \cite{puppet}
 
   \subsection{Bash skriptimine}
   \cite{bash}
@@ -190,6 +193,17 @@ I also like that scalability has been considered when writing the script + many 
   \subsubsection{Tanel Käär, System Architect}
   
   Version updater script has standardized the way our environments are updated, reducing learning curve for new people performing the task. Downside is that people are unaware, what happens in the background and can't handle simple errors in the process anymore.
+  
+  \subsubsection{Klaus-Eduard Runnel, Senior Programmer}
+  
+  I have mostly used the scripts to perform quick module and dependency updates in specific test environments when deploying quick fixes or debugging problems in the modules I'm responsible for. Deployment of artifacts is secondary task in such scenarios. The scripts allowed me to conveniently perform the updates while letting me concentrate on solving the primary problems and not leaving the environment containing all necessary information.
+
+In some cases it was necessary to deploy custom-built experimental (unversioned) war-files. In these cases the scripts could not be used.
+They would have been useful though if such experiments would have been commited to feature branches and published as feature branch artifacts. (As of today, we are better prepared for such circumstances.)
+
+The scripts were also useful to deploy predefined sets of modules to temporary test environments living on reusable virtual machine images. It is important to note that a module update triggers launching a set of associated sql scripts to bring a database schema up to date. In that way the version update scripts let us automate most of a process of setting up updated environment from virtual machine images.
+
+It would be helpful if the scripts were adapted to perform changes on remote machines and to perform changes on multiple environments simultaneously.
 
   
   % Lahenduse perspektiivid
@@ -241,6 +255,9 @@ Kokkuvõtte tekstis on soovitav kasutada lihtmineviku umbisikulist tegumoodi, n�
   
     \bibitem{ansible}
     \url{https://www.ansible.com}
+    
+    \bibitem{puppet}
+    \url{https://puppet.com}
     
     \bibitem{time}
     \url{http://pubs.opengroup.org/onlinepubs/9699919799/utilities/time.html}

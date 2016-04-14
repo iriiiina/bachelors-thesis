@@ -108,12 +108,23 @@
   % Probleem
   \section{Probleemi püstitus}
   
-  Süsteemi arhitektuur\\
-  Nõuded lahendusele\\
+  Versioonide uuendamine on tingimata vajalik protsess tarkvara arenduses. Projektis, mida kirjeldatakse käesoleva töö raames, see protsess mängib väga olulist rolli.
   
-  keskkondade arv (8 nendest productions): 26 + VM-s ja local machines\\
-  Tomcat 8 serverite arv: 29 + VM-s ja local machines\\
-  WebLogic 12 serverite arv: 2\\
+  Projekti rakendus on kirjutatud Java keeles ja on kasutusel .WAR failid. Lisaks projekt rakendub modulaarsuse süsteemi, mis tähendab, et kogu rakenduse kood on jagatud moodulite kaupa ja iga mooduli kohta on olemas eraldi .WAR fail. Kokku on umbes 20 moodulit (täpne arv sõltub kliendist, sest erinevatel klientidel on erinev moodulite komplekt).
+  
+  Rakendust kasutavad 10 klienti. 3-l nendes on olemas 3 keskkonda: toode, demo (kus kliendid tutvuvad uue funktsionaalsuse ja parandustega enne toote uuendust) ja test (kus projekti meeskond testib funktsionaalsust enne tarnimist kliendile). 7-l kliendil on olemas 2 keskkonda: toode ja test. See tähendab, et kokku on olemas $3*3+7*2=23$ kliendikeskkonda. Lisaks veel umbes 7 projekti test keskkonda, mida kasutatakse erinevatel faasidel erineva funktsionaalsuse testimise jaoks. Seega kokku tuleb $23+7=30$ keskkonda, mida on vaja regulaarselt uuendada (mitte arvestades lokaalsete ja virtuaalmasinatega, mida iga meeskonnaliige võib vajadusel panna püsti). See tähendab, et selleks, et paigaldada rakenduse uut versiooni igale keskkonnale on vaja teha $30*20=600$ uuendust.
+  
+  Toodud numbrid näitavad, et versiooni manuaalne uuendus võtab palju aega ja tähelepanu, mille pärast oli otsustatud lihtsustada ja automatiseerida uuenduse protsessi.
+  
+  \subsubsection{Nõuded lahendusele}
+  
+  \begin{itemize}
+    \item Projekt kasutab kaks erinevat veebiserverit: Apache Tomcat 8 ja Oracle WebLogic 12. 
+    \item Teavtamise süsteem
+    \item Tegelevad testijad
+    \item Ühe ja mitmete moodulite uuendus
+    \item kahe serverite uuendus
+  \end{itemize}
   
   \newpage
   
@@ -146,6 +157,7 @@
   
   Eelised:
   \begin{itemize}
+    \item Tasuta, sest projekt juba kasutab teised Atlassian tooted.
     \item Kuna projektis kasutatakse Atlassian toodeid (JIRA, Confluence, Fisheye), siis Bamboo väga hästi integreerub nendega. On võimalik mudagvalt teha seoseid rakenduse koodi, muudatuste kirjelduse ja uuenduse vahel.
     \item Antud toodet kasutavad teised projektid firmas, mis annab võimalust kaasata inimesi, kellel on olemas teadmised ja kogemus Bamboo seadistamise kohta.
     \item Mugav kasutamine veebilehitseja kaudu.
@@ -349,6 +361,22 @@ Kokkuvõtte tekstis on soovitav kasutada lihtmineviku umbisikulist tegumoodi, n�
   \section*{Lisad}
   \label{lisad}
   \addcontentsline{toc}{section}{\nameref{lisad}}
+  
+  \subsection{Terminid}
+  
+  \textbf{Rakendus} \---
+  
+  \textbf{Server} \---
+  
+  \textbf{Keskkond} \---
+  
+  \textbf{Moodul} \---
+  
+  \textbf{Versioon} \---
+  
+  \textbf{Modulaarne süsteem} \---
+  
+  \textbf{Veebiserver} \---
   
   \begin{itemize}
   

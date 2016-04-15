@@ -116,15 +116,38 @@
   
   Toodud numbrid näitavad, et versiooni manuaalne uuendus võtab palju aega ja tähelepanu, mille pärast oli otsustatud lihtsustada ja automatiseerida uuenduse protsessi.
   
+  \subsubsection{Manuaalne uuenduse protsess}
+  
+  Ühe mooduli manuaalne uuenduse protsess koosneb järgmistest sammudest:
+  
+  \begin{enumerate}
+    \item .WAR faili uue koodiga alla laadimine serveri peale.
+    \item Kui veebiserveriks on Oracle WebLogic, siis .WAR faili prekompileerimine (Apache Tomcat veebiserveril seda sammu ei ole).
+    \item Faili ümber nimetamine.
+    \item Faili paigaldus.
+    \item Vana faili eemaldamine.
+    \item Uue versiooni staatuse kontrollimine.
+    \item JIRA töö uuendamine, mis automaatselt saadab emaile kolleegidele, et versioon on uuendatud (iga mooduli ja keskkonna kohta on olemas eraldi JIRA töö).
+    \item Alla laaditud faili kustutamine.
+  \end{enumerate}
+  
+  Mitmete moodulite uuendamisel tuleb teha kõik need sammud iga mooduli jaoks. Aeg, mida võtavad need sammud, sõltub moodulist (kuna mõnes moodulis võib olla kaks korda rohkem koodi, kui teises, mis tähendab, et selle alla laadimine ja paigaldamine võtab kaks korda rohkem aega), aga keskmiselt see on 1.5 minutit. Kõikide moodulite uuendamine võib võtta tund aega, kuna lisandub veel aeg, mida inimene raisab õige versiooni numbri leidmiseks, .WAR faili aadressi kopeerimiseks, õige JIRA töö leidmiseks ja avamiseks jne. See tähendab, et inimlike vigade tekkimise tõeäosus on suur (nt alla laadida vale versiooni).
+  
   \subsubsection{Nõuded lahendusele}
   
   \begin{itemize}
-    \item Projekt kasutab kaks erinevat veebiserverit: Apache Tomcat 8 ja Oracle WebLogic 12. 
-    \item Teavtamise süsteem
-    \item Tegelevad testijad
-    \item Ühe ja mitmete moodulite uuendus
-    \item kahe serverite uuendus
-  \end{itemize}
+    \item Uuenduse protsess peab võtma vähem aega.
+    \item Uuenduse protsess peab nõudma nii vähe käsitsi tegevusi, kui on võimalik.
+    \item Lahendus peab võimaldama uuendada nii üht moodulit, kuid ka mitu moodulit korraga.
+    \item Projekt kasutab kaks erinevat veebiserverit: Apache Tomcat 8 ja Oracle WebLogic 12. Lahendus peab töötama sama moodi kõikidel serveritel, sõltumata sellest, mis tarkvara seal on paigaldatud.
+    \item Mõned meeskonnaliikmed soovivad saada teavitusi toimunud uuenduste kohta, mis tähendab, et lahendusel peab olema teavituste süsteem.
+    \item Peab olema võimalus vaadata kes ja millal uuendas mingit moodulit mingis keskkonnas, mis tähendab, et peab olema logimise süsteem.
+    \item Uuendustega tegelevad testijad, seega protsess ei tohi olla liiga tehniline.
+    \item Uuendustega võivad tegeleda mitu inimest samal ajal, mis tähendab, et lahendusel peab olema lukustamise süsteem, et vältida paralleelselt uuendust samal serveril.
+    \item Toodang keskkonnad kasutavad 2 serverit, seega lahendus peab oskama uuendada versiooni automaatselt kahel serveril.
+    \item Lahendus peab olema täielikult projekti kontrolli all, selleks, et selle haldamine, seadistamine ja parandamine oleks võimalik teostada igal ajal.
+    \item Lahenduse loomine ei tohi võtta palju aega, sest projektil puuduvad selleks inimresurssid.
+   \end{itemize}
   
   \newpage
   
@@ -135,27 +158,26 @@
   
   Kõikide valmistoodete rakendamisel alati on olemas oma eelised ja puudused.
   
-  Eelised:
+  \textbf{Eelised:}
   \begin{itemize}
     \item Ei ole vaja kulutada aega süsteemi kirjutamisele, mis tegelikult on juba leiutatud.
     \item Kuna rakendus on juba turul ja on populaarne, siis on suur tõenäosus, et see on kvaliteetne ja vastab kasutajate ootustele.
     \item On olemas kogukond tarkvara kasutajatest, kes vajadusel saavad aidata ja jagada enda kogemust.
   \end{itemize}
   
-  Puudused:
+  \textbf{Puudused:}
   \begin{itemize}
-    \item Suurem osa valmistoodetest on tasulised (Jenkins on erandiks) ja hind alati sõltub serverite, keskkondade ja moodulite arvust, mis vaadetud projekti korral on väga suur.
+    \item Suurem osa valmistoodetest on tasulised (Bamboo ja Jenkins on erandiks) ja hind alati sõltub serverite, keskkondade ja moodulite arvust, mis vaadatud projekti korral on suur.
     \item Valmistoode õppimine, paigaldamine ja seadistamine võtab palju aega, eriti kui see pakkub lai valik funktsionaalsust.
     \item Projekt väga sõltub tootjast \-- vigade olemas olul ei saa olla kindel, et neid parandatakse lähimal ajal või parandatakse üldse; probleemide tekitamisel ei saa olla kindel, et tootja kasutajate tugi saab aidata.
     \item Projekt peab usaldama tootjat \-- usaldama, et valmistoode on turvaline ja stabiilne.
   \end{itemize}
   
-  Need on ühtlased eelised ja puudused kõikide valmistoodete kohta. Järgmistes alampeatükides uuritakse iga toode eriomadusi.
+  Need on ühtlased eelised ja puudused kõikide valmistoodete kohta. Iga tootel on olemas aga veel eriomadused.
   
-  \subsection{Atlassian Bamboo}
-  \cite{bamboo}
+  \subsubsection{Atlassian Bamboo \cite{bamboo}}
   
-  Eelised:
+  \textbf{Eelised:}
   \begin{itemize}
     \item Tasuta, sest projekt juba kasutab teised Atlassian tooted.
     \item Kuna projektis kasutatakse Atlassian toodeid (JIRA, Confluence, Fisheye), siis Bamboo väga hästi integreerub nendega. On võimalik mudagvalt teha seoseid rakenduse koodi, muudatuste kirjelduse ja uuenduse vahel.
@@ -163,70 +185,64 @@
     \item Mugav kasutamine veebilehitseja kaudu.
   \end{itemize}
   
-  Puudused:
+  \textbf{Puudused:}
   \begin{itemize}
     \item Seadistamine toimub moodulite kaupa (igal moodulil on oma Bamboo projekt) ja ühe mooduli seadistamine võtab palju aega. Firma teises projektis see aeg oli 1.5 kuud, mis antud projekti jaoks tähendaks ~20 * 1.5 = ~30 kuud.
     \item Üks uuendus võib võtta palju aega, sest Bamboo tööpõhimõte eeldab kolmanda serveri kasutamist uuenduse tööplaani teostamiseks ja selliste serverite arv on piiratud. See tähendab, et kui korraga soovitakse uuendada mitu keskkonda, siis võib tekkida ootusjärjekord.
   \end{itemize}
   
-  \subsection{Chef}
-  \cite{chef}
+  \subsubsection{Chef \cite{chef}}
   
-  Eelised:
+  \textbf{Eelised:}
   \begin{itemize}
     \item 
   \end{itemize}
   
-  Puudused:
+  \textbf{Puudused:}
   \begin{itemize}
     \item 
   \end{itemize}
 
   
-  \subsection{Jenkins}
-  \cite{jenkins}
+  \subsubsection{Jenkins \cite{jenkins}}
   
-  Eelised:
+  \textbf{Eelised:}
   \begin{itemize}
     \item Tasuta.
     \item Avalik kood, mis tähendab, et projekt ei sõltu tootjast.
     \item Firmas on olemas spetsialistid, kes on kasutanud Jenkins-t ja saavad jagada teadmisi ja kogemust.
   \end{itemize}
   
-  Puudused:
+  \textbf{Puudused:}
   \begin{itemize}
     \item 
   \end{itemize}
   
-  \subsection{Ansible Tower}
-  \cite{ansible}
+  \subsubsection{Ansible Tower \cite{ansible}}
   
-  Eelised:
+  \textbf{Eelised:}
   \begin{itemize}
     \item 
   \end{itemize}
   
-  Puudused:
+  \textbf{Puudused:}
   \begin{itemize}
     \item
   \end{itemize}
   
-  \subsection{Puppet}
-  \cite{puppet}
+  \subsubsection{Puppet \cite{puppet}}
   
-  Eelised:
+  \textbf{Eelised:}
   \begin{itemize}
     \item
   \end{itemize}
   
-  Puudused:
+  \textbf{Puudused:}
   \begin{itemize}
     \item 
   \end{itemize}
 
-  \subsection{Bash skriptimine}
-  \cite{bash}
-  Bash skriptimiskeel - mis on selle eelised?
+  \subsubsection{Bash skriptimine \cite{bash}}
   
   \newpage
   
@@ -296,6 +312,7 @@ Kui vaja on rohkem kui ühte moodulit uuendada, siis väga hea lahendus on selle
 
 Samuti tooks välja, et uuendamise skriptid on väga hästi dokumenteeritud ja põhjalikult kirja pandud kuidas toimivad. Mul on väga hea meel, et versioonide uuendamine on skriptide abil nii lihtsaks, mugavaks ja meeldivaks tegevuseks saanud.
 
+  \newpage
   
   % Lahenduse perspektiivid
   \section{Lahenduse perspektiivid}

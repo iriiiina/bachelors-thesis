@@ -2,7 +2,8 @@
 \usepackage[utf8]{inputenc}
 \usepackage{nameref}
 \usepackage{fancyhdr}
-\usepackage{hyperref} 
+\usepackage{hyperref}
+\usepackage{caption}
 \renewcommand{\contentsname}{Sisukord}
 \renewcommand{\bibname}{Kasutatud materjalid}
 \renewcommand{\thesection}{\arabic{section}}
@@ -131,30 +132,47 @@
     \item Alla laaditud faili kustutamine.
   \end{enumerate}
   
-  Mitmete moodulite uuendamisel tuleb teha kõik need sammud iga mooduli jaoks. Aeg, mida võtavad need sammud, sõltub moodulist (kuna mõnes moodulis võib olla kaks korda rohkem koodi, kui teises, mis tähendab, et selle alla laadimine ja paigaldamine võtab kaks korda rohkem aega), aga keskmiselt see on 1.5 minutit. Kõikide moodulite uuendamine võib võtta tund aega, kuna lisandub veel aeg, mida inimene raisab õige versiooni numbri leidmiseks, .WAR faili aadressi kopeerimiseks, õige JIRA töö leidmiseks ja avamiseks jne. See tähendab, et inimlike vigade tekkimise tõeäosus on suur (nt alla laadida vale versiooni).
+  Mitmete moodulite uuendamisel tuleb teha kõik need sammud iga mooduli jaoks. Aeg, mida võtavad need sammud, sõltub moodulist (kuna mõnes moodulis võib olla kaks korda rohkem koodi, kui teises, mis tähendab, et selle alla laadimine ja paigaldamine võtab kaks korda rohkem aega), aga keskmiselt see on 1.5 minutit. Kõikide moodulite uuendamine võib võtta tund aega, kuna lisandub veel aeg, mida inimene raisab õige versiooni numbri leidmiseks, .WAR faili aadressi kopeerimiseks, õige JIRA töö leidmiseks ja avamiseks jne. See tähendab, et inimlike vigade tekkimise tõenäosus on suur (nt alla laadida vale versiooni).
   
-  \subsubsection{Nõuded lahendusele}
+  Allpool on toodud Tabel 1 "Nõuded versiooni uuenduse lihtsustamise lahendusele", mis kirjeldab lahendust, millele on mõtet investeerida aega protsessi muutmiseks \--- muul juhul uue protsessi loomine võtab rohkem aega, kui toob kasu.
   
-  \begin{itemize}
-    \item Uuenduse protsess peab võtma vähem aega.
-    \item Uuenduse protsess peab nõudma nii vähe käsitsi tegevusi, kui on võimalik.
-    \item Lahendus peab võimaldama uuendada nii üht moodulit, kuid ka mitu moodulit korraga.
-    \item Projekt kasutab kaks erinevat veebiserverit: Apache Tomcat 8 ja Oracle WebLogic 12. Lahendus peab töötama sama moodi kõikidel serveritel, sõltumata sellest, mis tarkvara seal on paigaldatud.
-    \item Mõned meeskonnaliikmed soovivad saada teavitusi toimunud uuenduste kohta, mis tähendab, et lahendusel peab olema teavituste süsteem.
-    \item Peab olema võimalus vaadata kes ja millal uuendas mingit moodulit mingis keskkonnas, mis tähendab, et peab olema logimise süsteem.
-    \item Uuendustega tegelevad testijad, seega protsess ei tohi olla liiga tehniline.
-    \item Uuendustega võivad tegeleda mitu inimest samal ajal, mis tähendab, et lahendusel peab olema lukustamise süsteem, et vältida paralleelselt uuendust samal serveril.
-    \item Toodang keskkonnad kasutavad 2 serverit, seega lahendus peab oskama uuendada versiooni automaatselt kahel serveril.
-    \item Lahendus peab olema täielikult projekti kontrolli all, selleks, et selle haldamine, seadistamine ja parandamine oleks võimalik teostada igal ajal.
-    \item Lahenduse loomine ei tohi võtta palju aega, sest projektil puuduvad selleks inimresurssid.
-   \end{itemize}
+  \begin{table}
+  \begin{tabular}{|c|p{11cm}|}
+    \hline
+    \textbf{Number} & \textbf{Nõue}\\
+    \hline
+    1 & Uuenduse protsess peab võtma vähem aega.\\
+    \hline
+    2 & Uuenduse protsess peab nõudma nii vähe käsitsi tegevusi, kui on võimalik.\\
+    \hline
+    3 & Lahendus peab võimaldama uuendada nii üht moodulit, kuid ka mitu moodulit korraga.\\
+    \hline
+    4 & Projekt kasutab kaks erinevat veebiserverit: Apache Tomcat 8 ja Oracle WebLogic 12. Lahendus peab töötama sama moodi kõikidel serveritel, sõltumata sellest, mis tarkvara seal on paigaldatud.\\
+    \hline
+    5 & Mõned meeskonnaliikmed soovivad saada teavitusi toimunud uuenduste kohta, mis tähendab, et lahendusel peab olema teavituste süsteem.\\
+    \hline
+    6 & Peab olema võimalus vaadata kes ja millal uuendas mingit moodulit mingis keskkonnas, mis tähendab, et peab olema logimise süsteem.\\
+    \hline
+    7 & Uuendustega tegelevad testijad, seega protsess ei tohi olla liiga tehniline.\\
+    \hline
+    8 & Uuendustega võivad tegeleda mitu inimest samal ajal, mis tähendab, et lahendusel peab olema lukustamise süsteem, et vältida paralleelselt uuendust samal serveril.\\
+    \hline
+    9 & Toodang keskkonnad kasutavad 2 serverit, seega lahendus peab oskama uuendada versiooni automaatselt kahel serveril.\\
+    \hline
+    10 & Lahendus peab olema täielikult projekti kontrolli all, selleks, et selle haldamine, seadistamine ja parandamine oleks võimalik teostada igal ajal.\\
+    \hline
+    11 & Lahenduse loomine ei tohi võtta palju aega, sest projektil puuduvad selleks inimresurssid.\\
+    \hline
+  \end{tabular}
+  \caption*{\textit{Tabel 1: Nõuded versiooni uuenduse lihtsustamise lahendusele}}
+  \end{table}
   
   \newpage
   
   % Võimalikud lahendused
   \section{Võimalikud lahendused}
   
-  Uuenduse protsesside automatiseerimiseks ja haldamiseks on olemas palju valmistoodet. Kõige populaarsemad nendest on Atlassian Bamboo, Chef, Jenkins, Ansible Tower ja Puppet.
+  Uuenduse protsesside automatiseerimiseks ja haldamiseks on olemas palju valmistoodet. Kõige populaarsemad nendest on Atlassian Bamboo, Chef, Jenkins ja Ansible Tower.
   
   Kõikide valmistoodete rakendamisel alati on olemas oma eelised ja puudused.
   
@@ -173,7 +191,29 @@
     \item Projekt peab usaldama tootjat \-- usaldama, et valmistoode on turvaline ja stabiilne.
   \end{itemize}
   
-  Need on ühtlased eelised ja puudused kõikide valmistoodete kohta. Iga tootel on olemas aga veel eriomadused.
+  Need on ühtlased eelised ja puudused kõikide valmistoodete kohta.
+  
+  Allpool on toodud Tabel 2 "Võimalikute lahenduste vastamine nõuetele", kus on määratud millistele nõuetele Tabelist 1 vastavad vaadeldud lahendused.
+  
+  \begin{table}
+    \begin{tabular}{ |l|c|c|c|c|c|c|c|c|c|c|c| }
+      \hline
+      \textbf{Lahendus / Nõude Nr} & \textbf{1} & \textbf{2} & \textbf{3} & \textbf{4} & \textbf{5} & \textbf{6} & \textbf{7} & \textbf{8} & \textbf{9} & \textbf{10} & \textbf{11}\\
+      \hline
+      Atlassian Bamboo & x & x & & x & x & x & x & & & & \\
+      \hline
+      Chef & & & & & & & & & & & \\
+      \hline
+      Jenkins & & & & & & & & & & & \\
+      \hline
+      Ansible Tower & & & & & & & & & & & \\
+      \hline
+      Bash skript & x & x & x & x & x & x & x & x & x & x & x\\
+      \hline
+    \end{tabular}
+    \caption*{\textit{Tabel 2: Võimalikute lahenduste vastamine nõuetele}}
+  \end{table}
+
   
   \subsubsection{Atlassian Bamboo \cite{bamboo}}
   
@@ -262,6 +302,8 @@
   
   % Lahendus
   \section{Lahendus}
+  
+  Versiooni uuenduse protsessi lihtsustamiseks oli valitud Bash skripti kirjutamine.
   
   \subsection{Skripti arhitektuur ja tööpõhimõte}
   

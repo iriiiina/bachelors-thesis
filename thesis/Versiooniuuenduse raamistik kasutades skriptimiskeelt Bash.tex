@@ -163,6 +163,8 @@
     \hline
     11 & Lahenduse loomine ei tohi võtta palju aega, sest projektil puuduvad selleks inimresurssid.\\
     \hline
+    12 & Lahendus ei tohi võtta palju raha.\\
+    \hline
   \end{tabular}
   \caption*{\textit{Tabel 1: Nõuded versiooni uuenduse lihtsustamise lahendusele}}
   \end{table}
@@ -172,7 +174,7 @@
   % Võimalikud lahendused
   \section{Võimalikud lahendused}
   
-  Uuenduse protsesside automatiseerimiseks ja haldamiseks on olemas palju valmistoodet. Kõige populaarsemad nendest on Atlassian Bamboo, Chef, Jenkins ja Ansible Tower.
+  Uuenduse protsesside automatiseerimiseks ja haldamiseks on olemas palju valmistoodet. Kõige populaarsemad nendest on Atlassian Bamboo \cite{bamboo}, Chef \cite{chef}, Jenkins \cite{jenkins} ja Ansible Tower \cite{ansible}.
   
   Kõikide valmistoodete rakendamisel alati on olemas oma eelised ja puudused.
   
@@ -196,26 +198,26 @@
   Allpool on toodud Tabel 2 "Võimalikute lahenduste vastamine nõuetele", kus on määratud millistele nõuetele Tabelist 1 vastavad vaadeldud lahendused.
   
   \begin{table}
-    \begin{tabular}{ |l|c|c|c|c|c|c|c|c|c|c|c| }
+    \begin{tabular}{ |l|c|c|c|c|c|c|c|c|c|c|c|c| }
       \hline
-      \textbf{Lahendus / Nõude Nr} & \textbf{1} & \textbf{2} & \textbf{3} & \textbf{4} & \textbf{5} & \textbf{6} & \textbf{7} & \textbf{8} & \textbf{9} & \textbf{10} & \textbf{11}\\
+      \textbf{Lahendus / Nõude Nr} & \textbf{1} & \textbf{2} & \textbf{3} & \textbf{4} & \textbf{5} & \textbf{6} & \textbf{7} & \textbf{8} & \textbf{9} & \textbf{10} & \textbf{11} & \textbf{12}\\
       \hline
-      Atlassian Bamboo & x & x & & x & x & x & x & & & & \\
+      Atlassian Bamboo & x & x & & x & x & x & x & & & & & x\\
       \hline
-      Chef & & & & & & & & & & & \\
+      Chef & ? & ? & ? & x & x & x & ? & ? & ? & x & & \\
       \hline
-      Jenkins & & & & & & & & & & & \\
+      Jenkins & ? & ? & ? & x & x & x & ? & ? & ? & x & & x\\
       \hline
-      Ansible Tower & & & & & & & & & & & \\
+      Ansible Tower & ? & ? & ? & x & x & x & ? & ? & ? & & & \\
       \hline
-      Bash skript & x & x & x & x & x & x & x & x & x & x & x\\
+      Bash skript & x & x & x & x & x & x & x & x & x & x & x & x\\
       \hline
     \end{tabular}
     \caption*{\textit{Tabel 2: Võimalikute lahenduste vastamine nõuetele}}
   \end{table}
 
   
-  \subsubsection{Atlassian Bamboo \cite{bamboo}}
+  \subsubsection{Atlassian Bamboo}
   
   \textbf{Eelised:}
   \begin{itemize}
@@ -231,7 +233,7 @@
     \item Üks uuendus võib võtta palju aega, sest Bamboo tööpõhimõte eeldab kolmanda serveri kasutamist uuenduse tööplaani teostamiseks ja selliste serverite arv on piiratud. See tähendab, et kui korraga soovitakse uuendada mitu keskkonda, siis võib tekkida ootusjärjekord.
   \end{itemize}
   
-  \subsubsection{Chef \cite{chef}}
+  \subsubsection{Chef}
   
   \textbf{Eelised:}
   \begin{itemize}
@@ -243,7 +245,7 @@
     \item 
   \end{itemize}
   
-  \subsubsection{Jenkins \cite{jenkins}}
+  \subsubsection{Jenkins}
   
   \textbf{Eelised:}
   \begin{itemize}
@@ -257,7 +259,7 @@
     \item 
   \end{itemize}
   
-  \subsubsection{Ansible Tower \cite{ansible}}
+  \subsubsection{Ansible Tower}
   
   \textbf{Eelised:}
   \begin{itemize}
@@ -267,18 +269,6 @@
   \textbf{Puudused:}
   \begin{itemize}
     \item
-  \end{itemize}
-  
-  \subsubsection{Puppet \cite{puppet}}
-  
-  \textbf{Eelised:}
-  \begin{itemize}
-    \item
-  \end{itemize}
-  
-  \textbf{Puudused:}
-  \begin{itemize}
-    \item 
   \end{itemize}
 
   \subsubsection{Bash skriptimine \cite{bash}}
@@ -371,7 +361,7 @@ Samuti tooks välja, et uuendamise skriptid on väga hästi dokumenteeritud ja p
   \newpage
   
   % Lahenduse perspektiivid
-  \section{Lahenduse perspektiivid}
+  \section{Lahenduse perspektiivid}  
   
   \newpage
   
@@ -420,9 +410,6 @@ Kokkuvõtte tekstis on soovitav kasutada lihtmineviku umbisikulist tegumoodi, n�
     \bibitem{ansible}
     \url{https://www.ansible.com}
     
-    \bibitem{puppet}
-    \url{https://puppet.com}
-    
     \bibitem{time}
     \url{http://pubs.opengroup.org/onlinepubs/9699919799/utilities/time.html}
  
@@ -437,29 +424,25 @@ Kokkuvõtte tekstis on soovitav kasutada lihtmineviku umbisikulist tegumoodi, n�
   
   \subsection{Terminid}
   
-  \textbf{Rakendus} \---
-  
-  \textbf{Server} \---
-  
-  \textbf{Keskkond} \---
-  
-  \textbf{Moodul} \---
-  
-  \textbf{Versioon} \---
-  
-  \textbf{Modulaarne süsteem} \---
-  
+  \textbf{Rakendus} \--- \\
+  \textbf{Server} \--- \\
+  \textbf{Keskkond} \--- \\
+  \textbf{Moodul} \--- \\
+  \textbf{Versioon} \--- \\
+  \textbf{Modulaarne süsteem} \--- \\
   \textbf{Veebiserver} \---
   
-  \begin{itemize}
+  \subsection{Skripti lähtekood}
   
-    \item Skripti manuaal: \url{https://iriiiina.gitbooks.io/version-updater-manual/content/}
-    
-    \item Skripti kood: \url{https://github.com/iriiiina/version-updater}
+  Bash skripti kood asub avalikus GitHub reposetooriumis: \url{https://github.com/iriiiina/version-updater}
   
-    \item BPMN diagramm ühe mooduli uuenduse kohta Tomcat-i peal (update-version-tomcat.sh): \url{https://github.com/iriiiina/bachelors-thesis/blob/master/thesis/pictures/BPMN-diagram-one-module-tomcat.png}   
+  \subsection{Skripti avalik juhend}
   
-  \end{itemize}
+  Bash skripti avalik juhend asub avalikus GitBook reposetoorimus: \url{https://iriiiina.gitbooks.io/version-updater-manual/content/}
+  
+  \subsection{Skripti projekti juhend}
+  
+  Bash skripti projekti sisene juhend: \url{https://github.com/iriiiina/bachelors-thesis/blob/master/manual/Confluence%20Manual.pdf}
 
 
 \end{document}

@@ -4,6 +4,7 @@
 \usepackage{fancyhdr}
 \usepackage{hyperref}
 \usepackage{caption}
+\usepackage{csquotes}
 \renewcommand{\contentsname}{Sisukord}
 \renewcommand{\bibname}{Kasutatud materjalid}
 \renewcommand{\thesection}{\arabic{section}}
@@ -13,6 +14,8 @@
 \fancyfoot{}
 \fancyfoot[R]{\thepage}
 \renewcommand{\headrulewidth}{0pt}
+% Code formatting
+\newcommand{\code}[1]{\texttt{#1}}
 
 \title{Versiooniuuenduse raamistik kasutades skriptimiskeelt Bash}
 \author{Irina Ivanova}
@@ -117,20 +120,35 @@
   
   Toodud numbrid näitavad, et versiooni manuaalne uuendus võtab palju aega ja tähelepanu, mille pärast oli otsustatud lihtsustada ja automatiseerida uuenduse protsessi.
   
+  \newpage
   \subsubsection{Manuaalne uuenduse protsess}
   
-  Ühe mooduli manuaalne uuenduse protsess koosneb järgmistest sammudest:
+  Ühe mooduli manuaalse uuenduse protsessi sammud on nimetatud allpool tabelis 1 "Manuaalse uuenduse protsessi sammud".
   
-  \begin{enumerate}
-    \item .WAR faili uue koodiga alla laadimine serveri peale.
-    \item Kui veebiserveriks on Oracle WebLogic, siis .WAR faili prekompileerimine (Apache Tomcat veebiserveril seda sammu ei ole).
-    \item Faili ümber nimetamine.
-    \item Faili paigaldus.
-    \item Vana faili eemaldamine.
-    \item Uue versiooni staatuse kontrollimine.
-    \item JIRA töö uuendamine, mis automaatselt saadab emaile kolleegidele, et versioon on uuendatud (iga mooduli ja keskkonna kohta on olemas eraldi JIRA töö).
-    \item Alla laaditud faili kustutamine.
-  \end{enumerate}
+  \begin{table}[!htbp] 
+  \begin{tabular}{ |c|p{11cm}| }
+    \hline
+    \textbf{Number} & \textbf{Samm}\\
+    \hline
+    1 & .WAR faili uue koodiga alla laadimine serveri peale.\\
+    \hline
+    2 & Kui veebiserveriks on Oracle WebLogic, siis .WAR faili prekompileerimine (Apache Tomcat veebiserveril seda sammu ei ole).\\
+    \hline
+    3 & Faili ümber nimetamine.\\
+    \hline
+    4 & Faili paigaldus.\\
+    \hline
+    5 & Vana faili eemaldamine.\\
+    \hline
+    6 & Uue versiooni staatuse kontrollimine.\\
+    \hline
+    7 & JIRA töö uuendamine, mis automaatselt saadab emaile kolleegidele, et versioon on uuendatud (iga mooduli ja keskkonna kohta on olemas eraldi JIRA töö).\\
+    \hline
+    8 & Alla laaditud faili kustutamine.\\
+    \hline
+  \end{tabular}
+  \caption*{\textit{Tabel 1: Manuaalse uuenduse protsessi sammud}}
+  \end{table}
   
   Mitmete moodulite uuendamisel tuleb teha kõik need sammud iga mooduli jaoks. Aeg, mida võtavad need sammud, sõltub moodulist (kuna mõnes moodulis võib olla kaks korda rohkem koodi, kui teises, mis tähendab, et selle alla laadimine ja paigaldamine võtab kaks korda rohkem aega), aga keskmiselt see on 1.5 minutit. Kõikide moodulite uuendamine võib võtta tund aega, kuna lisandub veel aeg, mida inimene raisab õige versiooni numbri leidmiseks, .WAR faili aadressi kopeerimiseks, õige JIRA töö leidmiseks ja avamiseks jne. See tähendab, et inimlike vigade tekkimise tõenäosus on suur (nt alla laadida vale versiooni).
   
@@ -166,7 +184,7 @@
     12 & Lahendus ei tohi võtta palju raha.\\
     \hline
   \end{tabular}
-  \caption*{\textit{Tabel 1: Nõuded versiooni uuenduse lihtsustamise lahendusele}}
+  \caption*{\textit{Tabel 2: Nõuded versiooni uuenduse lihtsustamise lahendusele}}
   \end{table}
   
   \newpage
@@ -195,7 +213,7 @@
   
   Need on ühtlased eelised ja puudused kõikide valmistoodete kohta.
   
-  Allpool on toodud Tabel 2 "Võimalikute lahenduste vastamine nõuetele", kus on määratud millistele nõuetele Tabelist 1 vastavad vaadeldud lahendused.
+  Allpool on toodud Tabel 3 "Võimalikute lahenduste vastamine nõuetele", kus on määratud millistele nõuetele Tabelist 1 vastavad vaadeldud lahendused.
   
   \begin{table}
     \begin{tabular}{ |l|c|c|c|c|c|c|c|c|c|c|c|c| }
@@ -213,7 +231,7 @@
       Bash skript & x & x & x & x & x & x & x & x & x & x & x & x\\
       \hline
     \end{tabular}
-    \caption*{\textit{Tabel 2: Võimalikute lahenduste vastamine nõuetele}}
+    \caption*{\textit{Tabel 3: Võimalikute lahenduste vastamine nõuetele}}
   \end{table}
 
   
@@ -308,55 +326,51 @@
   % Mõju projektile
   \section{Mõju projektile}
   
-  \subsection{Statistika}
+  Automaatne versiooni uuenduse raamistik täielikult asendas vana käsitsi protsessi. Selles on olemas nii eelised, kuid ka oma puudused.\\
   
-  \begin{tabular}{| l | l | l |}
+  Kõige oluline eelis on see, et skript täidab kõik nõuded tabelist 2 "Nõuded versiooni uuenduse lihtsustamise lahendusele". Kõige märkavamad nendest on nõuded 1 ja 2 \--- protsessi kiirus ja mugavus.\\
+  
+  Kiirus on ainuke tunnus, mida saab objektiivselt mõõta. Vana ja uue protsesside kiirused olid mõõdetud kasutades \textit{UNIX} käsurea funktsiooni \code{time} \cite{time}. Oli valitud 4 protsessi: 3 üksikute kõige populaarsemate moodulite uuendamine ja kõikide moodulite uuendamine ühes keskkonnas. Iga protsess oli tehtud vana käsitsi viisi ja uue automaatse skriptiga 3 korda ja võrdluseks on võetud katsetuste keskmised väärtused. Tulemused on toodud tabelis 4 "Vana ja uue protsesside kiirused".
+  
+  \begin{table}[!htbp]
+  \begin{tabular}{| l | c | c |}
     \hline
-    Module Name & Script Time (sec) & Manual Time (sec)\\
+    Moodul & Aut. uuendus (sek) & Käsitsi uuendus (sek)\\
     \hline
     admin & 27.245 & 80.45\\
     treatment & 61.101 & 112.71\\
     reception & 38.538 & 100.19\\
+    kõik (21) & & \\
     \hline
   \end{tabular}
+  \caption*{\textit{Tabel 4: Vana ja uue protsesside kiirused}}
+  \end{table}
   
-  \cite{time}
-
+  Tegelikkuses kokkuhoidud aeg on veel suurem, sest vanas protsessis uuendaja tähelepanu oli hõivatud terve protsessi jooksul. Uue skripti kasutades testijatel on olemas võimalus tegeleda paralleelselt teiste ülesannetega ja mitte jälgida skripti tööd (see ise annab teada, kui uuendus on lõppenud).\\
   
-  \subsection{Kolleegide tagasiside}
+  Kõige oluline puudus on see, et testijad enam ei tunne versiooni uuenduse protsessi tausta ja vigade tekitamise juhul (kas serveri, veebiserveri või skripti pärast) ei oska neid lahendada. See on üldine automatiseerimise probleem, millega tuleb lepida mugavuse vahetuseks.\\
   
-  \subsubsection{Martin Rakver, Hosting Services and Application Manager}
-  
-  I have not been using the script very much, because I rarely update modules nowadays. But what I can say is that it is definately in the right place – automating activities that testers would need do to on daily basis each time when deploying a new module. Come to think about it, there are actually quite many activites related to new module deployment – would be interesting to compare the time it takes to deploy a module manually vs using script + calculate about how much time we as a team are saving daily,montly,yearly  (and get to do more important things with that time).
-I also like that scalability has been considered when writing the script + many optional features have been implemented which can be used if one desires to do so.
-
-  \subsubsection{Kalle Jagula, QA Specialist}
-  
-  I personally think that version-update script has significantly improved the speed of version update. Especially with the settings for bulk-update, which improves the speed of modules' version update and manageability of test/demo environments.
-  
-  \subsubsection{Tanel Käär, System Architect}
-  
-  Version updater script has standardized the way our environments are updated, reducing learning curve for new people performing the task. Downside is that people are unaware, what happens in the background and can't handle simple errors in the process anymore.
-  
-  \subsubsection{Klaus-Eduard Runnel, Senior Programmer}
-  
-  I have mostly used the scripts to perform quick module and dependency updates in specific test environments when deploying quick fixes or debugging problems in the modules I'm responsible for. Deployment of artifacts is secondary task in such scenarios. The scripts allowed me to conveniently perform the updates while letting me concentrate on solving the primary problems and not leaving the environment containing all necessary information.
-
-In some cases it was necessary to deploy custom-built experimental (unversioned) war-files. In these cases the scripts could not be used.
-They would have been useful though if such experiments would have been commited to feature branches and published as feature branch artifacts. (As of today, we are better prepared for such circumstances.)
-
-The scripts were also useful to deploy predefined sets of modules to temporary test environments living on reusable virtual machine images. It is important to note that a module update triggers launching a set of associated sql scripts to bring a database schema up to date. In that way the version update scripts let us automate most of a process of setting up updated environment from virtual machine images.
-
-It would be helpful if the scripts were adapted to perform changes on remote machines and to perform changes on multiple environments simultaneously.
-
-  \subsubsection{Helina Ziugand, QA Specialist}
-  
-  Uuendamise skriptid on nii projektile kui ka minu igapäevasele tööle väga positiivselt mõjunud. 
-Kui algselt oli uuendamise jaoks vaja mitu sammu käsitsi teha, siis nüüd käib see automaatselt ja kiiresti. Võiks öelda, et üsna tüütu oli alguses kogu see uuendamise protsess - pidevalt pidi jälgima, kas vaja käsureale kirjutada järgmist sammu, hiljem JIRAs vana versiooni numbrit muuta ja Weblogicust vana versioon kustutada. Praegu on väga mugav ühe käsklusega uuendamise skript tööle panna, mis korraga kõik vajalikud sammud ära teeb ja samal ajal kui skript jookseb ise teiste tegevustega jätkata. Väga selgelt erinevate värvidega on välja tootud error, warningu ja success teated, mis on lihtsasti märgatavad ja hästi loetavad. 
-
-Kui vaja on rohkem kui ühte moodulit uuendada, siis väga hea lahendus on selleks mitme moodulise uuendamise skript. Kui varem oli vaja keskkonda uue tsükli peale uuendada, siis võttis see ebamugavalt kaua aega ja vabatahtlikult kõige parema meelega seda ette ei tahtnud võtta. Nüüd on vaja ainult uuendatavad versioonid tekstifaili kirja panna ja ühe käsklusega skript käima tõmmata. 
-
-Samuti tooks välja, et uuendamise skriptid on väga hästi dokumenteeritud ja põhjalikult kirja pandud kuidas toimivad. Mul on väga hea meel, et versioonide uuendamine on skriptide abil nii lihtsaks, mugavaks ja meeldivaks tegevuseks saanud.
+   Käesoleva töö raames oli küsitud tagasiside uue raamistiku kohta meeskonnaliikmete käest, kes on seda kasutanud. Allpool on toodud mõned väljavõted, terved tekstid on kättesaadavad lisas 5.5.
+   
+   \begin{displayquote}
+   ``I also like that scalability has been considered when writing the script + many optional features have been implemented which can be used if one desires to do so.'' (Martin Rakver, Hosting Services and Application Manager)
+   \end{displayquote}
+   
+   \begin{displayquote}
+   ``I personally think that version-update script has significantly improved the speed of version update.'' (Kalle Jagula, QA Specialist)
+   \end{displayquote}
+   
+   \begin{displayquote}
+    ``Version updater script has standardized the way our environments are updated, reducing learning curve for new people performing the task. Downside is that people are unaware, what happens in the background and can't handle simple errors in the process anymore.'' (Tanel Käär, System Architect)
+    \end{displayquote}
+    
+    \begin{displayquote}
+    ``The scripts allowed me to conveniently perform the updates while letting me concentrate on solving the primary problems and not leaving the environment containing all necessary information.'' (Klaus-Eduard Runnel, Senior Programmer)
+    \end{displayquote}
+    
+    \begin{displayquote}
+    ``Samuti tooks välja, et uuendamise skriptid on väga hästi dokumenteeritud ja põhjalikult kirja pandud kuidas toimivad.'' (Helina Ziugand, QA Specialist)
+    \end{displayquote}
 
   \newpage
   
@@ -424,6 +438,7 @@ Kokkuvõtte tekstis on soovitav kasutada lihtmineviku umbisikulist tegumoodi, n�
   
   \subsection{Terminid}
   
+  \textbf{Raamistik} \--- \\
   \textbf{Rakendus} \--- \\
   \textbf{Server} \--- \\
   \textbf{Keskkond} \--- \\
@@ -443,6 +458,41 @@ Kokkuvõtte tekstis on soovitav kasutada lihtmineviku umbisikulist tegumoodi, n�
   \subsection{Skripti projekti juhend}
   
   Bash skripti projekti sisene juhend: \url{https://github.com/iriiiina/bachelors-thesis/blob/master/manual/Confluence%20Manual.pdf}
+  
+  \subsection{Kolleegide tagasiside}
+  
+  \subsubsection{Martin Rakver, Hosting Services and Application Manager}
+  
+  I have not been using the script very much, because I rarely update modules nowadays. But what I can say is that it is definately in the right place – automating activities that testers would need do to on daily basis each time when deploying a new module. Come to think about it, there are actually quite many activites related to new module deployment – would be interesting to compare the time it takes to deploy a module manually vs using script + calculate about how much time we as a team are saving daily, montly, yearly (and get to do more important things with that time).
+I also like that scalability has been considered when writing the script + many optional features have been implemented which can be used if one desires to do so.
+
+  \subsubsection{Kalle Jagula, QA Specialist}
+  
+  I personally think that version-update script has significantly improved the speed of version update. Especially with the settings for bulk-update, which improves the speed of modules' version update and manageability of test/demo environments.
+  
+  \subsubsection{Tanel Käär, System Architect}
+  
+  Version updater script has standardized the way our environments are updated, reducing learning curve for new people performing the task. Downside is that people are unaware, what happens in the background and can't handle simple errors in the process anymore.
+  
+  \subsubsection{Klaus-Eduard Runnel, Senior Programmer}
+  
+  I have mostly used the scripts to perform quick module and dependency updates in specific test environments when deploying quick fixes or debugging problems in the modules I'm responsible for. Deployment of artifacts is secondary task in such scenarios. The scripts allowed me to conveniently perform the updates while letting me concentrate on solving the primary problems and not leaving the environment containing all necessary information.
+
+In some cases it was necessary to deploy custom-built experimental (unversioned) war-files. In these cases the scripts could not be used.
+They would have been useful though if such experiments would have been commited to feature branches and published as feature branch artifacts. (As of today, we are better prepared for such circumstances.)
+
+The scripts were also useful to deploy predefined sets of modules to temporary test environments living on reusable virtual machine images. It is important to note that a module update triggers launching a set of associated sql scripts to bring a database schema up to date. In that way the version update scripts let us automate most of a process of setting up updated environment from virtual machine images.
+
+It would be helpful if the scripts were adapted to perform changes on remote machines and to perform changes on multiple environments simultaneously.
+
+  \subsubsection{Helina Ziugand, QA Specialist}
+  
+  Uuendamise skriptid on nii projektile kui ka minu igapäevasele tööle väga positiivselt mõjunud. 
+Kui algselt oli uuendamise jaoks vaja mitu sammu käsitsi teha, siis nüüd käib see automaatselt ja kiiresti. Võiks öelda, et üsna tüütu oli alguses kogu see uuendamise protsess - pidevalt pidi jälgima, kas vaja käsureale kirjutada järgmist sammu, hiljem JIRAs vana versiooni numbrit muuta ja Weblogicust vana versioon kustutada. Praegu on väga mugav ühe käsklusega uuendamise skript tööle panna, mis korraga kõik vajalikud sammud ära teeb ja samal ajal kui skript jookseb ise teiste tegevustega jätkata. Väga selgelt erinevate värvidega on välja tootud error, warningu ja success teated, mis on lihtsasti märgatavad ja hästi loetavad. 
+
+Kui vaja on rohkem kui ühte moodulit uuendada, siis väga hea lahendus on selleks mitme moodulise uuendamise skript. Kui varem oli vaja keskkonda uue tsükli peale uuendada, siis võttis see ebamugavalt kaua aega ja vabatahtlikult kõige parema meelega seda ette ei tahtnud võtta. Nüüd on vaja ainult uuendatavad versioonid tekstifaili kirja panna ja ühe käsklusega skript käima tõmmata. 
+
+Samuti tooks välja, et uuendamise skriptid on väga hästi dokumenteeritud ja põhjalikult kirja pandud kuidas toimivad. Mul on väga hea meel, et versioonide uuendamine on skriptide abil nii lihtsaks, mugavaks ja meeldivaks tegevuseks saanud.
 
 
 \end{document}

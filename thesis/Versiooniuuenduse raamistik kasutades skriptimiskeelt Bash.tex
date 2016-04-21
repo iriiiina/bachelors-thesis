@@ -5,6 +5,7 @@
 \usepackage{hyperref}
 \usepackage{caption}
 \usepackage{csquotes}
+\usepackage{indentfirst}
 \renewcommand{\contentsname}{Sisukord}
 \renewcommand{\bibname}{Kasutatud materjalid}
 \renewcommand{\thesection}{\arabic{section}}
@@ -93,17 +94,17 @@
   \label{sissejuhatus}
   \addcontentsline{toc}{section}{\nameref{sissejuhatus}}
   
-  Käesolevas lõputöös lahendatakse rakenduslikku probleemi toimivas tarkvaraprojektis. Probleem seisneb selles, et projekti olemuse tõttu toote versiooni uuendamise protsess võtab kaua aega ja eeldab palju manuaalset sekkumist. See raiskab resursse ja suurendab inimliku vea tekkimise tõenäosust. Töö eesmärk on automatiseerida versiooniuuenduse protsessi konkreetses projektis, selleks, et lihtsustada antud protsessi, et säästa aega ja vähendada inimlike vigade arvu.
+  Käesolevas lõputöös lahendatakse rakenduslikku probleemi toimivas tarkvaraprojektis. Probleem seisneb selles, et projekti olemuse tõttu toote versiooni uuendamise protsess võtab kaua aega ja eeldab palju manuaalset sekkumist. See raiskab resursse ja suurendab inimliku vea tekkimise tõenäosust. Töö eesmärk on automatiseerida versiooniuuenduse protsessi konkreetses projektis, selleks, et lihtsustada antud protsessi, et säästa aega ja vähendada inimlike vigade arvu.\\
   
-  Töö koosneb viiest osast. Esimeses osas püstitatakse probleem: kirjeldatakse projekti arhitektuuri, manuaalse uuendamise protsessi, probleeme, mis vana protsess toob ja nõudeid uuele lahendusele. Peamine väljakutse seisneb selles, et toode koosneb paarkümnest moodulitest (täpne arv sõltub kliendi nõuetest), mida on vaja paigaldada 31 keskkonna. See tähendab, et selleks, et paigaldada toote uut versiooni kõikidele keskkondadele on vaja teha umbes 620 uuendust (mitte arvestades testkeskkondade vaheuuendustega). Lisaks on projektis kasutusel kaks erinevat veebiserverit: Oracle WebLogic 12 ja Apache Tomcat 8. Uuenduse protsessi automatiseerimine peab võtma arvesse kõik need väljakutsed.
+  Töö koosneb viiest osast. Esimeses osas püstitatakse probleem: kirjeldatakse projekti arhitektuuri, manuaalse uuendamise protsessi, probleeme, mis vana protsess toob ja nõudeid uuele lahendusele. Peamine väljakutse seisneb selles, et toode koosneb paarkümnest moodulitest (täpne arv sõltub kliendi nõuetest), mida on vaja paigaldada 31 keskkonna. See tähendab, et selleks, et paigaldada toote uut versiooni kõikidele keskkondadele on vaja teha umbes 620 uuendust (mitte arvestades testkeskkondade vaheuuendustega). Lisaks on projektis kasutusel kaks erinevat veebiserverit: Oracle WebLogic 12 ja Apache Tomcat 8. Uuenduse protsessi automatiseerimine peab võtma arvesse kõik need väljakutsed.\\
   
-  Teises osas uuritakse võimalikke lahendusi: kas kasutada turul olemasolevat toodet (töös uuritakse neli toodet: Atlassian Bamboo, Chef, Jenkins ja Ansible Tower) või kirjutada ise tarkvara. Tuuakse välja iga lahenduse eeliseid ja puuduseid ning seletatakse miks langetati otsus Bash skripti kirjutamise kasuks. Valmistoodete peamised puudused on maksmus, võimetus hallata protsesse ja vajadusel parandada vigu, vajadus kulutada palju aega toode tundmiseks ja rakendamiseks.
+  Teises osas uuritakse võimalikke lahendusi: kas kasutada turul olemasolevat toodet (töös uuritakse neli toodet: Atlassian Bamboo, Chef, Jenkins ja Ansible Tower) või kirjutada ise tarkvara. Tuuakse välja iga lahenduse eeliseid ja puuduseid ning seletatakse miks langetati otsus Bash skripti kirjutamise kasuks. Valmistoodete peamised puudused on maksmus, võimetus hallata protsesse ja vajadusel parandada vigu, vajadus kulutada palju aega toode tundmiseks ja rakendamiseks.\\
   
-  Kolmandas osas kirjeldatakse valitud lahendust: mis on skripti tööpõhimõtte ja arhitektuur ja kuidas seda saab paigaldada ja kasutada. Skripti põhifunktsionaalsus on mooduli faili alla laadimine, vana versiooni maha võtmine, uue versiooni paigaldamine, kolleegide teavitamine toimunud versiooniuuendusest. Lisaks oluliseks funktsionaalsuseks on erinevad kontrollid, mis vähendavad tõenäosust paigaldada vale versioon ja logimise funktsionaalsus, mis võimaldab kätte saada põhjalikku infot iga uuenduse kohta.
+  Kolmandas osas kirjeldatakse valitud lahendust: mis on skripti tööpõhimõtte ja arhitektuur ja kuidas seda saab paigaldada ja kasutada. Skripti põhifunktsionaalsus on mooduli faili alla laadimine, vana versiooni maha võtmine, uue versiooni paigaldamine, kolleegide teavitamine toimunud versiooniuuendusest. Lisaks oluliseks funktsionaalsuseks on erinevad kontrollid, mis vähendavad tõenäosust paigaldada vale versioon ja logimise funktsionaalsus, mis võimaldab kätte saada põhjalikku infot iga uuenduse kohta.\\
   
-  Neljandas osas uuritakse kuidas antud lahendus mõjus projektile: võrreldakse versiooni uuendusele kulunud aega manuaalse ja automatiseeritud protsessi puhul ja lisatakse kolleegide tagasisidet uue raamistiku kasutamisele.
+  Neljandas osas uuritakse kuidas antud lahendus mõjus projektile: võrreldakse versiooni uuendusele kulunud aega manuaalse ja automatiseeritud protsessi puhul ja lisatakse kolleegide tagasisidet uue raamistiku kasutamisele.\\
   
-  Viimases osas tuuakse välja lahenduse perspektiive: kuidas loodud skripti saab edasi arendada ja kuidas saab seda teistes projektides rakendada.
+  Viimases osas tuuakse välja lahenduse perspektiive: kuidas loodud skripti saab edasi arendada ja kuidas saab seda teistes projektides rakendada.\\
   
   Töö tulemuseks on töötav, avatud lähtekoodiga, skript Bash keeles ja selle dokumentatsioon.
   
@@ -112,11 +113,11 @@
   % Probleem
   \section{Probleemi püstitus}
   
-  Versioonide uuendamine on tingimata vajalik protsess tarkvara arenduses. Projektis, mida kirjeldatakse käesoleva töö raames, see protsess mängib väga olulist rolli.
+  Versioonide uuendamine on tingimata vajalik protsess tarkvara arenduses. Projektis, mida kirjeldatakse käesoleva töö raames, see protsess mängib väga olulist rolli.\\
   
-  Projekti rakendus on kirjutatud Java keeles ja on kasutusel .WAR failid. Lisaks projekt rakendub modulaarsuse süsteemi, mis tähendab, et kogu rakenduse kood on jagatud moodulite kaupa ja iga mooduli kohta on olemas eraldi .WAR fail. Kokku on umbes 20 moodulit (täpne arv sõltub kliendist, sest erinevatel klientidel on erinev moodulite komplekt).
+  Projekti rakendus on kirjutatud Java keeles ja on kasutusel .WAR failid. Lisaks projekt rakendub modulaarsuse süsteemi, mis tähendab, et kogu rakenduse kood on jagatud moodulite kaupa ja iga mooduli kohta on olemas eraldi .WAR fail. Kokku on umbes 20 moodulit (täpne arv sõltub kliendist, sest erinevatel klientidel on erinev moodulite komplekt).\\
   
-  Rakendust kasutavad 10 klienti. 3-l nendes on olemas 3 keskkonda: toode, demo (kus kliendid tutvuvad uue funktsionaalsuse ja parandustega enne toote uuendust) ja test (kus projekti meeskond testib funktsionaalsust enne tarnimist kliendile). 7-l kliendil on olemas 2 keskkonda: toode ja test. See tähendab, et kokku on olemas $3*3+7*2=23$ kliendikeskkonda. Lisaks veel umbes 7 projekti test keskkonda, mida kasutatakse erinevatel faasidel erineva funktsionaalsuse testimise jaoks. Seega kokku tuleb $23+7=30$ keskkonda, mida on vaja regulaarselt uuendada (mitte arvestades lokaalsete ja virtuaalmasinatega, mida iga meeskonnaliige võib vajadusel panna püsti). See tähendab, et selleks, et paigaldada rakenduse uut versiooni igale keskkonnale on vaja teha $30*20=600$ uuendust.
+  Rakendust kasutavad 10 klienti. 3-l nendes on olemas 3 keskkonda: toode, demo (kus kliendid tutvuvad uue funktsionaalsuse ja parandustega enne toote uuendust) ja test (kus projekti meeskond testib funktsionaalsust enne tarnimist kliendile). 7-l kliendil on olemas 2 keskkonda: toode ja test. See tähendab, et kokku on olemas $3*3+7*2=23$ kliendikeskkonda. Lisaks veel umbes 7 projekti test keskkonda, mida kasutatakse erinevatel faasidel erineva funktsionaalsuse testimise jaoks. Seega kokku tuleb $23+7=30$ keskkonda, mida on vaja regulaarselt uuendada (mitte arvestades lokaalsete ja virtuaalmasinatega, mida iga meeskonnaliige võib vajadusel panna püsti). See tähendab, et selleks, et paigaldada rakenduse uut versiooni igale keskkonnale on vaja teha $30*20=600$ uuendust.\\
   
   Toodud numbrid näitavad, et versiooni manuaalne uuendus võtab palju aega ja tähelepanu, mille pärast oli otsustatud lihtsustada ja automatiseerida uuenduse protsessi.
   
@@ -150,7 +151,7 @@
   \caption*{\textit{Tabel 1: Manuaalse uuenduse protsessi sammud}}
   \end{table}
   
-  Mitmete moodulite uuendamisel tuleb teha kõik need sammud iga mooduli jaoks. Aeg, mida võtavad need sammud, sõltub moodulist (kuna mõnes moodulis võib olla kaks korda rohkem koodi, kui teises, mis tähendab, et selle alla laadimine ja paigaldamine võtab kaks korda rohkem aega), aga keskmiselt see on 1.5 minutit. Kõikide moodulite uuendamine võib võtta tund aega, kuna lisandub veel aeg, mida inimene raisab õige versiooni numbri leidmiseks, .WAR faili aadressi kopeerimiseks, õige JIRA töö leidmiseks ja avamiseks jne. See tähendab, et inimlike vigade tekkimise tõenäosus on suur (nt alla laadida vale versiooni).
+  Mitmete moodulite uuendamisel tuleb teha kõik need sammud iga mooduli jaoks. Aeg, mida võtavad need sammud, sõltub moodulist (kuna mõnes moodulis võib olla kaks korda rohkem koodi, kui teises, mis tähendab, et selle alla laadimine ja paigaldamine võtab kaks korda rohkem aega), aga keskmiselt see on 1.5 minutit. Kõikide moodulite uuendamine võib võtta tund aega, kuna lisandub veel aeg, mida inimene raisab õige versiooni numbri leidmiseks, .WAR faili aadressi kopeerimiseks, õige JIRA töö leidmiseks ja avamiseks jne. See tähendab, et inimlike vigade tekkimise tõenäosus on suur (nt alla laadida vale versiooni).\\
   
   Allpool on toodud Tabel 1 "Nõuded versiooni uuenduse lihtsustamise lahendusele", mis kirjeldab lahendust, millele on mõtet investeerida aega protsessi muutmiseks \--- muul juhul uue protsessi loomine võtab rohkem aega, kui toob kasu.
   
@@ -192,7 +193,7 @@
   % Võimalikud lahendused
   \section{Võimalikud lahendused}
   
-  Uuenduse protsesside automatiseerimiseks ja haldamiseks on olemas palju valmistoodet. Kõige populaarsemad nendest on Atlassian Bamboo \cite{bamboo}, Chef \cite{chef}, Jenkins \cite{jenkins} ja Ansible Tower \cite{ansible}.
+  Uuenduse protsesside automatiseerimiseks ja haldamiseks on olemas palju valmistoodet. Kõige populaarsemad nendest on Atlassian Bamboo \cite{bamboo}, Chef \cite{chef}, Jenkins \cite{jenkins} ja Ansible Tower \cite{ansible}.\\
   
   Kõikide valmistoodete rakendamisel alati on olemas oma eelised ja puudused.
   
@@ -375,7 +376,21 @@
   \newpage
   
   % Lahenduse perspektiivid
-  \section{Lahenduse perspektiivid}  
+  \section{Lahenduse perspektiivid}
+  
+  Bash skripti kood Apache Tomcat veebiserveri jaoks on avalik ja asub \textit{GitHub} reposetooriumis \url{https://github.com/iriiiina/version-updater}. See tähendab, et igaüks, kellel on sarnane takrvaraarenduse süsteem, saab seda kasutada ja täiendada enda nõuete järgi. Iga faili sees on olemas põhjalikud kommentaarid, mis seletavad faili eesmärki ja selle kasutamisviisi, mis lihtsustab skripti arusaamist. Samuti \textit{GitHub} platvormil on olemas võimalus raporteerida vigu ja tellida uut funktsionaalsust.\\
+  
+  Nõuded Bash skripti avaliku versiooni kasutamiseks:
+  \begin{itemize}
+    \item Masin, kus on paigaldatud Bash vahend.
+    \item Apache Tomcat 8 veebiserver (vajadusel skripti saab muuta Tomcat 7 ja 6 versioonide jaoks).
+    \item Standartsed \textit{UNIX} vahendid: \code{find}, \code{grep}, \code{wget} (kui mooduli failid asuvad veebis), \code{curl}.
+    \item Standartne käsurea \code{bell} funktsionaalsus, mis saadab teavitusi kasutajale terminali kaudu.
+  \end{itemize}\\
+  
+  Lisaks skriptil on olemas avalik dokumentatsioon, mis asub \textit{GitBook} reposetooriumis \url{https://iriiiina.gitbooks.io/version-updater-manual/content/}. See sisaldab kasutusjuhendit, paigaldamise ja seadistamise juhendit ja kirjeldab kuidas on võimalik laiendata skripti tööd standartsete \textit{UNIX} vahenditega.\\
+  
+  Koodi ja dokumentatsiooni avalikkus tähendavad mitte ainult seda, et igaüks saab rakendada seda omas projektis, aga ka olemas oleva lahenduse optimiseerimist ja uue funktsionaalsusega täiendamist.
   
   \newpage
   
@@ -438,14 +453,16 @@ Kokkuvõtte tekstis on soovitav kasutada lihtmineviku umbisikulist tegumoodi, n�
   
   \subsection{Terminid}
   
-  \textbf{Raamistik} \--- \\
-  \textbf{Rakendus} \--- \\
-  \textbf{Server} \--- \\
-  \textbf{Keskkond} \--- \\
-  \textbf{Moodul} \--- \\
-  \textbf{Versioon} \--- \\
-  \textbf{Modulaarne süsteem} \--- \\
-  \textbf{Veebiserver} \---
+  \textbf{Raamistik (\textit{framework})} \--- süsteem, mis kirjeldab protsessi teostamist. Töö raames raamistiku all mõeldatakse Bash skripti koodi ja selle dokumentatsiooni.\\
+  \textbf{Server} \--- riistvara- ja tarkvarasüsteem, kus on paigaldatud veebiserver.\\
+  \textbf{Veebiserver} \--- klient-server-mudelil ja protokollil HTTP või HTTPS põhinev tarkvara, mis võtab vastu kasutajate brauseritelt tulevaid päringuid ja saadab vastuseks HTML-lehti ja faile (nt Apache Tomcat või Oracle WebLogic) (http://akit.cyber.ee/term/3152-veebiserver).\\
+  \textbf{Rakendus (\textit{application})} \--- tarkvara, mis on paigaldatud veebiserveril ja on kättesaadav kasutamiseks.\\
+  \textbf{Test rakendus} \--- rakendus, mida projekti meeskonnaliikmed kasutavad tarkvara testimiseks.\\
+  \textbf{Demo rakendus} \--- rakendus, mida kliendid kasutavad funktsionaalsuse testimiseks.\\
+  \textbf{Toodang rakendus} \--- lõppkasutajate rakendus.\\
+  \textbf{Moodul} \--- tarkvara osa, kus on kogutud ja pakitud ühe funktsionaalsuse kood (üks .WAR fail on üks moodul)\\
+  \textbf{Versioon} \--- number, mis määrab .WAR faili sisu (.WAR fail sisaldab funktsionaalsust ja parandusi vastavalt versiooni numbrile).\\
+  \textbf{Modulaarne süsteem} \--- tarkvaraarenduse süsteem, mille korral kogu koodi jagatakse moodulite kaupa, selleks, et ühe funktsionaalsuse tarnimine ei nõuaks terve rakenduse uuendamist.\\
   
   \subsection{Skripti lähtekood}
   

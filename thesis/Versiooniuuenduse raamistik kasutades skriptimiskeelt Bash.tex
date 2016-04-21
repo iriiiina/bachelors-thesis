@@ -6,6 +6,7 @@
 \usepackage{caption}
 \usepackage{csquotes}
 \usepackage{indentfirst}
+\usepackage[superscript,biblabel]{cite}
 \renewcommand{\contentsname}{Sisukord}
 \renewcommand{\bibname}{Kasutatud materjalid}
 \renewcommand{\thesection}{\arabic{section}}
@@ -331,20 +332,24 @@
   
   Kõige oluline eelis on see, et skript täidab kõik nõuded tabelist 2 "Nõuded versiooni uuenduse lihtsustamise lahendusele". Kõige märkavamad nendest on nõuded 1 ja 2 \--- protsessi kiirus ja mugavus.\\
   
-  Kiirus on ainuke tunnus, mida saab objektiivselt mõõta. Vana ja uue protsesside kiirused olid mõõdetud kasutades \textit{UNIX} käsurea funktsiooni \code{time} \cite{time}. Oli valitud 4 protsessi: 3 üksikute kõige populaarsemate moodulite uuendamine ja kõikide moodulite uuendamine ühes keskkonnas. Iga protsess oli tehtud vana käsitsi viisi ja uue automaatse skriptiga 3 korda ja võrdluseks on võetud katsetuste keskmised väärtused. Tulemused on toodud tabelis 4 "Vana ja uue protsesside kiirused".
+  On mõõdetud vana ja uue uuenduse protsesside kiirused. Automaatse protsessi alguseks oli võetud skripti käivitamise käsku kirjutamine ja lõppuks skripti teavitamine, et töö on lõppenud. Skripti töö aja mõõtmiseks oli kasutatud \textit{UNIX} käsurea funktsioon \code{time} \cite{time}. Käsitsi uuenduse protsess koosneb sammudest, mis on kirjeldatud tabelis 1 "Manuaalse uuenduse protsessi sammud" ja kulutud aeg oli mõõdetud stopperiga.\\
+  
+  Oli valitud 4 protsessi, mis olid teostatud samal serveril ja samade .WAR failidega: 3 üksikute kõige populaarsemate moodulite uuendamine ja kõikide moodulite uuendamine (võetud keskkonnas neid oli 18 tk). Iga protsess oli tehtud vana käsitsi viisi ja uue automaatse skriptiga 3 korda ja võrdluseks on võetud katsetuste keskmised väärtused. Tulemused on toodud tabelis 4 "Vana ja uue protsesside kiirused".
   
   \begin{table}[!htbp]
-  \begin{tabular}{| l | c | c |}
-    \hline
-    Moodul & Aut. uuendus (sek) & Käsitsi uuendus (sek)\\
-    \hline
-    admin & 27.245 & 80.45\\
-    treatment & 61.101 & 112.71\\
-    reception & 38.538 & 100.19\\
-    kõik (21) & & \\
-    \hline
-  \end{tabular}
-  \caption*{\textit{Tabel 4: Vana ja uue protsesside kiirused}}
+    \begin{center}
+      \begin{tabular}{| l | c | c |}
+        \hline
+         \textbf{Moodul} & \textbf{Aut. uuendus} & \textbf{Käsitsi uuendus}\\
+        \hline
+        admin & 27s & 80s\\
+        treatment & 61s & 112s\\
+        reception & 38s & 100s\\
+        kõik (18 tk) & 9m 12s & 34m 8s\\
+        \hline
+      \end{tabular}
+      \caption*{\textit{Tabel 4: Vana ja uue protsesside kiirused}}
+    \end{center}
   \end{table}
   
   Tegelikkuses kokkuhoidud aeg on veel suurem, sest vanas protsessis uuendaja tähelepanu oli hõivatud terve protsessi jooksul. Uue skripti kasutades testijatel on olemas võimalus tegeleda paralleelselt teiste ülesannetega ja mitte jälgida skripti tööd (see ise annab teada, kui uuendus on lõppenud).\\

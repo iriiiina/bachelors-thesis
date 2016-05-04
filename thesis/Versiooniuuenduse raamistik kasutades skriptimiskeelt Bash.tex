@@ -455,18 +455,20 @@
     \begin{center}
       \caption*{\textit{Tabel 4. Vana ja uue protsesside kiirused.}}
       
-      \begin{tabular}{| l | c | c |}
+      \begin{tabular}{| l | c | c | c | c |}
         \hline
-         \textbf{Moodul} & \textbf{Aut. uuendus} & \textbf{Käsitsi uuendus}\\
+         \textbf{Moodul} & \textbf{Aut. uuend.} & \textbf{Käs. uuend.} & \textbf{Uendusi 2015-s} & \textbf{Salv. aeg}\\
         \hline
-        admin & 27s & 80s\\
-        treatment & 61s & 112s\\
-        reception & 38s & 100s\\
-        kõik (18 tk) & 9m 12s & 34m 8s\\
+        admin & 27s & 80s & 67 tk & 1t\\
+        treatment & 61s & 112s & 240 tk & 3t 44m\\
+        reception & 38s & 100s & 197 tk & 3t 39m \\
+        kõik (18 tk) & 9m 12s & 34m 8s & \--- & \---\\
         \hline
       \end{tabular}
     \end{center}
   \end{table}
+  
+  Kaks viimast veergu näitavad salvestatud aega aastas 2015 (terve aasta uuenduse jaoks oli kasutusel automaatne skript). Veerus ``Uuendusi 2015-s'' on toodud vastava mooduli uuenduste arv ühes testrakenduses aasta jooksul. Veerus ``Salv. aeg'' on toodud salvestatud aeg aastas 2015, mille arvutamiseks võetakse käsitsi ja automaatse protsessi aja erinevust korratud uuenduste arvuga.\\
   
   Tegelikkuses kokkuhoidud aeg on veel suurem, sest vanas protsessis uuendaja tähelepanu oli hõivatud terve protsessi jooksul. Uue skripti kasutades testijatel on olemas võimalus tegeleda paralleelselt teiste ülesannetega ja mitte jälgida skripti tööd (see ise annab teada, kui uuendus on lõppenud).\\
   

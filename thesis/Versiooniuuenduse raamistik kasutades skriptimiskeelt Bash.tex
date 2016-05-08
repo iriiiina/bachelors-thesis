@@ -1,4 +1,6 @@
-\documentclass[12pt]{report}
+\documentclass[12pt]{article}
+\usepackage[a4paper]{geometry}
+\usepackage[estonian]{babel} 
 \usepackage[utf8]{inputenc}
 \usepackage{nameref}
 \usepackage{fancyhdr}
@@ -11,8 +13,8 @@
 \usepackage{graphicx}
 \usepackage{float}
 \usepackage{listings}
-\renewcommand{\contentsname}{Sisukord}
-\renewcommand{\bibname}{Kasutatud materjalid}
+%\renewcommand{\contentsname}{Sisukord}
+%\renewcommand{\bibname}{Kasutatud materjalid}
 \renewcommand{\thesection}{\arabic{section}}
 % Page numbers to the right
 \pagestyle{fancy}
@@ -23,7 +25,7 @@
 % Code formatting
 \newcommand{\code}[1]{\texttt{#1}}
 
-\title{Versiooniuuenduse raamistik kasutades skriptimiskeelt Bash}
+\title{Versiooniuuenduse automatiseerimine kasutades skriptimiskeelt Bash}
 \author{Irina Ivanova}
 \date{January 2016}
 
@@ -41,7 +43,7 @@
       {\Large Irina Ivanova}
     \end{center}
     \begin{center}      
-      {\huge Versiooniuuenduse raamistik}
+      {\huge Versiooniuuenduse automatiseerimine}
     \end{center}
     \begin{center}
       {\huge kasutades skriptimiskeelt Bash}
@@ -65,22 +67,28 @@
 
   \newpage
   
-  \noindent{\textbf{Versiooniuuenduse raamistik kasutades skriptimiskeelt Bash}}\\
+  \noindent\textbf{Versiooniuuenduse automatiseerimine kasutades skriptimiskeelt Bash}\\
   
-  \noindent{\textbf{Lühikokkuvõte:}}\\
-  Projektis, kus on kasutusel modulaarne süsteem, toimub palju rakenduse uuendusi, eriti kui seda rakendust kasutavad mitu klienti. Manuaalne versioonivahetuse protsess võtab palju aega ja suurendab inimliku vea tekkimise tõenäosust. Bakalaureusetöö teoreetilise osa eesmärgiks on leida võimalikud lahendused uuenduse protsessi automatiseerimiseks ning valida neist parim. Praktilise osa eesmärgiks on valmistada valitud lahendust ja rakendada seda projektis.\\
+  \noindent\textbf{Lühikokkuvõte:}\\
+  Modulaarset süsteemi kasutatavas projektis tehakse rakendusse palju uuendusi, eriti kui seda rakendust kasutavad mitu klienti. Manuaalne versioonivahetuse protsess võtab palju aega ja suurendab inimliku vea tekkimise tõenäosust. Bakalaureusetöö teoreetilise osa eesmärk on leida võimalikud lahendused uuendamisprotsessi automatiseerimiseks ja valida neist välja parim. Praktilise osa eesmärk on valitud lahenduse loomine ja selle rakendamine projektis.\\
   
-  \noindent{\textbf{Võtmesõnad:}}\\
-  Bash skript, versiooni uuendus, Apache Tomcat, Java, modulaarne süsteem
+  \noindent\textbf{Võtmesõnad:}\\
+  Bash skript, versiooniuuendus, Apache Tomcat, Java, modulaarne süsteem\\
+  
+  \noindent\textbf{CERCS:}\\
+  CERCS P170 Arvutiteadus, arvutusmeetodid, süsteemid, juhtimine (automaatjuhtimisteooria)
   \vspace{2cm}
 
-  \noindent{\textbf{Version Update Framework Using Scripting Language Bash}}\\
+  \noindent\textbf{Version Update Automation Using Scripting Language Bash}\\
 
-  \noindent{\textbf{Abstract:}}\\
-  There are a lot of application updates in the project, where modular system is in use, esecially if many clients are using this application. Manual version update process takes a lot of time and increases the possibility of human errors. The aim of the bachelor’s thesis theoretical part is to find out the possible solutions for the application update process automation and to choose the best one. The aim of the practical part is to create the solution and to apply it in the project.\\
+  \noindent\textbf{Abstract:}\\
+  There are a lot of application updates in a project, where modular system is in use, especially if the application is used by many clients. Manual version update process takes a lot of time and increases the possibility of human errors. The aim of the theoretical part of this bachelor thesis is to find possible solutions for the application update process automation and to choose the best one. The aim of the practical part is to create the solution and apply it to the project.\\
 
-  \noindent{\textbf{Keywords:}}\\
-  Bash script, version update, Apache Tomcat, Java, modular system
+  \noindent\textbf{Keywords:}\\
+  Bash script, version update, Apache Tomcat, Java, modular system\\
+  
+  \noindent\textbf{CERCS:}\\
+  CERCS P170 Computer science, numerical analysis, systems, control
   
   \newpage
  
@@ -98,52 +106,49 @@
   \label{sissejuhatus}
   \addcontentsline{toc}{section}{\nameref{sissejuhatus}}
   
-  Käesolevas lõputöös lahendatakse rakenduslikku probleemi toimivas tarkvaraprojektis. Probleem seisneb selles, et projekti olemuse tõttu rakenduse versiooni uuendamise protsess võtab kaua aega ja eeldab palju manuaalset sekkumist. See raiskab ressursse ja suurendab inimliku vea tekkimise tõenäo-sust. Bakalaureusetöö teoreetilise osa eesmärgiks on leida võimalikud lahendused uuenduse protsessi automatiseerimiseks ning valida neist parim. Praktilise osa eesmärgiks on valmistada valitud lahendust ja rakendada seda projektis.\\
+  Käesolevas lõputöös keskendutakse rakendusliku probleemi lahendamisele toimivas tarkvaraprojektis. Projekti olemuse tõttu võtab rakenduse versiooni uuendamine kaua aega ja eeldab palju manuaalset sekkumist. See kulutab ressursse ja suurendab inimliku vea tekkimise tõenäosust. Bakalaureusetöö teoreetilise osa eesmärk on leida võimalikud lahendused uuendamisprotsessi automatiseerimiseks ja valida neist välja parim. Praktilise osa eesmärk on valitud lahenduse loomine ja selle rakendamine projektis.
   
-  Töö koosneb viiest osast. Esimeses osas püstitatakse probleem: kirjeldatakse projekti arhitektuuri, manuaalse uuendamise protsessi, probleeme, mis vana protsess toob ja nõudeid uuele lahendusele. Peamine ülesanne seisneb selles, et rakendus koosneb paarikümnest moodulitest (täpne arv sõltub kliendi nõuetest), mida on vaja paigaldada 31 keskkonda. Selleks, et paigaldada rakenduse uut versiooni kõikidesse veebiserveritesse, on vaja teha umbes 600 uuendust (mitte arvestades test rakenduste vaheuuendustega). Lisaks on projektis kasutusel kaks erinevat veebiserverit: Oracle WebLogic 12\footnote{\url{https://www.oracle.com/middleware/weblogic}} ja Apache Tomcat 8\footnote{\url{http://tomcat.apache.org}}. Uuenduse protsessi automatiseerimine peab võtma arvesse kõik need nõuded.\\
+  Töö koosneb viiest osast. Esimeses osas püstitatakse probleem: kirjeldatakse projekti arhitektuuri, manuaalset uuendamisprotsessi, senise protsessiga kaasnevaid probleeme ja nõudeid uuele lahendusele. Peamine raskus seisneb selles, et rakendus koosneb paarikümnest moodulist (täpne arv sõltub kliendi nõuetest), mis tuleb paigaldada 31 rakendust. Selleks, et paigaldada rakenduse uus versioon kõigisse veebiserveritesse, on vaja teha umbes 600 uuendust (arvestamata testrakenduste vaheuuendusi). Lisaks on projektis kasutusel kaks erinevat veebiserverit: Oracle WebLogic 12\footnote{\url{https://www.oracle.com/middleware/weblogic}} ja Apache Tomcat 8\footnote{\url{http://tomcat.apache.org}}. Uuendamisprotsessi automatiseerimine peab arvestama kõigi nende nõuetega.
   
-  Töö teises osas uuritakse võimalikke lahendusi: kas kasutada turul olemasolevat toodet (töös uuritakse nelja toodet: Atlassian Bamboo, Chef, Jenkins ja Ansible Tower) või kirjutada ise tarkvara. Tuuakse välja iga lahenduse eeliseid ja puuduseid ning selgitatakse miks langetati otsus Bash skripti kirjutamise kasuks. Valmistoodete peamised puudused on maksmus, võimetus hallata protsesse ja vajadusel parandada vigu, vajadus kulutada palju aega toode tundmiseks ja rakendamiseks.\\
+  Töö teises osas uuritakse võimalikke lahendusi: kas kasutada turul olemasolevat toodet (töös uuritakse nelja toodet: Atlassian Bamboo, Chef, Jenkins ja Ansible Tower) või kirjutada ise tarkvara. Tuuakse välja iga lahenduse eeliseid ja puuduseid ning selgitatakse, miks langetati otsus Bash skripti kirjutamise kasuks. Valmistoodete peamised puudused on nende maksumus, võimetus hallata protsesse ja parandada vigu, vajadus kulutada palju aega toote tundmaõppimiseks ja rakendamiseks.
   
-  Kolmandas osas kirjeldatakse valitud lahendust: mis on skripti tööpõhi-mõte ja arhitektuur ja kuidas seda saab paigaldada ja kasutada. Skripti põhifunktsionaalsus on mooduli faili alla laadimine, vana versiooni maha võtmine, uue versiooni paigaldamine ning kolleegide teavitamine toimunud versiooniuuendusest. Lisaks on oluliseks funktsionaalsuseks erinevad kontrollid, mis vähendavad tõenäosust paigaldada vale versioon ja logimise funktsionaalsus, mis võimaldab kätte saada põhjalikku infot iga uuenduse kohta.\\
+  Kolmandas osas kirjeldatakse valitud lahendust: milline on skripti tööpõhimõte ja arhitektuur ning kuidas skripti saab paigaldada ja kasutada. Skripti põhifunk\-tsioonid on moodulifaili allalaadimine, vana versiooni mahavõtmine, uue versiooni paigaldamine ja vajalikke inimeste teavitamine toimunud versiooniuuendusest. Lisaks on oluliseks funktsiooniks erinevad kontrollid, mis vähendavad vale versiooni paigaldamise tõenäosust, samuti logimis funktsioon, mis võimaldab hankida andmeid iga uuenduse kohta.
   
-  Neljandas osas uuritakse, kuidas antud lahendus mõjus projektile: võrrel-dakse versiooni uuendusele kulunud aega manuaalse ja automatiseeritud protsessi puhul ja lisatakse kolleegide tagasisidet uue raamistiku kasutamisele.\\
+  Neljandas osas uuritakse, kuidas valitud lahendus mõjutas projekti: võrreldakse versiooniuuendusele kulunud aega manuaalse ja automatiseeritud protsessi puhul ning vahendatakse kolleegidelt uue uuendamisprotsessi kasutamise kohta saadud tagasisidet.
   
-  Viimases osas tuuakse välja lahenduse perspektiive: kuidas loodud skripti saab edasi arendada ja kuidas saab seda teistes projektides rakendada.\\
+  Viimases osas tuuakse välja lahenduse kaugemaid perspektiive: kuidas saab loodud skripti edasi arendada ja teistes projektides rakendada.
   
-  Töös on olemas kuus lisa: terminid, Bash skripti lähtekood, skripti avalik juhend, skripti projekti juhend, kolleegide tagasiside uue raamistiku kohta ja litsents.\\
+  Tööl on kaheksa lisa: terminid, ühe mooduli uuendamisprotsessi mudel, mitme mooduli uuendamisprotsessi mudel, Bash skripti lähtekood, skripti avalik juhend, skripti projekti juhend, kolleegide tagasiside uue skripti kohta ja litsents.
   
-  Töö tulemuseks on töötav, avatud lähtekoodiga skript Bash keeles ja selle dokumentatsioon.
+  Käesoleva bakalaureusetöö tulemuseks on töötav, avatud lähtekoodiga skript Bash keeles ja selle dokumentatsioon.
   
   \newpage
   
   % Probleem
   \section{Probleemi püstitus}
   
-  Versioonide uuendamine on sageli esinev vajalik protsess tarkvara arenduses. Projektis, mida kirjeldatakse käesoleva töö raames, etendab see protsess väga olulist rolli.\\
+  Versioonide uuendamine on tarkvara arendamisel sage ja vajalik protsess. Käes\-olevas töös kirjeldatud projektis etendab see protsess väga olulist rolli.
   
-  Projekti rakendus on kirjutatud Javas\footnote{\url{https://www.oracle.com/java}} ja kasutusel on WAR\--failid. Lisaks rakendab projekt modulaarsuse süsteemi, mis tähendab, et kogu rakenduse kood on jagatud mooduliteks ja iga mooduli kohta on olemas eraldi WAR\--fail. Kokku on umbes 20 moodulit (täpne arv sõltub kliendist, sest erinevatel klientidel on erinev moodulite komplekt).\\
+  Projekti rakendus on kirjutatud Javas ja kasutusel on WAR\--failid. Lisaks on projektis kasutatud modulaarsuse süsteemi, mis tähendab, et kogu rakenduse kood on jagatud mooduliteks ja iga mooduli kohta on olemas eraldi WAR\--fail. Kokku on umbes 20 moodulit (täpne arv sõltub kliendist, sest eri klientidel on erinev moodulite komplekt).
   
-  Rakendust kasutavad 10 klienti, neist kolmel on olemas kolm rakendust: toode, demo (kus kliendid tutvuvad uut funktsionaalsust ja parandusi enne toote uuendust) ja test (kus projekti meeskond testib funktsionaalsust enne tarnimist kliendile). Seitsmel kliendil on olemas kaks rakendust: toode ja test. See tähendab, et kokku on olemas $3*3+7*2=23$ kliendirakendust. Lisaks on veel umbes 7 projekti testrakendust, mida kasutatakse erinevatel faasidel erineva funktsionaalsuse testimise jaoks. Seega kokku tuleb $23+7=30$ rakendust, mida on vaja regulaarselt uuendada (mitte arvestades kohalik\-- ja virtuaalmasinatega, mida iga meeskonnaliige võib vajadusel luua). See tähendab, et rakenduse uue versiooni paigaldamiseks igale veebiserverile on vaja teha $30*20=600$ uuendust.\\
+  Rakendust kasutavad 10 klienti, kellest kolmel on olemas kolm rakendust: toode, demorakendus (kus kliendid tutvuvad enne tooteuuendust uute funktsioonide ja parandustega) ja testrakendus (kus projekti meeskond testib toote funktsioone enne selle tarnimist kliendile). Seitsmel kliendil on olemas kaks rakendust: toode ja testrakendus. See tähendab, et kokku on $3*3+7*2=23$ kliendirakendust. Lisaks on projektis veel umbes seitse testrakendust, mida kasutatakse eri faasides eri funktsioonide testimiseks. Seega tuleb kokku $23+7=30$ rakendust (arvestamata kohalikke ja virtuaalmasinaid, mida iga meeskonnaliige võib vajadusel luua), mida on vaja regulaarselt uuendada. See tähendab, et rakenduse uue versiooni paigaldamiseks igasse veebiserverisse on vaja teha $30*20=600$ uuendust.
   
-  Toodud numbrid näitavad, et versiooni manuaalne uuendus võtab palju aega ja tähelepanu, seetõttu otsustati lihtsustada ja automatiseerida uuenduse protsessi.
-  
-  \newpage
-  \subsubsection{Manuaalne uuenduse protsess}
-  
-  Ühe mooduli manuaaluuenduse protsessi sammud on esitatud Tabelis 1.
+  Toodud arvud näitavad, et versiooni manuaalne uuendamine nõuab palju aega ja tähelepanu, mistõttu otsustati uuendamisprotsessi lihtsustada ja automatiseerida.
+    
+  Tabelis 1 on esitatud ühe mooduli manuaalse uuendamisprotsessi sammud.
   
   \begin{table}[H]
-    \caption*{\textit{Tabel 1. Manuaalse uuenduse protsessi sammud.}}
+    \caption*{\textit{Tabel 1. Manuaalse uuendamisprotsessi sammud.}}
   
     \begin{tabular}{ |c|p{11cm}| }
       \hline
       \textbf{Samm} & \textbf{Tegevus}\\
       \hline
-      1 & WAR\--faili uue koodiga alla laadimine serveri peale.\\
+      1 & WAR\--faili uue versiooni numbriga allalaadimine serverisse.\\
       \hline
       2 & Kui veebiserveriks on Oracle WebLogic, siis WAR\--faili prekompileerimine (Apache Tomcat veebiserveril seda sammu ei ole).\\
       \hline
-      3 & Faili ümber nimetamine.\\
+      3 & Faili ümbernimetamine.\\
       \hline
       4 & Faili paigaldus.\\
       \hline
@@ -151,49 +156,53 @@
       \hline
       6 & Uue versiooni staatuse kontrollimine.\\
       \hline
-      7 & JIRA\footnotemark{} töö uuendamine, mis automaatselt saadab emaile kolleegidele, et versioon on uuendatud (iga mooduli ja keskkonna kohta on olemas eraldi JIRA töö).\\
+      7 & JIRA\footnotemark{} töö uuendamine, mis saadab automaatselt kollegidele teate versiooni uuendamise kohta.\\
       \hline
-      8 & Alla laaditud faili kustutamine.\\
+      8 & Allalaaditud faili kustutamine.\\
       \hline
     \end{tabular}
   \end{table}
   
   \footnotetext{\url{https://www.atlassian.com/software/jira}}
   
-  Mitmete moodulite uuendamisel tuleb teha kõik need sammud iga mooduli jaoks. Aeg, mida võtavad need sammud, sõltub moodulist (kuna mõnes moodulis võib olla kaks korda rohkem koodi, kui teises, mis tähendab, et selle allalaadimine ja paigaldamine võtab kaks korda rohkem aega), aga keskmiselt see on 1.5 minutit. Kõikide moodulite uuendamine võib võtta tund aega, kuna lisandub veel aeg, mida inimene raisab õige versiooni numbri leidmiseks, WAR\--faili aadressi kopeerimiseks, õige JIRA töö leidmiseks ja avamiseks jne. See tähendab, et inimlike vigade tekkimise tõenäosus on suur (nt vale versiooni valimine).\\
+  Sammus 7 mainitud JIRA põhifunktsiooniks on ülesannete haldamine. Projektis seda kasutatakse versiooniuuenduste jälgimiseks: iga mooduli ja rakenduse kohta on olemas eraldi JIRA töö (\textit{issue}), kus uuendatakse selle pealkirja (\textit{summary}) versioonivahetuse järel. Need kasutajad, kes jälgivad (\textit{watching}) selliseid tööd saavad teavitusi töö pealkirja muutmise kohta. See võimaldab mitte ainult teavitada inimesi toimunud uuenduste kohta, vaid ka tekitada töölauda (\textit{dashboard}), kus on nähtavad kõik versioonid, mis on paigaldatud konkreetsetes rakendustes.
   
-  Tabelis 2 on toodud nõuded versiooni uuenduse lihtsustamise lahendusele, kus kirjeldatakse lahendust, millele on mõtet investeerida aega protsessi muutmiseks \--- muul juhul uue protsessi loomine võtab rohkem aega, kui toob kasu.
+  Mitme mooduli uuendamisel tuleb läbida kõik sammud Tabelist 1 iga mooduliga eraldi. Neile tegevustele kuluv aeg sõltub moodulist (kuna mõnes moodulis võib olla teisest kordades rohkem koodi, siis selle allalaadimine ja paigaldamine võtab rohkem aega), aga keskmiselt on see 1.5 minutit. Kõikide moodulite uuendamine võib võtta aega ühe tunni, sest lisandub veel aeg õige versiooninumbri leidmiseks, WAR\--faili aadressi kopeerimiseks, õige JIRA töö leidmiseks ja avamiseks jne. See tähendab, et inimlike vigade tekkimise tõenäosus on suur (nt mooduli vale versiooni allalaadimine).
+  
+  Tabelis 2 on toodud nõuded versiooniuuenduse lihtsustamise lahendusele. Nende nõuete kehtestamisel on peetud silmas, et tulemuseks oleks lahendus, millesse on mõtet aega investeerida, sest uue protsessi loomine on ajamahukas tegevus ja sellest saadav tulu peab olema suurem sellele kulutatud ajast.
   
   \begin{table}
-    \caption*{\textit{Tabel 2. Nõuded versiooni uuenduse lihtsustamise lahendusele.}}
+    \caption*{\textit{Tabel 2. Nõuded versiooniuuenduse lihtsustamise lahendusele.}}
     
     \begin{tabular}{|c|p{11cm}|}
       \hline
       \textbf{Number} & \textbf{Nõue}\\
       \hline
-      1 & Uuenduse protsess peab võtma vähem aega.\\
+      1 & Uuendamisprotsess peab võtma varasemast vähem aega.\\
       \hline
-      2 & Uuenduse protsess peab nõudma nii vähe käsitsi tegevusi, kui on võimalik.\\
+      2 & Uuendamisprotsess peab eeldama võimalikult vähe käsitsi tegevusi.\\
       \hline
-      3 & Lahendus peab võimaldama uuendada nii üht moodulit, kuid ka mitu moodulit korraga.\\
+      3 & Lahendus peab võimaldama nii ühe kui ka mitme mooduli samaaegset uuendamist.\\
       \hline
-      4 & Projekt kasutab kaks erinevat veebiserverit: Apache Tomcat 8 ja Oracle WebLogic 12. Lahendus peab töötama sama moodi kõikidel serveritel, sõltumata sellest, mis tarkvara seal on paigaldatud.\\
+      4 & Projekt kasutab kahte erinevat veebiserverit: Apache Tomcat 8 ja Oracle WebLogic 12. Lahendus peab töötama samamoodi kõigil serverites, sõltumata seal kasutatavast tarkvarast.\\
       \hline
-      5 & Mõned meeskonnaliikmed soovivad saada teavitusi toimunud uuenduste kohta, mis tähendab, et lahendusel peab olema teavituste süsteem.\\
+      5 & Meeskonnaliikmed soovivad saada tehtud uuenduste kohta teavitusi, mis tähendab, et lahenduses peab sisalduma teavitussüsteem.\\
       \hline
-      6 & Peab olema võimalus vaadata kes ja millal uuendas mingit moodulit mingis keskkonnas, mis tähendab, et peab olema logimise süsteem.\\
+      6 & Peab olema võimalus vaadata, kes ja millal uuendas mingit moodulit mingis rakenduses, mis eeldab logimissüsteemi olemasolu.\\
       \hline
-      7 & Uuendustega tegelevad testijad, seega protsess ei tohi olla liiga tehniline.\\
+      7 & Lahenduse kasutamine ei tohi nõuda erilisi tehnilisteadmisi.\\
       \hline
-      8 & Uuendustega võib tegeleda mitu inimest samal ajal, mis tähendab, et lahendusel peab olema lukustamise süsteem, et vältida paralleelselt uuendust samal serveril.\\
+      8 & Uuendustega võib tegeleda samaaegselt mitu inimest, mis tähendab, et lahendusel peab olema lukustamissüsteem, vältimaks paralleelseid uuendusi samas serveris.\\
       \hline
-      9 & Toodang keskkonnad kasutavad 2 serverit, seega lahendus peab oskama uuendada versiooni automaatselt kahel serveril.\\
+      9 & Toodangurakendused kasutavad kahte serverit, seega peab lahendus oskama uuendada versiooni automaatselt kahel serveril.\\
       \hline
-      10 & Lahendus peab olema täielikult projekti kontrolli all, selleks, et selle haldamist, seadistamist ja parandamist oleks võimalik teostada igal ajal.\\
+      10 & Lahendus peab olema täielikult projekti kontrolli all, et seda oleks võimalik igal ajal hallata, seadistada ja parandada.\\
       \hline
-      11 & Lahenduse loomine ei tohi võtta palju aega, sest projektil puuduvad selleks inimresurssid.\\
+      11 & Lahenduse loomine ei tohi võtta palju aega, sest projektil puuduvad selleks inimressurssid.\\
       \hline
-      12 & Lahendus ei tohi võtta palju raha.\\
+      12 & Projektis on olemas Eesti ja Leedu rakendused, kuhu paigaldatakse samad moodulid, aga erinevate sufiksitega. Näiteks, kui Eesti rakenduses paigaldatakse mooduli \code{person}, siis Leedu rakenduses \code{person-lt}, kuna seal on olemas eriloogika Leedu isikute jaoks. See tähendab, et lahendus peab oskama aru saama mis sufiksiga moodulit on vaja paigaldada.\\
+      \hline
+      13 & Lahendus ei tohi võtta palju raha.\\
       \hline
     \end{tabular}
   \end{table}
@@ -203,182 +212,176 @@
   % Võimalikud lahendused
   \section{Võimalikud lahendused}
   
-  Uuenduse protsesside automatiseerimiseks ja haldamiseks on olemas palju valmistooteid. Kõige populaarsemad nendest on Atlassian Bamboo \cite{bamboo}, Chef \cite{chef}, Jenkins \cite{jenkins} ja Ansible Tower \cite{ansible}.\\
+  Uuendamisprotsesside automatiseerimiseks ja haldamiseks on olemas palju valmistooteid. Kõige populaarsemad nendest on Atlassian Bamboo \cite{bamboo}, Chef \cite{chef}, Jenkins \cite{jenkins} ja Ansible Tower \cite{ansible}.
   
-  Kõikide valmistoodete rakendamisel alati on olemas oma eelised ja puudused.\\
-  
-  \textbf{Eelised}
+  Kõigi valmistoodete rakendamisel on alati nii eeliseid kui ka puudusi. Valmistoodete eelisteks on:
   \begin{itemize}
-    \item Ei ole vaja kulutada aega süsteemi kirjutamisele, mis tegelikult on juba leiutatud.
-    \item Kuna rakendus on juba turul ja on populaarne, siis on suur tõenäosus, et see on kvaliteetne ja vastab kasutajate ootustele.
-    \item On olemas kogukond tarkvara kasutajatest, kes vajadusel saavad aidata ja jagada enda kogemust.
+    \item Ei ole vaja kulutada aega juba olemasoleva süsteemi kirjutamisele.
+    \item Turul olevate populaarsete rakenduste puhul on suur tõenäosus, et need on kvaliteetsed ja vastavad kasutajate ootustele.
+    \item Vajadusel saab rakendada konkreetse tarkvara kasutajate kogukonna oskusteavet, abi ja kogemusi.
   \end{itemize}
   
-  \textbf{Puudused}
+  Olemasolevate süsteemide rakendamisel on ka terve rida puudusi:
   \begin{itemize}
-    \item Suurem osa valmistoodetest on tasulised (Bamboo ja Jenkins on erandiks) ja hind alati sõltub serverite, rakenduste ja moodulite arvust, mis vaadatud projekti korral on suur.
-    \item Valmistoode õppimine, paigaldamine ja seadistamine võtab palju aega, eriti kui see pakub laia valiku funktsionaalsusi.
-    \item Projekt sõltub tootjast \--- vigade olemasolul ei saa olla kindel, et neid parandatakse lähimal ajal või parandatakse üldse; probleemide tekkimisel ei saa olla kindel, et tootja suudab pakkuda kasutajatuge.
-    \item Projekt peab usaldama tootjat \--- usaldama, et valmistoode on turvaline ja stabiilne.
+    \item Suurem osa valmistoodetest on tasulised (Bamboo ja Jenkins on erandiks) ning nende hind tavaliselt sõltub serverite, rakenduste ja moodulite arvust, mis vaadeldavas projektis on suur.
+    \item Valmistoote tundmaõppimine, selle paigaldamine ja seadistamine võtab palju aega, eriti kui see pakub laia funktsioonide valikut.
+    \item Projekt sõltub tootjast \--- vigade ilmnemisel ei saa olla kindel kas ja millal need parandatakse; probleemide tekkimisel ei saa olla kindel, et tootja suudab pakkuda kasutajatuge.
+    \item Projekt peab usaldama tootjat \--- lootma, et valmistoode on turvaline ja stabiilne.
   \end{itemize}
+    
+  Alternatiiv valmistoote kasutamisele on kirjutada oma lahendus. Kuna selline lahendus peab suhtlema teiste veebiteenustega ja töötama kõikides operatsioonisüsteemides, siis valiti antud juhul lahenduse aluseks skriptimiskeel Bash \cite{bash,bash-book}.
   
-  Need eelised ja puudused kehtivad kõikide valmistoodete kohta.\\
-  
-  Alternatiiviks valmistoote kasutamisele on olemas võimalus kirjutada enda lahendus. Kuna see peab suhtlema teiste veebiteenustega ja töötama kõikidel operatsioonsüsteemidel, siis valiti skriptimiskeel Bash \cite{bash,bash-book}.\\
-  
-  Tabelis 3 on toodud valmistoodete vastavus nõuetele, mis on esitatud Tabelis 1. Kõige kriitilisem on nõue 11 ``lahenduse loomine ei tohi võtta palju aega, sest projektil puuduvad selleks inimresurssid''.
+  Tabelis 3 on toodud valmistoodete vastavus Tabelis 1 esitatud nõuetele. Kõige olulisem on 11. nõue, mille kohaselt ``ei tohi lahenduse loomine võtta palju aega, sest projektil puuduvad selleks inimressurssid''.
   
   \begin{table}[H]
-    \caption*{\textit{Tabel 3. Võimalikke lahenduste vastavus nõuetele.}}
+    \caption*{\textit{Tabel 3. Võimalike lahenduste vastavus nõuetele.}}
     
-    \begin{tabular}{ |l|c|c|c|c|c|c|c|c|c|c V{4} c V{4} c| }
+    \begin{tabular}{ |l|c|c|c|c|c|c|c|c|c|c V{4} c V{4} c|c| }
       \clineB{12-12}{4}
       \hline
-      \textbf{Lahendus / Nõude Nr} & \textbf{1} & \textbf{2} & \textbf{3} & \textbf{4} & \textbf{5} & \textbf{6} & \textbf{7} & \textbf{8} & \textbf{9} & \textbf{10} & \textbf{11} & \textbf{12}\\
+      \textbf{Lahendus / Nõude Nr} & \textbf{1} & \textbf{2} & \textbf{3} & \textbf{4} & \textbf{5} & \textbf{6} & \textbf{7} & \textbf{8} & \textbf{9} & \textbf{10} & \textbf{11} & \textbf{12} & \textbf{13}\\
       \hline
-      Atlassian Bamboo & x & x & x & x & x & x & x & x & x & & & x\\
+      Atlassian Bamboo & x & x & x & x & x & x & x & x & x & & & x & x\\
       \hline
-      Chef & x & x & x & x & x & x & x & x & x & x & & \\
+      Chef & x & x & x & x & x & x & x & x & x & x & & x &\\
       \hline
-      Jenkins & x & x & x & x & x & x & x & x & x & x & & x\\
+      Jenkins & x & x & x & x & x & x & x & x & x & x & & x & x\\
       \hline
-      Ansible Tower & x & x & x & x & x & x & x & x & x & & & \\
+      Ansible Tower & x & x & x & x & x & x & x & x & x & & & x & \\
       \hline
-      Bash skript & x & x & x & x & x & x & x & x & x & x & x & x\\
+      Bash skript & x & x & x & x & x & x & x & x & x & x & x & x & x\\
       \clineB{12-12}{4}
       \hline
     \end{tabular}
   \end{table}
 
-  Atlassian Bamboo vajab erilist tähelepanu, kuna projektis on kasutusel teised Atlassian tooded, nagu JIRA, Confluence\footnote{\url{https://www.atlassian.com/software/confluence}} ja Fisheye\footnote{\url{https://www.atlassian.com/software/fisheye}}. Esiteks, see tähendab, et Bamboo on tasuta antud projekti jaoks (tavaliselt see on tasuline), teiseks, \--- Bamboo integreerub väga hästi projektiga, mis võimaldab tekitada seoseid rakenduse koodi, muudatuste kirjelduse ja uuenduse vahel. Lisaks, antud toodet kasutavad firmas teised projektid ka, mis annab võimaluse kaasata inimesi, kellel on olemas teadmised ja kogemus Bamboo seadistamise kohta.\\
+  Atlassian Bamboo nõuab erilist tähelepanu, kuna projektis kasutatakse teisi Atlassiani tooteid, nagu JIRA, Confluence\footnote{\url{https://www.atlassian.com/software/confluence}} ja Fisheye\footnote{\url{https://www.atlassian.com/software/fisheye}}. See tähendab esiteks, et Bamboo on antud projekti jaoks tasuta (tavaliselt one see tasuline), teiseks, Bamboo integreerub väga hästi projektiga, võimaldades luua seoseid rakenduse koodi, muudatuste kirjelduse ja uuenduse vahel. Lisaks, kasutavad antud toodet ka ettevõte teised projektid, mis annab võimaluse kaasata inimesi, kellel on olemas teadmised ja kogemused Bamboo seadistamisest.
   
-  Teadmised aitavad rakendada seda võimalikult kiiresti, kuid kogemus näitas, et Bamboo lõplik rakendamine võttis teistes projektides palju aega: näiteks, ühes projektis ühe mooduli seadistamine võttis 1.5 kuud, mis 20 moodulite korral tähendaks $\sim20*1.5 \approx 30$ kuud. Lisaks üks uuendus võib võtta palju aega, sest Bamboo tööpõhimõte eeldab kolmanda serveri kasutamist uuenduse tööplaani teostamiseks ja selliste serverite arv on piiratud. See tähendab, et kui korraga soovitakse uuendada mitu rakendust, siis võib tekkida ootejärjekord.\\
+  Teadmised aitavad seda rakendada võimalikult kiiresti, kuid kogemus näitas, et Bamboo lõplik rakendamine võttis teistes projektides siiski palju aega: näiteks, kulus ühes projektis ühe mooduli seadistamisele 1,5 kuud, mis 20 mooduli korral tähendaks $\sim20*1.5 \approx 30$ kuud. Lisaks võib võtta üks uuendus palju aega, sest Bamboo tööpõhimõte eeldab kolmanda serveri kasutamist uuenduse tööplaani teostamiseks ja selliste serverite arv on piiratud. See tähendab, et kui korraga soovitakse uuendada mitut rakendust, siis võib tekkida ootejärjekord.
   
-  Tabelist 3 on näha, et kõige sobilikum lahendus oleks enda Bash skripti kirjutamine, kuna see on ainuke, mis vastab kõikidele nõuetele ja, mis on olulisem, vastab nõuele 11. Võrreldes Bamboo lahendusega sellel valikul on olemas üks puudus: seda ei saa integreerida teiste Atlassian toodetega. Kuid on olemas ka lisaeelised.
+  Tabelist 3 on näha, et kõige sobilikum oleks uue Bash skripti kirjutamine, kuna see on ainus lahendus, mis vastab kõigile nõuetele ja, mis kõige olulisem, sealhulgas ka 11, nõudele. Võrreldes Bamboo lahendusega on sellel valikul ka üks puudus: seda ei saa integreerida teiste Atlassiani toodetega. Samas on sellel lahendusel ka oma lisaeelised:
   \begin{itemize}
-    \item Skripti on võimalik arendada osade kaupa: alguses teha lihtsam funktsionaalsus, mida hiljem järk-järgult täiendada uue ja keerulisema funktsionaalsusega. See võimaldab kasutada ressurse väikeste osadena ja samal ajal töötada parema süsteemiga.
-    \item Lahendus on väga paindlik: on võimalik arendada just seda funktsionaalsust, mis on vajalik projekti jaoks ja lisada seadistamise võimalust, et sama lahendust saaks kasutada erinevate serverite ja rakenduste korral.
-    \item Lahendus ei nõua projekti arhitektuuri ja protsesside muutmist: arendajate jaoks uue versiooni tekitamise protsess jääb samaks.
+    \item Skripti on võimalik arendada osade kaupa: alguses luua lihtsamad funktsioonid, mida hiljem saab järk-järgult täiendada uute ja keerulisemate funktsioonidega. See võimaldab kasutada ressursse väikeste osadena ja samal ajal töötada parema süsteemiga.
+    \item Lahendus on väga paindlik: saab arendada konkreetsele projektile vajalikke funktsioone ning lisada seadistamise võimaluse, et sama lahendust saaks kasutada erinevates serverites ja rakendustes.
+    \item Lahendus ei nõua projekti arhitektuuri ja protsesside muutmist: arendajate jaoks uue versiooni loomise protsess jääb samaks.
   \end{itemize}
   
-  Arvestades kõikide lahenduste eeliste ja puudustega valiti Bash skripti kirjutamine.
+  Arvestades kõikide lahenduste eeliseid ja puudusi, otsustati Bash skripti kirjutamise kasuks.
   
   \newpage
   
   % Lahendus
-  \section{Lahendus}
+  \section{Versiooniuuenduse automatiseerimine kasutades skriptimiskeelt Bash}
   
-  \subsection{Skripti arhitektuur ja tööpõhimõte}
+  Skripti kirjutati osade kaupa: alguses tehti põhisammu 1-5 ja 8 Tabelist 1, hiljem sammu 6-7 ja kõik nõuded Tabelist 2, lõpus täiendavaid funktsioone ja kontrolle, mis lihtsustavad skripti kasutamist ja vähendavad vea tekkimise tõenäosust.
   
-  Skript automatiseerib kõik tegevused Tabelist 1. Seda käivitatakse serveril, kus on vaja uuendada kas üht või mitu moodulit ja parameetritena antakse ette mooduli nimetust, versiooni ja JIRA kasutajatunnust (mitmete moodulite uuendamisel mooduli nimetus ja versioon puuduvad).\\
+  \subsection{Lahenduse arhitektuur ja tööpõhimõte}
   
-  Joonisel 1 on näidatud protsessid, mis toimuvad ühe mooduli uuendamisel Tomcat 8 veebiserveril (faili \code{update-version-tomcat.sh} käivitamisel).
+  Skript automatiseerib kõik tegevused Tabelis 1. See käivitatakse serveris, kus on vaja uuendada kas ühte või mitut moodulit ning parameetritena antakse ette mooduli nimetus, versioon ja JIRA kasutajatunnus (mitme mooduli uuendamisel mooduli nimetus ja versioon puuduvad).
+  
+  Joonisel 1 on näidatud protsessid, mis toimuvad ühe mooduli uuendamisel Tomcat 8 veebiserveris (faili \code{update-version-tomcat.sh} käivitamisel). Joonis on originaalkujul Lisas II.
    
    \begin{figure}[H]
      \begin{center}
        \includegraphics[width=.8\textwidth]{diagrams/BPMN-diagram-one-module-tomcat.png}
-       \caption*{\textit{Joonis 1. Skripti protsesside mudel ühe mooduli uuendamisel Tomcat 8 veebiserveril \footnotemark{}.}}
+       \caption*{\textit{Joonis 1. Skripti protsessidemudel ühe mooduli uuendamisel Tomcat 8 veebiserveril.}}
      \end{center}
    \end{figure}
-   
-   \footnotetext{\url{https://raw.githubusercontent.com/iriiiina/bachelors-thesis/master/thesis/diagrams/BPMN-diagram-one-module-tomcat.png}}
    
    \newpage
    
-   Joonisel 1 on toodud äriprotsesside mudel (\textit{Business Process Modelling Notation\footnote{\url{http://www.bpmn.org}}}), mis kirjeldab samme ja kontrolle, mida teostab skript. Positiivsel töövoogul on rohelised nooled ja negatiivsel \--- punased. Ühe mooduli uuenduse protsess sõltub sellest, mitmel serveril toimub uuendus: test rakendustel on üks server ja toodang rakendustel on kaks (skript töötab ka suurema serverite arvuga). Selle põhjal töövoog on jagatud kolmeks osaks: alal rohelise taustaga asuvad ühised protsessid mitme ja ühe serveri jaoks; kollasel taustal on mitmete serverite protsessid ja sinisel \--- ühe serveri protsessid. Voogude põhierinevus on kohtades, kus lõpetatakse skripti tööd: nt kui mitmete serverite korral ei õnnestunud paigaldada moodulit ühel serveril, siis tuleb jätkata teise serveriga. Lisaks, mitmete serverite korral töö lõpus näidatakse statistikat (vt Joonis 2), mille järgi on näha uuenduse seisu igal serveril.\\
+   Joonisel 1 on toodud äriprotsesside mudel (\textit{Business Process Modelling Notation\footnote{\url{http://www.bpmn.org}}}), mis kirjeldab skripti teostatavaid samme ja kontrolle. Positiivsel töövool on rohelised nooled ja negatiivsel punased. Ühe mooduli uuendamisprotsess sõltub sellest, mitmes serveris uuendust tehakse: testrakendustel on üks server ja toodangurakendustel kaks serverit (skript töötab ka suurema serverite arvuga). Selle põhjal on töövoog jagatud kolmeks osaks: rohelise taustaga alal asuvad protsessid, mis on samad nii ühe kui ka mitme serveri puhul; kollasel taustal on mitme serveri protsessid ja sinisel ühe serveri protsessid. Voogude põhierinevus on kohtades, kus lõpetatakse skripti töö: nt kui mitme serveri korral ei õnnestunud mooduli paigaldamine ühes serveris, siis tuleb jätkata teise serveriga. Lisaks näidatakse mitme serveri korral töö lõpus statistikat (Joonis 2), millest selgub uuendamise seis igas serveris.
    
    \begin{figure}[H]
      \begin{center}
-       \includegraphics[width=.75\textwidth]{screenshots/statistics.png}
-       \caption*{\textit{Joonis 2. Kolme mooduli uuenduse statistika.}}
+       \includegraphics[width=\textwidth]{screenshots/statistics.png}
+       \caption*{\textit{Joonis 2. Kolme mooduli uuendamise statistika.}}
      \end{center}
    \end{figure}
    
-   Joonisel 2 on toodud statistika, mida kuvatakse mitmete moodulite uuendamisel või ühe mooduli uuendamisel mitmetel serveritel. See annab võimalust aru saada uuenduse staatust ilma terve väljundi lugemata. Antud juhul on toodud kolme mooduli \code{system}, \code{admin} ja \code{authorization} uuenduse statistika, mis näitab, et kaks moodulit on uuendatud edukalt ja \code{system} mooduliga oli kaks probleemi: uue versiooni number \code{0.0.0.0} on väiksem, kus vana versiooni number \code{3.13.1.7} ja skriptil ei õnnestunud alla laadida uue versiooni faili \code{system-0.0.0.0}.\\  
+   Joonisel 2 on esitatud statistika, mida kuvatakse mitme mooduli uuendamisel või ühe mooduli uuendamisel mitmes serveris. See annab võimaluse aru saada uuenduse staatusest lugemata tervet väljundit. Antud juhul on toodud kolme mooduli \--- \code{system}, \code{admin} ja \code{authorization} \--- uuendamise statistika, mille kohaselt on  kaks moodulit edukalt uuendatud ja \code{system} mooduliga tekkis kaks probleemi: uue versiooni number \code{0.0.0.0} on väiksem vana versiooni numbrist \code{3.13.1.7} ja skriptil ei õnnestunud alla laadida uue versiooni faili nimega \code{system-0.0.0.0}. 
    
-   Joonisel 3 on toodud protsessid, mis toimuvad mitmete moodulite uuendamisel Tomcat 8 veebiserveril (faili \code{batch-update-versions-tomcat.sh} käivitamisel). Sinise taustaga alal on protsessid, mis korduvad iga mooduli jaoks.
+   Joonisel 3 on näidatud protsesse, mis toimuvad mitme mooduli uuendamisel Tomcat 8 veebiserveris (faili \code{batch-update-versions-tomcat.sh} käivitamisel). Sinise taustaga alal on protsessid, mis korduvad iga mooduli juures. Joonis on originaalsuurusel Lisas III.
    
    \begin{figure}[H]
      \begin{center}
        \includegraphics[width=\textwidth]{diagrams/BPMN-diagram-multiple-module-update-tomcat.png}
-       \caption*{\textit{Joonis 3. Skripti protsesside mudel mitmete moodulite uuendamisel Tomcat 8 veebiserveril \footnotemark.}}
+       \caption*{\textit{Joonis 3. Skripti protsesside mudel mitme mooduli uuendamisel Tomcat 8 veebiserveris.}}
      \end{center}
    \end{figure}
-   
-   \footnotetext{\url{https://iriiiina.gitbooks.io/version-updater-manual/content/BPMN-diagram-multiple-module-update-tomcat.png}}
    
    \newpage
    
-   Oluline funktsionaalsus, mis on olemas nii mitmete kuid ka ühe mooduli uuendamisel on lukustamine, logimine, väljundi andmine, kasutaja teavitamine ja ühiste failide sünkroniseerimine.\\
+   Olulised funktsioonid, mis on olemas nii mitme kuid ka ühe mooduli uuendamisel, on lukustamine, logimine, väljundi andmine, kasutaja teavitamine ja ühiste failide sünkroniseerimine.
    
-   Lukustamine katab nõuet 8 Tabelist 2. Töö alguses skript kontrollib, kas serveril eksisteerib lukufail, kui mitte, siis tekitab seda ja jätkab tööd. Lukustamise loogika võimaldab vältida paralleelset uuendust sama veebserveri peal (lukufaili nimetust defineeritakse globaalse muutuja \code{\$lock} abil).\\
+   Lukustamine vastab 8. nõudele Tabelis 2. Töö alguses kontrollib skript, kas serveris eksisteerib lukufail; kui mitte, siis skript tekitab selle ja jätkab tööd. Lukustamise loogika võimaldab vältida paralleelseid uuendusi samas veebserveris (lukufaili nimetus defineeritakse globaalse muutuja \code{\$lock} abil).
    
-   Logimine katab nõuet 6 \--- skript salvestab logid enda tegevuste kohta (globaalne muutuja \--- \code{\$log}), mille järgi saab teada kes ja millal uuendas mingit moodulit.\\
+   Logimine vastab 6. nõudele \--- skript salvestab logid enda tegevustest (globaalne muutuja \--- \code{\$log}) ning nendest logidest saab teada, kes ja millal mingit moodulit uuendas.
    
-   Skript annab värvilist väljundit iga tehtud sammu kohta (vt Joonis 6). See on seotud nõuetega 1 ja 7: värviline väljund aitab kiiremini aru saada uuenduse staatust (kas see on õnnestunud, kui mitte, siis samm ebaõnnestus), mis salvestab uuenduse protsessi aega; testijatel ei ole vajadust uurida serveri logifailid, et aru saada mis sammul protsess oli katkestatud. Lisaks, nõuele 1 kulub ka terminali teavitus (mis on realiseeritud \code{\$bell} vahendiga), annab teada, kui skript ootab mingit sisendit kasutaja poolt (nt JIRA parooli) või kui töö on lõppenud. See tähendab, et kasutaja ei pea jälgima skripti tööd, et aru saada uuenduse staatust.\\
+   Skript iga tehtud sammu kohta värvilise väljundi (Joonis 6). See on seotud nõuetega 1 ja 7: värviline väljund aitab kiiremini aru saada uuenduse staatusest (kas see on õnnestunud; kui mitte, siis samm ebaõnnestus), See säästab uuendamisprotsessis aega , sest kasutajatel ei ole vajadust uurida serveri logifaile, et aru saada, mis sammul protsess katkes. Lisaks kuulub 1. nõude alla ka terminali teavitus (mis teostatakse \code{\$bell} vahendiga), millega antakse teada, kui skript ootab kasutajalt mingit sisendit (nt JIRA parooli) või kui töö on lõppenud. See tähendab, et kasutaja ei pea uuenduse staatusest aru saamiseks jälgima skripti tööd.
    
-   Failide sünkroniseerimine on seotud nõuega 10. Kuna skripti failid peavad asuma igal serveril, see tähendab, et nende parandust ja täiendust on vaja teha mitu korda. Selleks, et vältida töö dubleerimist, ühised failid (mis vastavad loogika eest ja ei ole serveri seadistusfailid) asuvad repositooriumis ja igal serveril on seadistatud Crontab \cite{cron} tööd, mis regulaarsed kontrollivad, kas repositooriumis on olemas faili uus versioon. Kui on olemas, siis seda laaditakse alla. See tähendab, et skripti parandusi ja täiendusi on vaja teha ainult üks kord repositooriumis. Joonisel 5 on toodud näide crontab tööde kirjeldamisest.
+   Failide sünkroniseerimine on seotud 10. nõudega. Kuna skriptifailid peavad asuma igas serveris, siis on neid vaja parandada ja täiendada mitu korda. Selleks, et vältida töö dubleerimist, asuvad ühised failid (mis vastutavad loogika eest ja ei ole serveri seadistusfailid) repositooriumis. Igas serveris on seadistatud Crontab \cite{cron} tööd, mis kontrollivad regulaarselt, kas repositooriumis on olemas faili uus versioon. Kui see on olemas, siis see laaditakse alla. See tähendab, et skriptiparandusi ja täiendusi on vaja teha ainult üks kord repositooriumis. Joonisel 4 on toodud näide Crontab tööde kirjeldamisest.
    \begin{figure}[H]
      \begin{center} 
-       \includegraphics[width=.75\textwidth]{screenshots/crontab.png}
-       \caption*{\textit{Joonis 5. Crontab tööde kirjelduse näide ühisfailide automaatse alla laadimiseks repositooriumist.}}
+       \includegraphics[width=\textwidth]{screenshots/crontab.png}
+       \caption*{\textit{Joonis 4. Näide Crontab tööde kirjeldusest ühisfailide automaatsels allalaadimiseks repositooriumist.}}
      \end{center}
    \end{figure}
   
-  Skript koosneb 16 failidest. Neid võib jagada kolmeks grupiks. Mõned failid on spetsiifilised, kas Tomcat või WebLogic veebiserveri jaoks. Mõnede failide nimetusi võib muuta globaalsete muutujate abil. Igas failis on olemas kommentaarid, mis selgitavad faili ja muutujate eesmaärke.\\
+  Skript koosneb 16 failist, mida võib jagada kolmeks grupiks. Mõned failid on spetsiifilised, kas Tomcat või WebLogic veebiserveri jaoks. Mõnede failide nimetusi võib muuta globaalsete muutujate abil. Igas failis on olemas kommentaarid, mis selgitavad faili ja muutujate eesmärke.
 
-  \textbf{Ühised failid} \--- failid, mis on ühised kõikide serverite jaoks (mõned sõltuvad veebiserverist) ja mida võib sünkroniseerida.
+  \textbf{Ühised failid} \--- failid, mis on ühised kõigile serveritele (mõned neist sõltuvad veebiserverist) ja mida saab sünkroniseerida.
   
   \begin{itemize}
     \item \code{version-updater/functions.sh} \--- globaalsed üldised funktsioonid, mis ei sõltu veebiserverist;
-    \item \code{version-updater/functions-tomcat.sh} \--- globaalsed Tomcat 8 funktsioonid, mida kasutatakse ainult Tomcat veebiserveril;
-    \item \code{version-updater/functions-wl.sh} \--- globaalsed WebLogic 12 funktsioonid, mida kasutatakse ainult WebLogic veebiserveril;
-    \item \code{deploy-undeploy-script.py} \--- Python\footnote{\url{https://www.python.org}} skriptid WebLogic veebiserveril moodulite uuenduse jaoks;
-    \item \code{update-version-tomcat.sh} \--- ühe mooduli uuenduse skript, kus on kirjutatud funktsioonide kasutamine õiges järjekorras Tomcat veebiserveri jaoks;
-    \item \code{batch-update-versions-tomcat.sh} \--- mitmete moodulite uuenduse skript Tomcat veebiserveri jaoks;
-    \item \code{update-version-wl.sh} \--- ühe mooduli uuenduse skript WebLogic veebiserveri jaoks;
-    \item \code{batch-update-versions-wl.sh} \--- mitmete moodulite uuenduse skript WebLogic veebiserveri jaoks;
-    \item \code{version-update/extended-modules.txt} \--- nimekiri moodulitest, milledel on olemas erinevad prefiksid (näiteks, Eesti keskkondades paigaldatakse moodulit \code{person}, kuid Leedu keskkondades \code{person-lt}, kuna seal on olemas eriloogika Leedu isikute jaoks);
+    \item \code{version-updater/functions-tomcat.sh} \--- globaalsed Tomcat 8 funktsioonid, mida kasutatakse ainult Tomcat veebiserveris;
+    \item \code{version-updater/functions-wl.sh} \--- globaalsed WebLogic 12 funktsioonid, mida kasutatakse ainult WebLogic veebiserveris;
+    \item \code{deploy-undeploy-script.py} \--- Python\footnote{\url{https://www.python.org}} skriptid WebLogic veebiserveris moodulite uuendamiseks;
+    \item \code{update-version-tomcat.sh} \--- ühe mooduli uuenduse skript, mis sisaldab funktsioonide kasutamise õiget järjekorda Tomcat veebiserveris;
+    \item \code{batch-update-versions-tomcat.sh} \--- mitme mooduli uuendamise skript Tomcat veebiserveri jaoks;
+    \item \code{update-version-wl.sh} \--- ühe mooduli uuendamise skript WebLogic veebiserveri jaoks;
+    \item \code{batch-update-versions-wl.sh} \--- mitme mooduli uuendaise skript WebLogic veebiserveri jaoks;
+    \item \code{version-update/extended-modules.txt} \--- nimekiri moodulitest, millel on olemas erinevad sufiksid (nõue 12 Tabelist 2);
     \item \code{version-updater/readme.txt} \--- üldine informatsioon skripti autori ja juhendi kohta.
   \end{itemize}
   
-  \textbf{Kohalikud konfiguratsiooni failid} \--- failid, mis sõltuvad serverist, kus skript on paigaldatud.
+  \textbf{Kohalikud konfiguratsioonifailid} \--- failid, mis sõltuvad serverist, kuhu skript on paigaldatud.
   
   \begin{itemize}
-    \item \code{version-updater/conf.sh} \--- konfiguratsiooni fail, kus asuvad globaalsed muutujad, mille väärtused sõltuvad serverist, kus skript on paigaldatud;
+    \item \code{version-updater/conf.sh} \--- konfiguratsioonifail, kus asuvad globaalsed muutujad, mille väärtused sõltuvad serverist, kuhu skript on paigaldatud;
     \item \code{version-updater/functions-local.sh} \--- kohalikud funktsioonid, mis sõltuvad serverist;
-    \item \code{version-updater/batch-modules.txt} \--- fail, kus kasutaja defineerib moodulite nimetusi ja versioone mitmete moodulite uuendamiseks (faili nimetust defineeritakse globaalse muutujaga \code{\$batch});
+    \item \code{version-updater/batch-modules.txt} \--- fail, kus kasutaja defineerib moodulite nimetusi ja versioone mitme mooduli uuendamiseks (faili nimetus defineeritakse globaalse muutujaga \code{\$batch});
     \item \code{version-updater/jira-issues.txt} \--- fail, kus on kaardistatud moodulite nimetused ja JIRA tööde koodid (on vajalik ainult JIRA kasutamisel ja on defineeritav globaalse muutujaga \code{\$issues}).
   \end{itemize}
   
-  \textbf{Kohalikud väljundfailid} \--- failid, mida skript täidab töö ajal ja mis ei tohi olla muudetud kasutaja poolt.
+  \textbf{Kohalikud väljundfailid} \--- failid, mida skript täidab töö ajal ja mida kasutaja ei tohi muuta.
   
   \begin{itemize}
-    \item \code{version-updater/update.log} \--- fail, kus logitakse skripti tegevusi (faili nimetust defineeritakse globaalse muutujaga \code{\$log});
-    \item \code{version-updater/jira-rest.txt} \--- tühifail, mida skript kasutab REST \cite{rest} teenuste genereerimiseks JIRA töö uuendamise \cite{jira} jaoks (on vajalik ainult JIRA kasutamisel ja on defineeritav globaalse muutujaga \code{\$rest}).
+    \item \code{version-updater/update.log} \--- fail, kus logitakse skripti tegevusi (faili nimetus defineeritakse globaalse muutujaga \code{\$log});
+    \item \code{version-updater/jira-rest.txt} \--- tühifail, mida skript kasutab REST \cite{rest} päringute genereerimiseks JIRA töö uuendamisel \cite{jira} (on vajalik ainult JIRA kasutamisel ja on defineeritav globaalse muutujaga \code{\$rest}).
   \end{itemize}
   
   \newpage
   
-  Joonisel 4 on toodud näide skripti failide struktuurist serveril, kus on kasutusel Tomcat 8. Serveri juurkaustas asub alamkaust \code{/tomcat} veebiserveriga, kus on paigaldatud moodulid \code{first-module} versiooniga \code{1.2.3.4} ja \code{second-module} versiooniga \code{3.4.5.6}. Uuenduse failid asuvad serveri juurkaustas: \code{batch-update-versions-tomcat.sh} ja \code{update-version-tomcat.sh}. Skripti abifailid asuvad kaustas \code{/version-updater}.
+  Joonisel 5 on toodud näide skriptifailide struktuurist serveris, kus on kasutusel Tomcat 8. Serveri juurkaustas asub alamkaust \code{/tomcat} veebiserveriga, kuhu on paigaldatud moodulid \code{first-module} versiooniga \code{1.2.3.4} ja \code{second-module} versiooniga \code{3.4.5.6}. Uuenduse failid asuvad serveri juurkaustas: \code{batch-update-versions-tomcat.sh} ja \code{update-version-tomcat.sh}. Skripti abifailid asuvad kaustas \code{/version-updater}.
   
   \begin{figure}[H] 
     \begin{center}
       \includegraphics{screenshots/file-structure-on-tomcat.png}
-      \caption*{\textit{Joonis 4. Skripti failide struktuur veebiserveriga Tomcat 8.}}
+      \caption*{\textit{Joonis 5. Skripti failide struktuur veebiserveris Tomcat 8.}}
       \end{center}
    \end{figure}
    
-   Failid, mida peab kasutama lõppkasutaja on \code{update-version-*.sh} ja \code{batch-update-versions-*.sh} (lisaks, logifail\code{update.log} toimunud uuenduste info saamiseks). Kõik ülejäänud failid on skripti töö toetamiseks ja seadistamiseks.\\
+   Failid lõppkasutajale on \code{update-version-*.sh} ja \code{batch-update-versions-*.sh} (lisaks ka logifail \code{update.log} toimunud uuendustest info saamiseks). Kõik ülejäänud failid on mõeldud skripti töö toetamiseks ja seadistamiseks.
    
    \newpage
       
- \subsection{Skripti paigaldus}
+ \subsection{Skripti paigaldamine}
   
-  Projekti repositooriumis on olemas kõik skripti failid, mida vajadusel saab alla laadida serveri, kohaliku või virtuaalmasina peale. Samuti on olemas zip\--fail, kus on arhiveeritud kõik failid vastavalt skripti versioonile ja veebiserverile (on olemas eraldi arhiivid Tomcat ja WebLogic jaoks). Skripti paigaldamise protsess on kirjeldatud juhendis ja koosneb neljast sammust.
+  Koodirepositooriumis on olemas kõik skriptifailid, mille saab vajadusel alla laadida serverisse, kohalikku või virtuaalmasinasse. Samuti on olemas zip\--fail, kus on arhiveeritud kõik failid vastavalt skripti versioonile ja veebiserverile (Tomcat ja WebLogic jaoks on eraldi arhiivid). Skripti paigaldamise protsessi on kirjeldatud juhendis ja see koosneb neljast sammust:
   \begin{itemize}
-    \item Vastavata zip\--faili alla laadimine serveri, kohaliku või virutaalmasina peale.
-    \item Alla laaditud faili lahti pakkimine.
+    \item Vastava zip\--faili allalaadimine serverisse, kohalikku või virutaalmasinasse.
+    \item Allalaaditud faili lahtipakkimine.
     \item Järgmiste failide täitmine serveri\--spetsiifiliste andmetega:
     \begin{itemize}
       \item \code{version-updater/conf.sh}
@@ -388,11 +391,11 @@
     \item Crontab tööde seadistamine ühisfailide sünkroniseerimiseks.
   \end{itemize}
   
-  \subsection{Skripti kasutus} 
+  \subsection{Skripti kasutamine} 
    
-  Skripti käivitamiseks kasutatakse kaks faili: ühe mooduli uuendamiseks \code{update-version-*.sh} ja mitmete moodulite uuendamiseks \code{batch-update-versions-*.sh} (\code{*} asemel on \code{tomcat} või \code{wl}). Kõik ülejäänud failid skript kasutab enda töös ja kasutaja ei pea neid käivitama.\\
+  Skripti käivitamiseks kasutatakse kahte faili: üht mooduli uuendamiseks \code{update-version-*.sh} ja teist mitme mooduli uuendamiseks \code{batch-update-versions-*.sh} (\code{*} asemel on \code{tomcat} või \code{wl}). Kõiki ülejäänud faile kasutab skript enda töös ja kasutaja ei pea neid käivitama.
   
-  Ühe mooduli uuendamise skriptile on võimalik anda 4 sisendparameetrit:
+  Ühe mooduli uuendamise skriptile on võimalik anda neli sisendparameetrit:
   \begin{center}
     \small{\code{./update-version-*.sh MODULE\_NAME MODULE\_VERSION JIRA\_USERNAME [p]}}
   \end{center}
@@ -404,13 +407,13 @@
   \newpage
 
   \begin{itemize}
-    \item \code{MODULE\_NAME} \--- kohustuslik parameeter, mis määrab mooduli nimetust, mida soovitakse uuendada (näiteks, Tomcat-i puhul see on sama nimetus, mis tee (\textit{path}) Tomcat Manager-is \footnote{\url{https://tomcat.apache.org/tomcat-7.0-doc/manager-howto.html}}).
-    \item \code{MODULE\_VERSION} \--- kohustuslik parameeter, mis määrab versiooni, mida soovitakse paigaldada.
-    \item \code{JIRA\_USERNAME} \--- parameeter on kohustuslik juhul, kui JIRA autentimine on kohustuslik (globaalne muutuja \code{\$isAuthenticationRequired="Y"}).
-    \item \code{p} \--- mitte kohustuslik parameeter, mille sisestamisel teostatakse paralleelset uuendust \footnote{\url{https://tomcat.apache.org/tomcat-8.0-doc/config/context.html\#Parallel\_deployment}} (ei toimu vana versiooni eemaldamist).
+    \item \code{MODULE\_NAME} \--- kohustuslik parameeter, mis määrab uendatava mooduli nimetuse (näiteks Tomcat-i puhul on see sama nimetus, mis tee (\textit{path}) Tomcat Manager-is \footnote{\url{https://tomcat.apache.org/tomcat-7.0-doc/manager-howto.html}}).
+    \item \code{MODULE\_VERSION} \--- kohustuslik parameeter, mis määrab paigaldatava versiooni numbri.
+    \item \code{JIRA\_USERNAME} \--- parameetrit tuleb kasutada siis, kui JIRA autentimine on kohustuslik (globaalne muutuja \code{\$isAuthenticationRequired="Y"}).
+    \item \code{p} \--- mittekohustuslik parameeter, mille sisestamisel teostatakse paralleelne uuendus \footnote{\url{https://tomcat.apache.org/tomcat-8.0-doc/config/context.html\#Parallel\_deployment}} (ei toimu vana versiooni eemaldamist).
   \end{itemize}\\
   
-  Mitmete moodulite uuendamise skriptile on võimalik anda 2 sisendparameetrit:
+  Mitme mooduli uuendamise skriptile on võimalik anda kaks sisendparameetrit:
   
   \begin{center}
     \small{\code{./batch-update-versions-*.sh JIRA\_USERNAME [p]}}
@@ -420,61 +423,58 @@
     \small{näide: \code{./batch-update-versions-tomcat.sh irina p}}
   \end{center}
   
-  \begin{itemize}
-    \item \code{JIRA\_USERNAME} \--- parameeter on kohustuslik juhul, kui JIRA autentimine on kohustuslik (globaalne muutuja \code{\$isAuthenticationRequired="Y"}).
-    \item \code{p} \--- mitte kohustuslik parameeter, mille sisestamisel teostatakse paralleelset uuendust (ei toimu vana versiooni eemaldamist).
-  \end{itemize}
+    Sisendparameetrid \code{JIRA\_USERNAME} ja \code{p} on samad, mis ühe mooduli uuendamise korral.
   
-  Joonisel 6 on näidatud ühe mooduli edukas uuendus. Skript annab väljundi kõikidest sammudest, mis oli tehtud.
+  Joonisel 6 on näidatud ühe mooduli edukas uuendus. Skript annab väljundi kõigist sooritatud sammudest.
   
   \begin{figure}[H]
      \begin{center} 
        \includegraphics[width=.85\textwidth]{screenshots/one-module-successful-update.png}
-       \caption*{\textit{Joonis 6. Ühe mooduli edukas uuendus skripti abil.}}
+       \caption*{\textit{Joonis 6. Ühe mooduli edukas uuendamine skripti abil.}}
      \end{center}
    \end{figure}
 
   \subsection{Dokumentatsioon}
   
-  Skripti kohta on olemas dokumentatsioon, mis on uuenduse raamistiku oluline osa. Skripti juhend kirjeldab seda, kuidas saab kasutada, paigaldada ja seadistada skripti. Juhend on kätte saadav kõikidele meeskonna liikmetele, mis tähendab, et iga ühel on olemas võimalus seda kasutada. Mõlemad skripti projekti juhend ja avalik juhend on kättesaadavad töö lisas (Lisa III ja IV, vastavalt).
+  Skripti kohta on olemas dokumentatsioon, mis on uuendamise oluline osa. Skripti juhend kirjeldab, kuidas skripti on võimalik kasutada, paigaldada ja seadistada. Juhend on kättesaadav kõigile meeskonnaliikmetele, mis tähendab, et igaühel on võimalus seda kasutada. Nii skripti projekti juhend kui ka avalik juhend on ära toodud töö Lisades V ja VI.
   
   \newpage
   
   % Mõju projektile
-  \section{Mõju projektile}
+  \section{Uue lahenduse mõju projektile}
   
-  Automaatne versiooniuuenduse raamistik asendas täielikult vana käsitsi protsessi. Selles on olemas nii eelised, kuid ka oma puudused.\\
+  Automaatne versiooniuuendus asendas täielikult vana käsitsiprotsessi. Sellel on olemas nii oma eelised kui ka puudused.
   
-  Kõige oluline eelis on see, et skript täidab kõik nõuded Tabelist 2 ``Nõuded versiooni uuenduse lihtsustamise lahendusele''. Kõige märgatavamad nendest on nõuded 1 ja 2 \--- protsessi kiirus ja mugavus.\\
+  Kõige olulisem eelis on see, et skript täidab kõik Tabelis 2 esitatud nõuded. Kõige märgatavamad neist on nõuded 1 ja 2 \--- protsessi kiirus ja mugavus.
   
-  On mõõdetud vana ja uue uuenduse protsesside kiirusi. Automaatse protsessi alguseks oli võetud skripti käivitamise käsu kirjutamine ja lõpuks skripti teavitamine, et töö on lõppenud. Skripti tööaja mõõtmiseks kasutati UNIX käsurea funktsiooni \code{time} \footnote{\url{http://pubs.opengroup.org/onlinepubs/9699919799/utilities/time.html}}. Käsitsi uuenduse protsess koosneb sammudest, mis kirjeldati Tabelis 1 ``Manuaalse uuenduse protsessi sammud'' ja kulunud aeg mõõdeti stopperiga.\\
+  Töö käigus mõõdeti vana ja uue uuendamisprotsessi kiirust. Automaatse protsessi alguseks loeti skripti käivitamise käsku ja lõpuks skripti teavitus töö lõpetamisest. Skripti tööaja mõõtmiseks kasutati UNIX käsurea funktsiooni \code{time} \footnote{\url{http://pubs.opengroup.org/onlinepubs/9699919799/utilities/time.html}}. Käsitsi uuendamisprotsess koosneb sammudest, mida kirjeldati Tabelis 1 ja sellele kulunud aega mõõdeti stopperiga.
   
-  Valiti neli protsessi, mis teostati samal serveril ja samade WAR\--failidega: kolm üksikute kõige populaarsemate moodulite uuendamine ja kõikide moodulite uuendamine (võetud keskkonnas oli neid 18 tk). Iga protsess oli tehtud vana käsitsi viisi ja uue automaatse skriptiga kolm korda ja võrdluseks on võetud katsetuste keskmised väärtused. Tulemused on toodud Tabelis 4.
+  Valiti neli protsessi, mis teostati samas serveris ja samade WAR\--failidega: kolme kõige populaarsema mooduli eraldi uuendamine ja kõigi moodulite uuendamine (valitud rakenduses oli neid 18). Iga protsess sooritati käsitsi ja automaatselt kolmel korral, võrdlemiseks kasutati katsete keskmisi väärtusi. Tulemused on toodud Tabelis 4.
   
   \begin{table}[!htbp]
     \begin{center}
-      \caption*{\textit{Tabel 4. Vana ja uue protsesside kiirused.}}
+      \caption*{\textit{Tabel 4. Vana ja uue meetodi tööaeg.}}
       
       \begin{tabular}{| l | c | c | c | c |}
         \hline
-         \textbf{Moodul} & \textbf{Aut. uuend.} & \textbf{Käs. uuend.} & \textbf{Uendusi 2015-s} & \textbf{Salv. aeg}\\
+         \textbf{Moodul} & \textbf{Aut. uuend.} & \textbf{Käs. uuend.} & \textbf{Uuendusi 2015} & \textbf{Sääst. aeg}\\
         \hline
         admin & 27s & 80s & 67 tk & 1t\\
         treatment & 61s & 112s & 240 tk & 3t 44m\\
         reception & 38s & 100s & 197 tk & 3t 39m \\
-        kõik (18 tk) & 9m 12s & 34m 8s & \--- & \---\\
+        kõik (18 tk) & 552s & 1048s & \--- & \---\\
         \hline
       \end{tabular}
     \end{center}
   \end{table}
   
-  Kaks viimast veergu näitavad salvestatud aega aastas 2015 (terve aasta uuenduse jaoks oli kasutusel automaatne skript). Veerus ``Uuendusi 2015-s'' on toodud vastava mooduli uuenduste arv ühes testrakenduses aasta jooksul. Veerus ``Salv. aeg'' on toodud salvestatud aeg aastas 2015, mille arvutamiseks võetakse käsitsi ja automaatse protsessi aja erinevust korratud uuenduste arvuga.\\
+  Kaks viimast veergu näitavad säästetud aega 2015. aastal (terve aasta kasutati uuendamiseks automaatset skripti). Veerus ``Uuendusi 2015'' on toodud vastava mooduli uuenduste arv ühes testrakenduses aasta jooksul. Veerus ``Sääst. aeg'' on ära näidatud 2015. aastal kokkuhoitud aeg, mis on saadud käsitsi ja automaatse uuendamise aja erinevuse korrutamisel uuenduste arvuga.
   
-  Tegelikkuses kokkuhoidud aeg on veel suurem, sest vanas protsessis uuendaja tähelepanu oli hõivatud terve protsessi jooksul. Uue skripti kasutades testijatel on olemas võimalus tegeleda paralleelselt teiste ülesannetega ja mitte jälgida skripti tööd (see ise annab teada, kui uuendus on lõppenud).\\
+  Tegelikkuses on kokkuhoitud aeg veelgi suurem, sest vana protsess nõudis  kogu protsessi vältel. Uut skripti kasutades saavad kasutajad tegeleda paralleelselt teiste ülesannetega ega pea jälgima skripti tööd (skript annab ise teada, kui uuendamine on lõpule viidud).
   
-  Kõige olulisem puudus on see, et testijad enam ei tunne versiooni uuenduse protsessi tausta ja vigade tekkimise juhul (kas serveri, veebiserveri või skripti pärast) ei oska neid lahendada. See on üldine automatiseerimise probleem, millega tuleb leppida mugavuse vahetuseks.\\
+  Peamine puudus on see, et kasutajad ei tunne enam versiooniuuenduse protsessi tausta ja vigade tekkides (kas tingituna serverist, veebiserverist või skriptist) ei oska neid parandada. See on üldine automatiseerimise probleem, millega tuleb mugavuse nimel leppida.
   
-   Käesoleva töö raames küsiti tagasisidet uue raamistiku kohta meeskonnaliikmete käest, kes on seda kasutanud. Allpool on toodud mõned väljavõtted, terved tekstid on kättesaadavad Lisas V.\\
+   Käesoleva töö raames küsiti tagasisidet uue uuendamisprotsessi kohta seda kasutanud meeskonnaliikmetelt. Allpool on toodud mõned väljavõtted, terviktekstid on kättesaadavad Lisas VII.
    
    \begin{displayquote}
    ``I also like that scalability has been considered when writing the script + many optional features have been implemented which can be used if one desires to do so.'' (Martin Rakver, Hosting Services and Application Manager)
@@ -499,21 +499,21 @@
   \newpage
   
   % Lahenduse perspektiivid
-  \section{Lahenduse edasiarendus}
+  \section{Lahenduse edasiarnedamine}
   
-  Bash skripti kood Apache Tomcat veebiserveri jaoks on avalik ja asub GitHub repositooriumis (vt Lisa II). See tähendab, et igaüks, kellel on sarnane takrvaraarenduse süsteem, saab seda kasutada ja täiendada enda nõuete järgi. Iga faili sees on olemas põhjalikud kommentaarid, mis seletavad faili eesmärki ja selle kasutamisviisi, mis lihtsustab skripti arusaamist. Samuti GitHub platvormil on olemas võimalus raporteerida vigu ja tellida uut funktsionaalsust.\\
+  Bash skripti kood Apache Tomcat veebiserverile on avalik ja asub GitHub repositooriumis (Lisa IV). See tähendab, et igaüks, kellel on sarnane tarkvaraarenduse süsteem, saab seda kasutada ja täiendada vastavalt oma nõuetele. Igas failis on kommentaarid, mis selgitavad faili eesmärke ja kasutamisviisi. Samuti on GitHub platvormil olemas võimalus vigadest teatamiseks ja uute funktsioonide tellimiseks.
   
   Nõuded Bash skripti avaliku versiooni kasutamiseks.
   \begin{itemize}
-    \item Masin, kus on paigaldatud Bash vahend.
-    \item Apache Tomcat 8 veebiserver (vajadusel skripti saab muuta Tomcat 7 ja 6 versioonide jaoks).
+    \item Masin, millele on paigaldatud Bash käsureaprotsessor.
+    \item Apache Tomcat 8 veebiserver (vajadusel saab skripti kohandada Tomcat 7 ja 6 versioonidele).
     \item Standardsed UNIX vahendid: \code{find} \footnote{\url{http://www.gnu.org/software/findutils/manual/html_mono/find.html}}, \code{grep} \footnote{\url{https://www.gnu.org/software/grep}}, \code{wget} \footnote{\url{https://www.gnu.org/software/wget}} (kui mooduli failid asuvad veebis), \code{curl} \footnote{\url{https://curl.haxx.se}}.
-    \item Standardne käsurea \code{bell} funktsionaalsus, mis saadab teavitusi kasutajale terminali kaudu.
-  \end{itemize}\\
+    \item Standardne käsurea \code{bell} funktsionaalsus, mis saadab kasutajale terminali kaudu teavitusi.
+  \end{itemize}
   
-  Lisaks on skriptil  olemas avalik dokumentatsioon, mis asub GitBook repositooriumis (vt Lisa IV). See sisaldab kasutusjuhendit, paigaldamise ja seadistamise juhendit ja kirjeldab kuidas on võimalik laiendata skripti tööd standartsete UNIX vahenditega.\\
+  Lisaks on skriptil  olemas avalik dokumentatsioon, mis asub GitBook repositooriumis (Lisa VI). See sisaldab kasutusjuhendit, paigaldamise ja seadistamise juhendit ning kirjeldab, kuidas on võimalik skripti tööd UNIX standardsete vahenditega laiendada.
   
-  Koodi ja dokumentatsiooni avalikkus tähendavad mitte ainult seda, et igaüks saab rakendada seda omas projektis, aga ka olemasoleva lahenduse optimiseerimist ja uue funktsionaalsusega täiendamist.
+  Koodi ja dokumentatsiooni avatus ja avalik kättesaadavus ei tähenda ainult seda, et igaüks saab seda oma projektis rakendada, vaid ka olemasoleva lahenduse optimeerimist ja uute funktsioonidega täiendamist.
   
   \newpage
   
@@ -522,15 +522,15 @@
   \label{kokkuvote}
   \addcontentsline{toc}{section}{\nameref{kokkuvote}}
   
-  Käesoleva bakalaureusetöö eesmärgiks oli automatiseerida versiooniuuenduse protsessi konkreetses projektis, selleks, et lihtsustada antud protsessi, et säästa aega ja vähendada inimlike vigade arvu.\\
+  Käesoleva bakalaureusetöö eesmärk oli automatiseerida versiooniuuenduse protsessi konkreetses projektis, et seda lihtsustada, säästa aega ja vähendada inimlike vigade arvu.
   
-  Bakalaureusetöö teoreetilise osa käigus koostati 12 nõuet probleemi lahendusele ja uuriti 4 erinevat tööriista versiooni uuenduse haldamiseks. Mitte ükski neist ei vastanud kõikidele nõuetele. Lahenduseks valiti enda Bash skripti kirjutamist.\\
+  Bakalaureusetöö teoreetilise osa käigus kehtestati probleemi lahendusele 12 nõuet ja uuriti nelja erinevat tööriista versiooniuuenduste haldamiseks. Mitte ükski neist ei vastanud kõigile nõuetele. Lahenduseks valiti Bash skripti kirjutamine.
   
-  Bakalaureusetöö praktilise osa käigus oli kirjutatud Bash skript versioonide uuendamiseks, mis vastab kõikidele nõuetele. Oli tehtud ka juhend selle skripti paigaldamise, seadistamise ja kasutamise kohta.\\
+  Bakalaureusetöö praktilise osa käigus kirjutati versioonide uuendamiseks Bash skript, mis vastab kõigile nõuetele. Samuti koostati juhend selle skripti paigaldamisels, seadistamiseks ja kasutamiseks.
   
-  Bakalaureusetöö püstitatud eesmärgid said täidetud ning kirjutatud Bash skript aitab kiiremini ja mugavam uuendada versioone projektis. Seda kinnitavad meeskonnaliikmete tagasiside ja vana ja uue protsesside aegade võrdlemine.\\
+  Kokkuvõteks võib öelda, et bakalaureusetöös püstitatud eesmärgid on täidetud. Kirjutatud Bash skript aitab kiiremini ja mugavamalt projektis versioone uuendada. Seda kinnitavad nii meeskonnaliikmete tagasiside kui ka vana ja uue protsessi kiiruse võrdlemine.
   
-  Loodud lahendust saavad kasutada ja täiendada ka teised projektid, kuna selle kood ja dokumentatsioon on avalikud.
+  Loodud lahendust saavad kasutada ja täiendada ka teised inimesed, sest selle kood ja dokumentatsioon on avalikult kättesaadavad.
 
   \newpage
   
@@ -561,6 +561,10 @@
     
     \bibitem{bash-book}
      Stephen G. Kochan ja Patrick Wood, ``Unix Shell Programming,'' \textit{Sams Publishing}, 2003
+     
+     \bibitem{cron}
+    Crontab-vahendi kasutusjuhend. [Veebis, 5.05.2016].\\
+    \url{https://help.ubuntu.com/community/CronHowto}
     
     \bibitem{rest}
     Todd Fredrich, ``RESTful Service Best Practices,'' \textit{Pearson eCollege}, mai 2012.\\
@@ -569,10 +573,6 @@
     \bibitem{jira}
     JIRA REST API Reference. [Veebis, 5.05.2016].\\
     \url{https://docs.atlassian.com/jira/REST/latest}
-  
-    \bibitem{cron}
-    Crontab-vahendi kasutusjuhend. [Veebis, 5.05.2016].\\
-    \url{https://help.ubuntu.com/community/CronHowto}
  
   \end{thebibliography}
 
@@ -587,71 +587,83 @@
   \label{terms}
   \addcontentsline{toc}{subsection}{\nameref{terms}}
   
-  \textbf{Demo rakendus} \--- rakendus, mida kliendid kasutavad funktsionaalsuse testimiseks.\\
+  \textbf{Demorakendus} \--- rakendus, mida kliendid kasutavad funktsioonide testimiseks.\\
   
-  \textbf{Moodul} \--- tarkvara osa, kus on kogutud ja pakitud ühe funktsionaalsuse kood (üks WAR\--fail on üks moodul)\\
+  \textbf{Moodul} \--- tarkvara osa, kuhu on kogutud ja pakitud ühe funktsiooni kood (üks WAR\--fail on üks moodul).\\
   
-  \textbf{Modulaarne süsteem} \--- tarkvaraarenduse süsteem, mille korral kogu koodi jagatakse moodulite kaupa, selleks, et ühe funktsionaalsuse tarnimine ei nõuaks terve rakenduse uuendamist.\\
+  \textbf{Modulaarne süsteem} \--- tarkvaraarenduse süsteem, mille korral kogu kood jagatakse moodulitesse, et ühe funktsiooni tarnimine ei nõuaks terve rakenduse uuendamist.\\
   
-  \textbf{Raamistik (\textit{framework})} \--- süsteem, mis kirjeldab protsessi teostamist. Töö raames raamistiku all mõeldatakse Bash skripti koodi ja selle dokumentatsiooni.\\
+  \textbf{Rakendus (\textit{application})} \--- tarkvara, mis on paigaldatud veebiserverisse ja on kättesaadav kasutamiseks.\\
   
-  \textbf{Rakendus (\textit{application})} \--- tarkvara, mis on paigaldatud veebiserveril ja on kättesaadav kasutamiseks.\\
+  \textbf{Server} \--- riist- ja tarkvarasüsteem, kuhu on paigaldatud veebiserver.\\
   
-  \textbf{Server} \--- riistvara- ja tarkvarasüsteem, kus on paigaldatud veebiserver.\\
-  
-  \textbf{Test rakendus} \--- rakendus, mida projekti meeskonnaliikmed kasutavad tarkvara testimiseks.\\
+  \textbf{Testrakendus} \--- rakendus, mida projekti meeskonnaliikmed kasutavad tarkvara testimiseks.\\
    
-  \textbf{Toodang rakendus} \--- lõppkasutajate rakendus.\\
+  \textbf{Toodangrakendus} \--- lõppkasutajatele mõeldud rakendus.\\
   
-  \textbf{Veebiserver} \--- klient-server-mudelil ja protokollil HTTP või HTTPS põhinev tarkvara, mis võtab vastu kasutajate brauseritelt tulevaid päringuid ja saadab vastuseks HTML-lehti ja faile (nt Apache Tomcat või Oracle WebLogic) (http://akit.cyber.ee/term/3152-veebiserver).\\
+  \textbf{Veebiserver} \--- klient-server-mudelil ja protokollil HTTP või HTTPS põhinev tarkvara, mis võtab vastu kasutajate brauseritelt tulevaid päringuid ja saadab vastuseks HTML-lehti ja faile (nt Apache Tomcat või Oracle WebLogic) \footnote{\url{http://akit.cyber.ee/term/3152-veebiserver}}.\\
   
   \textbf{Versioon} \--- number, mis määrab WAR\--faili sisu (WAR\--fail sisaldab funktsionaalsust ja parandusi vastavalt versiooni numbrile).\\
   
-  \subsection*{II Skripti lähtekood}
+  \subsection*{II Ühe mooduli uuendamise mudel}
+  \label{bpmn-one}
+  \addcontentsline{toc}{subsection}{\nameref{bpmn-one}}
+  
+  Skripti protsesside mudel ühe mooduli uuendamisel Tomcat 8 veebiserveril asub avalikus GitHub repositooriumis:\\
+  \url{https://raw.githubusercontent.com/iriiiina/bachelors-thesis/master/thesis/diagrams/BPMN-diagram-one-module-tomcat.png}
+  
+  \subsection*{III Mitme mooduli uuendamise mudel}
+  \label{bpmn-many}
+  \addcontentsline{toc}{subsection}{\nameref{bpmn-many}}
+  
+  Skripti protsesside mudel mitme mooduli uuendamisel Tomcat 8 veebiserveril asub avalikus GitHub repositooriumis:\\
+  \url{https://iriiiina.gitbooks.io/version-updater-manual/content/BPMN-diagram-multiple-module-update-tomcat.png}
+  
+  \subsection*{IV Skripti lähtekood}
   \label{source-code}
   \addcontentsline{toc}{subsection}{\nameref{source-code}}
   
   Bash skripti kood asub avalikus GitHub repositooriumis:\\
   \url{https://github.com/iriiiina/version-updater}
   
-  \subsection*{III Skripti projekti juhend}
+  \subsection*{V Skripti projekti juhend}
   \label{documentation}
   \addcontentsline{toc}{subsection}{\nameref{documentation}}
   
-  Bash skripti projekti sisene juhend:\\
+  Bash skripti projektisisene juhend:\\
   \url{https://github.com/iriiiina/bachelors-thesis/blob/master/manual/Confluence%20Manual.pdf}
   
-  \subsection*{IV Skripti avalik juhend}
+  \subsection*{VI Skripti avalik juhend}
   \label{public-documentation}
   \addcontentsline{toc}{subsection}{\nameref{public-documentation}}
   
   Bash skripti avalik juhend asub avalikus GitBook repositoorimus:\\
   \url{https://iriiiina.gitbooks.io/version-updater-manual/content/}
   
-  \subsection*{V Kolleegide tagasiside}
+  \subsection*{VII Kolleegide tagasiside}
   \label{feedback}
   \addcontentsline{toc}{subsection}{\nameref{feedback}}
   
-  \subsubsection{Martin Rakver, Hosting Services and Application Manager}
+  \textbf{Martin Rakver, Hosting Services and Application Manager}
   
   \begin{displayquote}
   I have not been using the script very much, because I rarely update modules nowadays. But what I can say is that it is definately in the right place – automating activities that testers would need do to on daily basis each time when deploying a new module. Come to think about it, there are actually quite many activites related to new module deployment – would be interesting to compare the time it takes to deploy a module manually vs using script + calculate about how much time we as a team are saving daily, montly, yearly (and get to do more important things with that time).
 I also like that scalability has been considered when writing the script + many optional features have been implemented which can be used if one desires to do so.
   \end{displayquote}
 
-  \subsubsection{Kalle Jagula, QA Specialist}
+  \textbf{Kalle Jagula, QA Specialist}
   
   \begin{displayquote}
   I personally think that version-update script has significantly improved the speed of version update. Especially with the settings for bulk-update, which improves the speed of modules' version update and manageability of test/demo environments.
   \end{displayquote}
   
-  \subsubsection{Tanel Käär, System Architect}
+  \textbf{Tanel Käär, System Architect}
   
   \begin{displayquote}
   Version updater script has standardized the way our environments are updated, reducing learning curve for new people performing the task. Downside is that people are unaware, what happens in the background and can't handle simple errors in the process anymore.
   \end{displayquote}
   
-  \subsubsection{Klaus-Eduard Runnel, Senior Programmer}
+  \textbf{Klaus-Eduard Runnel, Senior Programmer}
   
   \begin{displayquote}
   I have mostly used the scripts to perform quick module and dependency updates in specific test environments when deploying quick fixes or debugging problems in the modules I'm responsible for. Deployment of artifacts is secondary task in such scenarios. The scripts allowed me to conveniently perform the updates while letting me concentrate on solving the primary problems and not leaving the environment containing all necessary information.
@@ -664,28 +676,28 @@ The scripts were also useful to deploy predefined sets of modules to temporary t
 It would be helpful if the scripts were adapted to perform changes on remote machines and to perform changes on multiple environments simultaneously.
   \end{displayquote}
 
-  \subsubsection{Helina Ziugand, QA Specialist}
+  \textbf{Helina Ziugand, QA Specialist}
   
   \begin{displayquote}
   Uuendamise skriptid on nii projektile kui ka minu igapäevasele tööle väga positiivselt mõjunud. 
 Kui algselt oli uuendamise jaoks vaja mitu sammu käsitsi teha, siis nüüd käib see automaatselt ja kiiresti. Võiks öelda, et üsna tüütu oli alguses kogu see uuendamise protsess - pidevalt pidi jälgima, kas vaja käsureale kirjutada järgmist sammu, hiljem JIRAs vana versiooni numbrit muuta ja Weblogicust vana versioon kustutada. Praegu on väga mugav ühe käsklusega uuendamise skript tööle panna, mis korraga kõik vajalikud sammud ära teeb ja samal ajal kui skript jookseb ise teiste tegevustega jätkata. Väga selgelt erinevate värvidega on välja tootud error, warningu ja success teated, mis on lihtsasti märgatavad ja hästi loetavad.
 
-Kui vaja on rohkem kui ühte moodulit uuendada, siis väga hea lahendus on selleks mitme moodulise uuendamise skript. Kui varem oli vaja keskkonda uue tsükli peale uuendada, siis võttis see ebamugavalt kaua aega ja vabatahtlikult kõige parema meelega seda ette ei tahtnud võtta. Nüüd on vaja ainult uuendatavad versioonid tekstifaili kirja panna ja ühe käsklusega skript käima tõmmata. 
+Kui vaja on rohkem kui ühte moodulit uuendada, siis väga hea lahendus on selleks mitme moodulise uuendamise skript. Kui varem oli vaja rakenduse uue tsükli peale uuendada, siis võttis see ebamugavalt kaua aega ja vabatahtlikult kõige parema meelega seda ette ei tahtnud võtta. Nüüd on vaja ainult uuendatavad versioonid tekstifaili kirja panna ja ühe käsklusega skript käima tõmmata. 
 
 Samuti tooks välja, et uuendamise skriptid on väga hästi dokumenteeritud ja põhjalikult kirja pandud kuidas toimivad. Mul on väga hea meel, et versioonide uuendamine on skriptide abil nii lihtsaks, mugavaks ja meeldivaks tegevuseks saanud.'
   \end{displayquote}
 
   \newpage
 
-  \subsection*{VI Litsents}
+  \subsection*{VIII Litsents}
   \label{licence}
   \addcontentsline{toc}{subsection}{\nameref{licence}}
   
   \textbf{Lihtlitsents lõputöö reprodutseerimiseks ja lõputöö üldsusele kättesaadavaks tegemiseks}\\
   
-  Mina \textbf{Irina Ivanova} (sünnikuupäev: 9.05.1988)
+  Mina, \textbf{Irina Ivanova}, (sünnikuupäev: 9.05.1988)
   \begin{enumerate}
-    \item annan Tartu Üikoolile tasuta loa (lihtlitsentsi) enda loodud teose \textbf{Versiooniuuenduse raamistik kasutades skriptimiskeelt Bash}, mille juhendajad on Helle Hein ja Polina Morozova,
+    \item annan Tartu Ülikoolile tasuta loa (lihtlitsentsi) enda loodud teose \textbf{Versiooniuuenduse automatiseerimine kasutades skriptimiskeelt Bash}, mille juhendajad on Helle Hein ja Polina Morozova,
     \begin{enumerate}
       \item reprodutseerimiseks säilitamise ja üldsusele kättesaadavaks tegemise eesmärgil, sealhulgas digitaalarhiivi DSpace-is lisamise eesmärgil kuni autoriõiguse kehtivuse tähtaja lõppemiseni;
       \item üldsusele kättesaadavaks tegemiseks Tartu Ülikooli veebikeskkonna kaudu, sealhulgas digitaalarhiivi DSpace-i kaudu kuni autoriõiguse kehtivuse tähtaja lõppemiseni.

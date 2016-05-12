@@ -115,7 +115,7 @@
   
   Töö teises osas uuritakse võimalikke lahendusi: kas kasutada turul olemasolevat toodet (töös uuritakse nelja toodet: Atlassian Bamboo, Chef, Jenkins ja Ansible Tower) või kirjutada ise tarkvara. Tuuakse välja iga lahenduse eeliseid ja puuduseid ning selgitatakse, miks langetati otsus Bash skripti kirjutamise kasuks. Valmistoodete peamised puudused on nende maksumus, võimetus hallata protsesse ja parandada vigu, vajadus kulutada palju aega toote tundmaõppimiseks ja rakendamiseks.
   
-  Kolmandas osas kirjeldatakse valitud lahendust: milline on skripti tööpõhimõte ja arhitektuur ning kuidas skripti saab paigaldada ja kasutada. Skripti põhifunk\-tsioonid on moodulifaili allalaadimine, vana versiooni mahavõtmine, uue versiooni paigaldamine ja vajalike inimeste teavitamine toimunud versiooniuuendusest. Lisaks on oluliseks funktsiooniks erinevad kontrollid, mis vähendavad vale versiooni paigaldamise tõenäosust, samuti logimisfunktsioon, mis võimaldab hankida andmeid iga uuenduse kohta.
+  Kolmandas osas kirjeldatakse valitud lahendust: milline on skripti tööpõhimõte ja arhitektuur ning kuidas skripti saab paigaldada ja kasutada. Skripti põhifunk\-tsioonid on moodulifaili allalaadimine, vana versiooni eemaldamine, uue versiooni paigaldamine ja vajalike inimeste teavitamine toimunud versiooniuuendusest. Lisaks on oluliseks funktsiooniks erinevad kontrollid, mis vähendavad vale versiooni paigaldamise tõenäosust, samuti logimisfunktsioon, mis võimaldab hankida andmeid iga uuenduse kohta.
   
   Neljandas osas uuritakse, kuidas valitud lahendus mõjutas projekti: võrreldakse versiooniuuendusele kulunud aega manuaalse ja automatiseeritud protsessi puhul ning vahendatakse kolleegidelt uue uuendamisprotsessi kasutamise kohta saadud tagasisidet.
   
@@ -205,7 +205,7 @@
       \hline
       12 & Töötamine moodulite erisufiksitega. & Projektis on olemas Eesti ja Leedu rakendused, kuhu paigaldatakse samad moodulid, aga erinevate sufiksitega. Näiteks, kui Eesti rakenduses paigaldatakse moodulit \code{person}, siis Leedu rakenduses \code{person-lt}, kuna seal on olemas eriloogika Leedu isikute jaoks.\\
       \hline
-      13 & Madal hind. & Lahendus ei tohi võtta palju raha.\\
+      13 & Madal hind. & Lahendus ei tohi olla kallis.\\
       \hline
     \end{tabular}
   \end{table}
@@ -358,7 +358,7 @@
       \hline
       6 & Logimissüsteem. & On olemas logifail.\\
       \hline
-      7 & Mittetehniline lahendus. & Kasutaja ei pea aru saama tehnilistest detailidest, et käivitada skripti sisendparameetritega.\\
+      7 & Mittetehniline kasutus. & Kasutaja ei pea aru saama tehnilistest detailidest, et käivitada skripti sisendparameetritega.\\
       \hline
       8 & Lukustamissüsteem. & Skript tekitab lukufaili töö alguses ja eemaldab seda töö lõpus.\\
       \hline
@@ -431,7 +431,7 @@
   \begin{itemize}
     \item vastava zip\--faili allalaadimine serverisse, kohalikku või virutaalmasinasse;
     \item allalaaditud faili lahtipakkimine;
-    \item lärgmiste failide väärtustamine serveri\--spetsiifiliste andmetega:
+    \item järgmiste failide väärtustamine serverispetsiifiliste andmetega:
     \begin{itemize}
       \item \code{version-updater/conf.sh};
       \item \code{version-updater/functions-local.sh};
